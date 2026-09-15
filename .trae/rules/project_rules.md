@@ -21,14 +21,16 @@
 
 - 编码：UTF-8 带 BOM；换行 CRLF；标准 CSV 转义（逗号/引号/换行需加引号并双写引号）
 - 写入纪律：**全量读取 → 内存中修改 → 完整覆盖写回**，表头与列顺序不可变
-- 列定义：`id,type,company,department,position,appliedAt,status,link,source,notes,createdAt,updatedAt`
+- 列定义：`id,company,department,status,position,industry,location,latestDate,link,source,notes,createdAt,updatedAt`
 - 枚举值：
-  - `type`：互联网 / 央国企
-  - `status`：简历筛 / 笔试筛 / 专业面 / 主管面 / HR面 / Offer / 已挂
+  - `status`：待投递 / 简历筛 / 笔试筛 / 专业面 / 主管面 / HR面 / Offer / 已挂
+  - `industry`（所属行业，单选）：预设 银行 / 制造 / 车企 / 互联网 / 央企 / 证券；**支持自定义行业——直接写入新值即可，前端会自动收入下拉列表**
+  - `location`（工作地点，多选）：预设 杭州 / 上海 / 广州 / 天津 / 合肥 / 北京 / 深圳 / 南京；多个以 `;` 分隔（如 `上海;北京`）
   - `source`：手动创建 / 邮箱提取 / 截图识别
 - id 规则：`jm_` + 13 位毫秒时间戳 + `_` + 4 位十六进制，如 `jm_1760000000123_a1b2`
-- 时间格式：`appliedAt` = `YYYY-MM-DD`；`createdAt`/`updatedAt` = `YYYY-MM-DD HH:mm`
-- 状态变更时：更新 `status` 与 `updatedAt`，并在 `notes` 末尾追加一行 `MM-DD 新状态`（多行以 `\n` 分隔，写入 CSV 时需转义）
+- 时间格式：`latestDate`（最新日期）= `YYYY-MM-DD`，指与该投递最新进展相关的日期，可为未来日期（如笔试/面试安排）；`createdAt`/`updatedAt` = `YYYY-MM-DD HH:mm`
+- 状态变更时：更新 `status` 与 `updatedAt`，并在 `notes` 末尾追加一行 `MM-DD 新状态`（多行以 `\n` 分隔，写入 CSV 时需转义）；`latestDate` 仅在用户明确给出新日期时更新
+- 兼容：旧列 `type`→`industry`（值 `央国企`→`央企`）、`appliedAt`→`latestDate`，读到旧表头时自动映射，写回一律用新表头
 
 ### data/emails.json
 
@@ -45,3 +47,12 @@ Agent 处理一封邮件后必须回写：`processed=true`、`matchedEntryId`（
 4. `config/secrets.local.json` 中的授权码不得在回复中回显
 5. 邮箱业务判断逻辑见 `.trae/skills/jobmaster-sync-emails/SKILL.md`
 6. 完成数据修改后提醒用户：浏览器中打开 index.html 即可自动看到变更
+
+## README 更新钩子（每次 /goal 完成后自动执行）
+
+每当一次 `/goal` 的全部任务完成并通过验证后，必须执行以下钩子步骤，视为目标完成的必要条件：
+
+1. 检查本次变更是否影响 README.md 所描述的功能清单、数据结构、使用方式等内容；
+2. 如有影响，同步更新 README.md 对应章节，并将文末「最后更新」改为当天日期；
+3. 无影响也需复核一遍文末「最后更新」日期是否与本次变更日期一致；
+4. 在向用户报告的变更摘要中，注明 README 是否已更新及更新了哪些章节。

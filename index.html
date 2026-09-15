@@ -105,7 +105,7 @@ button{font-family:inherit}
 
 /* 表格 */
 .table-wrap{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);overflow:auto;max-height:calc(100vh - 210px);box-shadow:var(--shadow-sm)}
-table{width:100%;border-collapse:collapse;min-width:980px}
+table{width:100%;border-collapse:collapse;min-width:1120px}
 th{position:sticky;top:0;z-index:1;background:var(--panel-2);text-align:left;font-size:11px;font-weight:500;letter-spacing:.06em;color:var(--ink-3);padding:11px 16px;border-bottom:1px solid var(--border);white-space:nowrap}
 td{padding:11px 16px;border-bottom:1px solid var(--border-light);font-size:13px;vertical-align:middle}
 tbody tr{transition:background .12s}
@@ -119,11 +119,26 @@ tbody tr:last-child td{border-bottom:none}
 .row-link{color:var(--ink-3);display:inline-flex}
 .row-link:hover{color:var(--accent-hover)}
 .type-tag{font-size:11px;color:var(--ink-2);white-space:nowrap;border:1px solid var(--border);border-radius:999px;padding:2px 9px;background:#fff}
-.type-tag.soe{color:#2563EB;border-color:#DBE7FD;background:#F5F8FF}
 .status-select{padding:3px 10px;border:1px solid transparent;border-radius:999px;font-size:12px;background:transparent;cursor:pointer;font-weight:500;font-family:inherit;transition:box-shadow .15s}
 .status-select:hover{box-shadow:var(--shadow-sm)}
 .badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:500;white-space:nowrap}
 .badge svg{width:12px;height:12px}
+.loc-tags{display:flex;gap:4px;flex-wrap:wrap}
+.loc-tag{font-size:11px;border:1px solid var(--border);border-radius:999px;padding:1px 8px;white-space:nowrap}
+
+/* 工作地点多选 */
+.ms-wrap{position:relative}
+.ms-toggle{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;text-align:left;cursor:pointer;color:var(--ink)}
+.ms-toggle svg{flex-shrink:0;color:var(--ink-3);transition:transform .15s}
+.ms-wrap.open .ms-toggle svg{transform:rotate(180deg)}
+.ms-vals{display:flex;gap:4px;flex-wrap:wrap;overflow:hidden}
+.ms-vals .ph{color:var(--ink-3)}
+.ms-chip{font-size:11px;color:var(--ink-2);border:1px solid var(--border);border-radius:999px;padding:1px 8px;background:var(--panel-2);white-space:nowrap}
+.ms-panel{display:none;border:1px solid var(--border-light);border-radius:10px;background:var(--panel-2);padding:6px;margin-top:6px;flex-wrap:wrap;gap:2px}
+.ms-wrap.open .ms-panel{display:flex}
+.ms-opt{display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:6px 10px;border-radius:8px;cursor:pointer;user-select:none;color:var(--ink)}
+.ms-opt:hover{background:#fff}
+.ms-opt input{accent-color:var(--accent);margin:0}
 
 /* 看板 */
 .kanban{display:flex;gap:12px;overflow-x:auto;align-items:stretch;padding-bottom:8px;height:calc(100vh - 158px)}
@@ -239,18 +254,17 @@ textarea{resize:vertical;font-family:inherit}
     <form id="entryForm">
       <div class="modal-body">
         <div class="form-grid">
-          <div class="field"><label>所属类型</label>
-            <select class="select" name="type"><option>互联网</option><option>央国企</option></select></div>
           <div class="field"><label>企业名称 *</label><input class="input" name="company" placeholder="如：腾讯" required></div>
-          <div class="field"><label>所属部门</label><input class="input" name="department" placeholder="选填，如：CSIG"></div>
-          <div class="field"><label>投递岗位 *</label><input class="input" name="position" placeholder="如：产品经理" required></div>
-          <div class="field"><label>投递时间</label><input class="input" type="date" name="appliedAt"></div>
-          <div class="field"><label>当前进度</label>
-            <select class="select" name="status">
-              <option>简历筛</option><option>笔试筛</option><option>专业面</option>
-              <option>主管面</option><option>HR面</option><option>Offer</option><option>已挂</option>
-            </select></div>
-          <div class="field span2"><label>官网链接</label><input class="input" type="url" name="link" placeholder="https://（选填）"></div>
+          <div class="field"><label>部门名称</label><input class="input" name="department" placeholder="选填，如：CSIG"></div>
+          <div class="field"><label>当前状态</label>
+            <select class="select" name="status" id="statusSelect"></select></div>
+          <div class="field"><label>目标岗位 *</label><input class="input" name="position" placeholder="如：AI 应用开发工程师" required></div>
+          <div class="field"><label>所属行业</label>
+            <select class="select" name="industry" id="industrySelect"></select></div>
+          <div class="field"><label>工作地点（可多选）</label>
+            <div class="ms-wrap" id="locationMs"></div></div>
+          <div class="field"><label>最新日期</label><input class="input" type="date" name="latestDate"></div>
+          <div class="field"><label>官网链接</label><input class="input" type="url" name="link" placeholder="https://（选填）"></div>
           <div class="field span2"><label>备注</label><textarea class="input" name="notes" rows="3" placeholder="选填；进度变更会自动追加记录"></textarea></div>
         </div>
       </div>
@@ -270,18 +284,32 @@ textarea{resize:vertical;font-family:inherit}
 <script>
 'use strict';
 /* ==================== 常量 ==================== */
-const STATUSES = ['简历筛','笔试筛','专业面','主管面','HR面','Offer','已挂'];
-const TYPES = ['互联网','央国企'];
-const FIELDS = ['id','type','company','department','position','appliedAt','status','link','source','notes','createdAt','updatedAt'];
+const STATUSES = ['待投递','简历筛','笔试筛','专业面','主管面','HR面','Offer','已挂'];
+const PRESET_INDUSTRIES = ['银行','制造','车企','互联网','央企','证券'];
+const PRESET_LOCATIONS = ['杭州','上海','广州','天津','合肥','北京','深圳','南京'];
+const FIELDS = ['id','company','department','status','position','industry','location','latestDate','link','source','notes','createdAt','updatedAt'];
+const FIELD_ALIASES = { type: 'industry', appliedAt: 'latestDate' }; // 旧表头兼容映射
 const CSV_FILENAME = 'jobmaster_data.csv';
 const EMAILS_FILENAME = 'emails.json';
 const DATA_DIR = 'data';   // 项目根目录下的默认数据目录（HTTP 同步模式）
 const LS_KEY = 'jobmaster_data_v1';
 const LS_UI_KEY = 'jobmaster_ui_v1';
+const LS_INDUSTRIES_KEY = 'jobmaster_industries_v1'; // 自定义行业（持久化到下拉列表）
 const STATUS_COLOR = {
-  '简历筛':'#6B7280','笔试筛':'#3B82F6','专业面':'#8B5CF6',
+  '待投递':'#F97316','简历筛':'#6B7280','笔试筛':'#3B82F6','专业面':'#8B5CF6',
   '主管面':'#F59E0B','HR面':'#06B6D4','Offer':'#10B981','已挂':'#EF4444'
 };
+const INDUSTRY_COLOR = {
+  '银行':'#DB2777','制造':'#16A34A','车企':'#CA8A04','互联网':'#059669','央企':'#DC2626','证券':'#C026D3'
+};
+const LOCATION_COLOR = {
+  '北京':'#EF4444','上海':'#F97316','广州':'#F59E0B','深圳':'#3B82F6',
+  '杭州':'#06B6D4','南京':'#10B981','天津':'#8B5CF6','合肥':'#84CC16'
+};
+const TAG_PALETTE = ['#2563EB','#059669','#DB2777','#D97706','#7C3AED','#0891B2','#DC2626','#65A30D'];
+function hashStr(s) { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; }
+function tagColor(map, v) { return map[v] || TAG_PALETTE[hashStr(v) % TAG_PALETTE.length]; }
+function parseLoc(s) { return String(s || '').split(';').map(t => t.trim()).filter(Boolean); }
 
 /* ==================== 图标（自绘 SVG 图标集，stroke-width=1.5） ==================== */
 const svg = (p, s) => `<svg width="${s||18}" height="${s||18}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
@@ -332,7 +360,7 @@ const state = {
   httpCsvLM: '',        // CSV 的 Last-Modified（HTTP 模式变更检测）
   httpMailLM: ''        // emails.json 的 Last-Modified
 };
-const ui = { module:'list', search:'', typeFilter:'', statusFilter:'', mailFilter:'unprocessed', width:228, collapsed:false };
+const ui = { module:'list', search:'', industryFilter:'', statusFilter:'', mailFilter:'unprocessed', width:228, collapsed:false };
 let emailsMtime = 0;
 let modalContext = null;   // 邮件创建投递时的上下文 { emailId }
 let watchersStarted = false;
@@ -364,11 +392,19 @@ function cleanCompanyName(s) {
     .replace(/(校园招聘|社会招聘|校招|招聘|人才|官方|团队|人力资源|no-?reply|notifications?)/gi, '')
     .replace(/[【】\[\]]/g, '').trim();
 }
+function migrateLegacy(e) {
+  /* 旧版字段（type/appliedAt）→ 新版字段（industry/latestDate）迁移 */
+  if (e.type !== undefined) { if (!e.industry) e.industry = e.type; delete e.type; }
+  if (e.appliedAt !== undefined) { if (!e.latestDate) e.latestDate = e.appliedAt; delete e.appliedAt; }
+  if (e.industry === '央国企') e.industry = '央企';
+}
 function normalizeEntry(e) {
+  migrateLegacy(e);
   e.id = e.id || genId('jm');
-  e.type = TYPES.includes(e.type) ? e.type : '互联网';
-  e.status = STATUSES.includes(e.status) ? e.status : '简历筛';
-  e.appliedAt = String(e.appliedAt || '').replace(/\//g, '-').slice(0, 10);
+  e.industry = String(e.industry || '').trim() || '互联网';
+  e.location = String(e.location || '').split(/[;；、,，|]+/).map(t => t.trim()).filter(Boolean).join(';');
+  e.status = STATUSES.includes(e.status) ? e.status : '待投递';
+  e.latestDate = String(e.latestDate || '').replace(/\//g, '-').slice(0, 10);
   ['company','department','position','link','source','notes','createdAt','updatedAt'].forEach(k => { e[k] = String(e[k] || ''); });
   return e;
 }
@@ -393,6 +429,34 @@ function animateCounts() {
     }
     requestAnimationFrame(tick);
   });
+}
+
+/* ==================== 自定义行业（持久化，加入下拉列表） ==================== */
+let customIndustries = [];
+function loadCustomIndustries() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(LS_INDUSTRIES_KEY) || '[]');
+    customIndustries = Array.isArray(raw) ? raw.map(s => String(s).trim()).filter(Boolean) : [];
+  } catch (e) { customIndustries = []; }
+}
+function saveCustomIndustries() { try { localStorage.setItem(LS_INDUSTRIES_KEY, JSON.stringify(customIndustries)); } catch (e) {} }
+function allIndustries() {
+  const out = [...PRESET_INDUSTRIES];
+  for (const c of customIndustries) if (!out.includes(c)) out.push(c);
+  for (const e of state.entries) {
+    const v = String(e.industry || '').trim();
+    if (v && !out.includes(v)) out.push(v); // Agent / 导入写入的新行业自动进入下拉
+  }
+  return out;
+}
+function addCustomIndustry(name) {
+  name = String(name || '').trim();
+  if (!name) return null;
+  const known = allIndustries().find(v => v.toLowerCase() === name.toLowerCase());
+  if (known) return known;
+  customIndustries.push(name);
+  saveCustomIndustries();
+  return name;
 }
 
 /* ==================== CSV 解析 / 序列化 ==================== */
@@ -427,7 +491,11 @@ function rowsToEntries(rows) {
   if (!rows.length) return [];
   const header = rows[0].map(h => h.trim());
   const idx = {};
-  FIELDS.forEach(f => { idx[f] = header.indexOf(f); });
+  FIELDS.forEach(f => {
+    let j = header.indexOf(f);
+    if (j < 0 && FIELD_ALIASES[f]) j = header.indexOf(FIELD_ALIASES[f]); // 旧表头回退
+    idx[f] = j;
+  });
   const out = [];
   for (let i = 1; i < rows.length; i++) {
     const r = rows[i];
@@ -806,6 +874,7 @@ function changeStatus(id, status) {
   const en = state.entries.find(x => x.id === id);
   if (!en || en.status === status) return;
   en.status = status;
+  if (!en.latestDate) en.latestDate = todayStr();
   en.updatedAt = nowStr();
   en.notes = appendNote(en.notes, `${mmdd()} ${status}`);
   saveAll(); render();
@@ -821,19 +890,51 @@ function mailCreate(emailId) {
   openEntryModal(null, { company: cleanCompanyName(m.fromName || m.from), source: '邮箱提取' });
   modalContext = { emailId };
 }
+function buildStatusOptions() {
+  $('#statusSelect').innerHTML = STATUSES.map(s => `<option>${s}</option>`).join('');
+}
+function buildIndustryOptions(selected) {
+  const sel = $('#industrySelect');
+  sel.innerHTML = allIndustries().map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join('') +
+    `<option value="__custom__">＋ 新增行业…</option>`;
+  sel.value = selected && allIndustries().includes(selected) ? selected : '互联网';
+}
+function updateMsLabel() {
+  const vals = msSelected();
+  $('#msVals').innerHTML = vals.length
+    ? vals.map(v => `<span class="ms-chip">${esc(v)}</span>`).join('')
+    : '<span class="ph">选择工作地点（可多选）</span>';
+}
+function msSelected() { return [...$$('#locationMs input[type="checkbox"]:checked')].map(c => c.value); }
+function buildLocationMS(selected) {
+  const wrap = $('#locationMs');
+  wrap.classList.remove('open');
+  wrap.innerHTML = `<button type="button" class="input ms-toggle" id="msToggle">
+      <span class="ms-vals" id="msVals"></span>${svg('<path d="m6 9 6 6 6-6"/>', 15)}
+    </button>
+    <div class="ms-panel" id="msPanel">${PRESET_LOCATIONS.map(l =>
+      `<label class="ms-opt"><input type="checkbox" value="${esc(l)}" ${selected.includes(l) ? 'checked' : ''}><span>${esc(l)}</span></label>`).join('')}</div>`;
+  wrap.onchange = updateMsLabel;
+  $('#msToggle').addEventListener('click', e => { e.stopPropagation(); wrap.classList.toggle('open'); });
+  $('#msPanel').addEventListener('click', e => e.stopPropagation());
+  updateMsLabel();
+}
 function openEntryModal(entry, prefill) {
   modalContext = null;
   prefill = prefill || {};
   const isNew = !entry;
   const d = entry ? { ...entry } : Object.assign({
-    id: genId('jm'), type: '互联网', company: '', department: '', position: '',
-    appliedAt: todayStr(), status: '简历筛', link: '', source: prefill.source || '手动创建',
-    notes: prefill.notes || '', createdAt: nowStr(), updatedAt: nowStr()
+    id: genId('jm'), industry: '互联网', company: '', department: '', position: '',
+    location: '', latestDate: todayStr(), status: '待投递', link: '',
+    source: prefill.source || '手动创建', notes: prefill.notes || '',
+    createdAt: nowStr(), updatedAt: nowStr()
   }, prefill);
   const f = $('#entryForm'), el = f.elements;
   f.dataset.id = d.id; f.dataset.source = d.source; f.dataset.createdAt = d.createdAt || nowStr();
-  el.type.value = d.type; el.company.value = d.company; el.department.value = d.department;
-  el.position.value = d.position; el.appliedAt.value = d.appliedAt; el.status.value = d.status;
+  buildIndustryOptions(d.industry);
+  buildLocationMS(parseLoc(d.location));
+  el.company.value = d.company; el.department.value = d.department;
+  el.position.value = d.position; el.latestDate.value = d.latestDate; el.status.value = d.status;
   el.link.value = d.link; el.notes.value = d.notes;
   $('#modalTitle').textContent = isNew ? '新增投递' : '编辑投递';
   $('#formMeta').textContent = `${d.source} · 创建于 ${d.createdAt || '—'}`;
@@ -844,14 +945,23 @@ function closeModal() { $('#modalBackdrop').classList.remove('open'); modalConte
 function submitEntry(ev) {
   ev.preventDefault();
   const f = $('#entryForm'), el = f.elements;
+  const industry = el.industry.value === '__custom__' ? '' : el.industry.value;
   const data = {
-    id: f.dataset.id, type: el.type.value, company: el.company.value.trim(),
-    department: el.department.value.trim(), position: el.position.value.trim(),
-    appliedAt: el.appliedAt.value || todayStr(), status: el.status.value,
-    link: el.link.value.trim(), source: f.dataset.source, notes: el.notes.value.trim(),
-    createdAt: f.dataset.createdAt || nowStr(), updatedAt: nowStr()
+    id: f.dataset.id,
+    company: el.company.value.trim(),
+    department: el.department.value.trim(),
+    status: el.status.value,
+    position: el.position.value.trim(),
+    industry,
+    location: msSelected().join(';'),
+    latestDate: el.latestDate.value || todayStr(),
+    link: el.link.value.trim(),
+    source: f.dataset.source,
+    notes: el.notes.value.trim(),
+    createdAt: f.dataset.createdAt || nowStr(),
+    updatedAt: nowStr()
   };
-  if (!data.company || !data.position) { toast('请填写企业名称和投递岗位', 'err'); return; }
+  if (!data.company || !data.position) { toast('请填写企业名称和目标岗位', 'err'); return; }
   const i = state.entries.findIndex(x => x.id === data.id);
   if (i >= 0) {
     const prev = state.entries[i];
@@ -891,13 +1001,13 @@ async function importCSV(file) {
 function computeStats() {
   const byStatus = {};
   state.entries.forEach(e => { byStatus[e.status] = (byStatus[e.status] || 0) + 1; });
-  const byType = {};
-  state.entries.forEach(e => { byType[e.type] = (byType[e.type] || 0) + 1; });
+  const byIndustry = {};
+  state.entries.forEach(e => { byIndustry[e.industry] = (byIndustry[e.industry] || 0) + 1; });
   const weekAgo = new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
   return {
     total: state.entries.length,
-    byStatus, byType,
-    week: state.entries.filter(e => e.appliedAt >= weekAgo).length,
+    byStatus, byIndustry,
+    week: state.entries.filter(e => e.latestDate >= weekAgo).length,
     offers: byStatus['Offer'] || 0
   };
 }
@@ -916,31 +1026,45 @@ function pageHead(eyebrow, title, desc, actionHTML) {
 function filteredEntries() {
   const q = ui.search.trim().toLowerCase();
   return state.entries.filter(e =>
-    (!ui.typeFilter || e.type === ui.typeFilter) &&
+    (!ui.industryFilter || e.industry === ui.industryFilter) &&
     (!ui.statusFilter || e.status === ui.statusFilter) &&
-    (!q || `${e.company} ${e.position} ${e.department}`.toLowerCase().includes(q))
-  ).sort((a, b) => (b.appliedAt || '').localeCompare(a.appliedAt || ''));
+    (!q || `${e.company} ${e.position} ${e.department} ${e.industry} ${e.location}`.toLowerCase().includes(q))
+  ).sort((a, b) => (b.latestDate || '').localeCompare(a.latestDate || ''));
 }
 function statusSelectHTML(e) {
   const c = STATUS_COLOR[e.status] || '#6B7280';
   return `<select class="status-select" data-id="${esc(e.id)}" style="color:${c};background:${c}1A">` +
     STATUSES.map(s => `<option value="${s}" ${s === e.status ? 'selected' : ''}>${s}</option>`).join('') + '</select>';
 }
+function industryTagHTML(e) {
+  const c = tagColor(INDUSTRY_COLOR, e.industry);
+  return `<span class="type-tag" style="color:${c};border-color:${c}55;background:${c}12">${esc(e.industry)}</span>`;
+}
+function locTagsHTML(loc) {
+  const arr = parseLoc(loc);
+  if (!arr.length) return '<span class="cell-3">—</span>';
+  return `<div class="loc-tags">${arr.map(v => {
+    const c = tagColor(LOCATION_COLOR, v);
+    return `<span class="loc-tag" style="color:${c};border-color:${c}55;background:${c}12">${esc(v)}</span>`;
+  }).join('')}</div>`;
+}
 function listTableHTML() {
   const list = filteredEntries();
   if (!list.length) return `<div class="empty-state" style="padding:36px 20px"><p>没有符合条件的投递记录</p></div>`;
   return `<div class="table-wrap"><table>
     <thead><tr>
-      <th>类型</th><th>企业</th><th>部门</th><th>岗位</th><th>投递时间</th>
-      <th>当前进度</th><th>链接</th><th>备注</th><th style="width:76px">操作</th>
+      <th>企业名称</th><th>部门名称</th><th>当前状态</th><th>目标岗位</th>
+      <th>所属行业</th><th>工作地点</th><th>最新日期</th>
+      <th>链接</th><th>备注</th><th style="width:76px">操作</th>
     </tr></thead><tbody>
     ${list.map(e => `<tr>
-      <td><span class="type-tag ${e.type === '央国企' ? 'soe' : ''}">${esc(e.type)}</span></td>
       <td class="cell-strong">${esc(e.company)}</td>
       <td class="cell-2">${esc(e.department) || '—'}</td>
-      <td>${esc(e.position)}</td>
-      <td class="cell-2" style="white-space:nowrap;font-family:var(--font-mono);font-size:12px">${esc(e.appliedAt)}</td>
       <td>${statusSelectHTML(e)}</td>
+      <td>${esc(e.position)}</td>
+      <td>${industryTagHTML(e)}</td>
+      <td>${locTagsHTML(e.location)}</td>
+      <td class="cell-2" style="white-space:nowrap;font-family:var(--font-mono);font-size:12px">${esc(e.latestDate) || '—'}</td>
       <td>${e.link ? `<a class="row-link" href="${esc(e.link)}" target="_blank" rel="noopener" title="${esc(e.link)}">${I.external}</a>` : '<span class="cell-3">—</span>'}</td>
       <td class="cell-2 notes-cell" title="${esc(e.notes)}">${esc(e.notes) || '—'}</td>
       <td><div class="row-actions">
@@ -963,19 +1087,19 @@ function emptyStateHTML() {
 }
 function viewList() {
   const total = state.entries.length;
-  const hasFilter = ui.search || ui.typeFilter || ui.statusFilter;
+  const hasFilter = ui.search || ui.industryFilter || ui.statusFilter;
   const head = pageHead('TRACKER · ' + dateLine(), '投递列表',
     `<span id="listCount">共 ${total} 条投递记录${hasFilter ? `，当前筛选 ${filteredEntries().length} 条` : ''}</span>`,
     `<button class="btn btn-primary" data-action="add">${I.plus}新增投递</button>`);
   if (!total && !hasFilter) return head + emptyStateHTML();
   return head + `<div class="toolbar">
-    <div class="search-wrap">${I.search}<input class="input" id="searchInput" placeholder="搜索企业 / 岗位 / 部门" value="${esc(ui.search)}"></div>
-    <select class="select" id="typeFilter">
-      <option value="">全部类型</option>
-      ${TYPES.map(t => `<option ${ui.typeFilter === t ? 'selected' : ''}>${t}</option>`).join('')}
+    <div class="search-wrap">${I.search}<input class="input" id="searchInput" placeholder="搜索企业 / 岗位 / 部门 / 地点" value="${esc(ui.search)}"></div>
+    <select class="select" id="industryFilter">
+      <option value="">全部行业</option>
+      ${allIndustries().map(t => `<option ${ui.industryFilter === t ? 'selected' : ''}>${esc(t)}</option>`).join('')}
     </select>
     <select class="select" id="statusFilter">
-      <option value="">全部进度</option>
+      <option value="">全部状态</option>
       ${STATUSES.map(s => `<option ${ui.statusFilter === s ? 'selected' : ''}>${s}</option>`).join('')}
     </select>
     ${hasFilter ? `<button class="btn btn-sm" data-action="clear-filter">${I.x}清除筛选</button>` : ''}
@@ -997,7 +1121,7 @@ function viewKanban() {
         ${list.map(e => `<div class="k-card" draggable="true" data-id="${esc(e.id)}" data-action="edit" title="点击编辑，可拖拽变更进度">
           <div class="k-company">${esc(e.company)}</div>
           <div class="k-position">${esc(e.position)}${e.department ? ` · ${esc(e.department)}` : ''}</div>
-          <div class="k-meta"><span class="${e.type === '央国企' ? 'soe' : ''}" style="${e.type === '央国企' ? 'color:#2563EB' : ''}">${esc(e.type)}</span><span>${esc(e.appliedAt)}</span></div>
+          <div class="k-meta"><span>${esc(e.industry)}${parseLoc(e.location).length ? ` · ${esc(parseLoc(e.location).join(' / '))}` : ''}</span><span>${esc(e.latestDate)}</span></div>
         </div>`).join('') || '<div class="k-empty">暂无投递</div>'}
       </div>
     </div>`;
@@ -1063,7 +1187,7 @@ function viewData() {
     <div class="stat"><div class="num" data-n="${s.week}">0</div><div class="lbl">近 7 天新增</div></div>
     <div class="stat hl"><div class="num" data-n="${s.offers}" style="color:var(--accent-hover)">0</div><div class="lbl">Offer</div></div>
     ${STATUSES.filter(st => st !== 'Offer').map(st => `<div class="stat"><div class="num" data-n="${s.byStatus[st] || 0}">0</div><div class="lbl">${st}</div></div>`).join('')}
-    <div class="stat"><div class="num">${s.byType['互联网'] || 0} / ${s.byType['央国企'] || 0}</div><div class="lbl">互联网 / 央国企</div></div>
+    ${allIndustries().filter(ind => s.byIndustry[ind]).map(ind => `<div class="stat"><div class="num" data-n="${s.byIndustry[ind]}">0</div><div class="lbl">${esc(ind)}</div></div>`).join('')}
   </div>
   <div class="data-grid">
     <div class="card">
@@ -1170,7 +1294,7 @@ function bindEvents() {
         saveAll(); render(); toast('已删除');
       }
     }
-    else if (act === 'clear-filter') { ui.search = ''; ui.typeFilter = ''; ui.statusFilter = ''; render(); }
+    else if (act === 'clear-filter') { ui.search = ''; ui.industryFilter = ''; ui.statusFilter = ''; render(); }
     else if (act === 'enable-sync') enableSync();
     else if (act === 'reauth') reauth();
     else if (act === 'resync') manualResync();
@@ -1198,7 +1322,7 @@ function bindEvents() {
     }
   });
   content.addEventListener('change', e => {
-    if (e.target.id === 'typeFilter') { ui.typeFilter = e.target.value; render(); }
+    if (e.target.id === 'industryFilter') { ui.industryFilter = e.target.value; render(); }
     else if (e.target.id === 'statusFilter') { ui.statusFilter = e.target.value; render(); }
     else if (e.target.id === 'mailFilter') { ui.mailFilter = e.target.value; render(); }
     else if (e.target.matches('select.status-select')) changeStatus(e.target.dataset.id, e.target.value);
@@ -1234,6 +1358,20 @@ function bindEvents() {
   $('#entryForm [data-close]').addEventListener('click', closeModal);
   $('#modalBackdrop').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  /* 所属行业：支持自定义新增，新增后加入当前下拉列表 */
+  let industryPrev = '';
+  $('#industrySelect').addEventListener('focus', () => { industryPrev = $('#industrySelect').value; });
+  $('#industrySelect').addEventListener('change', e => {
+    const sel = e.target;
+    if (sel.value !== '__custom__') return;
+    const name = window.prompt('输入新的行业名称（保存后加入下拉列表）');
+    if (!name || !name.trim()) { sel.value = industryPrev || '互联网'; return; }
+    buildIndustryOptions(addCustomIndustry(name.trim()));
+  });
+  /* 工作地点多选面板：点击外部收起 */
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.ms-wrap')) $$('.ms-wrap.open').forEach(w => w.classList.remove('open'));
+  });
 }
 function applySidebar() {
   const sb = $('#sidebar');
@@ -1244,8 +1382,10 @@ function applySidebar() {
 /* ==================== 启动 ==================== */
 async function init() {
   loadLocal();
+  loadCustomIndustries();
   loadUi();
   buildNav();
+  buildStatusOptions();
   $('#logoBox').innerHTML = I.logoMark;
   applySidebar();
   bindEvents();
