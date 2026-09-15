@@ -141,6 +141,8 @@ tbody tr:last-child td{border-bottom:none}
 .ms-opt input{accent-color:var(--accent);margin:0}
 .ms-add{border:1px dashed var(--border);background:transparent;font-family:inherit;color:var(--ink-2)}
 .ms-add:hover{background:#fff;color:var(--ink);border-color:var(--ink-3)}
+.ms-del{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;padding:0;border:none;background:transparent;border-radius:6px;color:var(--ink-3);cursor:pointer}
+.ms-del:hover{background:#FEE2E2;color:var(--danger)}
 
 /* 看板 */
 .kanban{display:flex;gap:12px;overflow-x:auto;align-items:stretch;padding-bottom:8px;height:calc(100vh - 158px)}
@@ -464,6 +466,37 @@ function addCustomOption(list, key, name) {
   list.push(name);
   writeCustomList(key, list);
   return name;
+}
+function removeCustomOption(list, key, name) {
+  const i = list.findIndex(v => v === name);
+  if (i < 0) return false;
+  list.splice(i, 1);
+  writeCustomList(key, list);
+  return true;
+}
+/* 删除自定义选项：被投递记录使用中的值不可删除，避免下拉列表与数据脱节 */
+function customUsedCount(kind, name) {
+  if (kind === 'status') return state.entries.filter(e => String(e.status || '').trim() === name).length;
+  if (kind === 'industry') return state.entries.filter(e => String(e.industry || '').trim() === name).length;
+  return state.entries.filter(e => parseLoc(e.location).includes(name)).length;
+}
+function deleteCustomOption(kind, list, key, name) {
+  const used = customUsedCount(kind, name);
+  if (used) { toast(`「${name}」正被 ${used} 条投递使用，请先修改这些投递后再删除`, 'err'); return false; }
+  if (!removeCustomOption(list, key, name)) return false;
+  render(); // 同步刷新筛选器 / 看板列 / 统计
+  toast(`已删除自定义${kind === 'status' ? '状态' : kind === 'industry' ? '行业' : '地点'}「${name}」`);
+  return true;
+}
+/* 原生下拉无法逐项放删除按钮：弹窗列出全部自定义项，输入序号或名称选中 */
+function promptPickCustom(title, list) {
+  const input = window.prompt(`${title}（预设项不可删除）\n${list.map((v, i) => `${i + 1}. ${v}`).join('\n')}\n\n输入序号或名称：`);
+  if (input == null) return null;
+  const t = input.trim();
+  if (!t) return null;
+  const n = Number(t);
+  if (String(n) === t && Number.isInteger(n) && n >= 1 && n <= list.length) return list[n - 1];
+  return list.find(v => v === t) || null;
 }
 function allIndustries() { return mergeOptions(PRESET_INDUSTRIES, customIndustries, state.entries.map(e => String(e.industry || '').trim())); }
 function allStatuses() { return mergeOptions(STATUSES, customStatuses, state.entries.map(e => String(e.status || '').trim())); }
@@ -903,13 +936,15 @@ function mailCreate(emailId) {
 function buildStatusOptions(selected) {
   const sel = $('#statusSelect'), list = allStatuses();
   sel.innerHTML = list.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('') +
-    `<option value="__custom__">＋ 新增状态…</option>`;
+    `<option value="__custom__">＋ 新增状态…</option>` +
+    (customStatuses.length ? `<option value="__del__">－ 删除自定义状态…</option>` : '');
   sel.value = selected && list.includes(selected) ? selected : '待投递';
 }
 function buildIndustryOptions(selected) {
   const sel = $('#industrySelect');
   sel.innerHTML = allIndustries().map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join('') +
-    `<option value="__custom__">＋ 新增行业…</option>`;
+    `<option value="__custom__">＋ 新增行业…</option>` +
+    (customIndustries.length ? `<option value="__del__">－ 删除自定义行业…</option>` : '');
   sel.value = selected && allIndustries().includes(selected) ? selected : '互联网';
 }
 function updateMsLabel() {
@@ -925,13 +960,26 @@ function buildLocationMS(selected) {
   wrap.innerHTML = `<button type="button" class="input ms-toggle" id="msToggle">
       <span class="ms-vals" id="msVals"></span>${svg('<path d="m6 9 6 6 6-6"/>', 15)}
     </button>
-    <div class="ms-panel" id="msPanel">${allLocations().map(l =>
-      `<label class="ms-opt"><input type="checkbox" value="${esc(l)}" ${selected.includes(l) ? 'checked' : ''}><span>${esc(l)}</span></label>`).join('')}
+    <div class="ms-panel" id="msPanel">${allLocations().map(l => {
+      const del = customLocations.includes(l)
+        ? `<button type="button" class="ms-del" data-loc="${esc(l)}" title="删除该自定义地点">${svg('<path d="M18 6 6 18M6 6l12 12"/>', 11)}</button>` : '';
+      return `<label class="ms-opt"><input type="checkbox" value="${esc(l)}" ${selected.includes(l) ? 'checked' : ''}><span>${esc(l)}</span>${del}</label>`;
+    }).join('')}
       <button type="button" class="ms-opt ms-add" id="msAdd">＋ 新增地点…</button></div>`;
   wrap.onchange = updateMsLabel;
   $('#msToggle').addEventListener('click', e => { e.stopPropagation(); wrap.classList.toggle('open'); });
   $('#msPanel').addEventListener('click', e => {
     e.stopPropagation();
+    const del = e.target.closest('.ms-del');
+    if (del) {
+      e.preventDefault(); // 阻止所在 label 的勾选联动
+      const name = del.dataset.loc;
+      if (deleteCustomOption('location', customLocations, LS_LOCATIONS_KEY, name)) {
+        buildLocationMS(msSelected().filter(v => v !== name)); // 重建面板并保持展开
+        $('#locationMs').classList.add('open');
+      }
+      return;
+    }
     if (!e.target.closest('#msAdd')) return;
     const name = window.prompt('输入新的工作地点名称（保存后加入多选列表）');
     if (!name || !name.trim()) return;
@@ -1384,24 +1432,34 @@ function bindEvents() {
   $('#entryForm [data-close]').addEventListener('click', closeModal);
   $('#modalBackdrop').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-  /* 所属行业 / 当前状态：支持自定义新增，新增后加入当前下拉列表（并同步到列表、筛选、看板、统计） */
+  /* 所属行业 / 当前状态：支持自定义新增与删除，变更后加入/移出当前下拉列表（并同步到列表、筛选、看板、统计） */
   let industryPrev = '';
   $('#industrySelect').addEventListener('focus', () => { industryPrev = $('#industrySelect').value; });
   $('#industrySelect').addEventListener('change', e => {
     const sel = e.target;
-    if (sel.value !== '__custom__') return;
-    const name = window.prompt('输入新的行业名称（保存后加入下拉列表）');
-    if (!name || !name.trim()) { sel.value = industryPrev || '互联网'; return; }
-    buildIndustryOptions(addCustomOption(customIndustries, LS_INDUSTRIES_KEY, name));
+    if (sel.value === '__custom__') {
+      const name = window.prompt('输入新的行业名称（保存后加入下拉列表）');
+      if (!name || !name.trim()) { sel.value = industryPrev || '互联网'; return; }
+      buildIndustryOptions(addCustomOption(customIndustries, LS_INDUSTRIES_KEY, name));
+    } else if (sel.value === '__del__') {
+      const name = promptPickCustom('删除自定义行业', customIndustries);
+      if (name && deleteCustomOption('industry', customIndustries, LS_INDUSTRIES_KEY, name)) buildIndustryOptions(industryPrev);
+      else sel.value = industryPrev || '互联网';
+    }
   });
   let statusPrev = '';
   $('#statusSelect').addEventListener('focus', () => { statusPrev = $('#statusSelect').value; });
   $('#statusSelect').addEventListener('change', e => {
     const sel = e.target;
-    if (sel.value !== '__custom__') return;
-    const name = window.prompt('输入新的状态名称（保存后加入下拉列表与看板列）');
-    if (!name || !name.trim()) { sel.value = statusPrev || '待投递'; return; }
-    buildStatusOptions(addCustomOption(customStatuses, LS_STATUSES_KEY, name));
+    if (sel.value === '__custom__') {
+      const name = window.prompt('输入新的状态名称（保存后加入下拉列表与看板列）');
+      if (!name || !name.trim()) { sel.value = statusPrev || '待投递'; return; }
+      buildStatusOptions(addCustomOption(customStatuses, LS_STATUSES_KEY, name));
+    } else if (sel.value === '__del__') {
+      const name = promptPickCustom('删除自定义状态', customStatuses);
+      if (name && deleteCustomOption('status', customStatuses, LS_STATUSES_KEY, name)) buildStatusOptions(statusPrev);
+      else sel.value = statusPrev || '待投递';
+    }
   });
   /* 工作地点多选面板：点击外部收起 */
   document.addEventListener('click', e => {
