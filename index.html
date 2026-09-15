@@ -139,6 +139,8 @@ tbody tr:last-child td{border-bottom:none}
 .ms-opt{display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:6px 10px;border-radius:8px;cursor:pointer;user-select:none;color:var(--ink)}
 .ms-opt:hover{background:#fff}
 .ms-opt input{accent-color:var(--accent);margin:0}
+.ms-add{border:1px dashed var(--border);background:transparent;font-family:inherit;color:var(--ink-2)}
+.ms-add:hover{background:#fff;color:var(--ink);border-color:var(--ink-3)}
 
 /* 看板 */
 .kanban{display:flex;gap:12px;overflow-x:auto;align-items:stretch;padding-bottom:8px;height:calc(100vh - 158px)}
@@ -295,6 +297,8 @@ const DATA_DIR = 'data';   // 项目根目录下的默认数据目录（HTTP 同
 const LS_KEY = 'jobmaster_data_v1';
 const LS_UI_KEY = 'jobmaster_ui_v1';
 const LS_INDUSTRIES_KEY = 'jobmaster_industries_v1'; // 自定义行业（持久化到下拉列表）
+const LS_STATUSES_KEY = 'jobmaster_statuses_v1';     // 自定义状态（持久化到下拉列表、看板、统计）
+const LS_LOCATIONS_KEY = 'jobmaster_locations_v1';   // 自定义工作地点（持久化到多选列表）
 const STATUS_COLOR = {
   '待投递':'#F97316','简历筛':'#6B7280','笔试筛':'#3B82F6','专业面':'#8B5CF6',
   '主管面':'#F59E0B','HR面':'#06B6D4','Offer':'#10B981','已挂':'#EF4444'
@@ -403,7 +407,7 @@ function normalizeEntry(e) {
   e.id = e.id || genId('jm');
   e.industry = String(e.industry || '').trim() || '互联网';
   e.location = String(e.location || '').split(/[;；、,，|]+/).map(t => t.trim()).filter(Boolean).join(';');
-  e.status = STATUSES.includes(e.status) ? e.status : '待投递';
+  e.status = String(e.status || '').trim() || '待投递'; // 支持自定义状态，非空即保留
   e.latestDate = String(e.latestDate || '').replace(/\//g, '-').slice(0, 10);
   ['company','department','position','link','source','notes','createdAt','updatedAt'].forEach(k => { e[k] = String(e[k] || ''); });
   return e;
@@ -431,33 +435,39 @@ function animateCounts() {
   });
 }
 
-/* ==================== 自定义行业（持久化，加入下拉列表） ==================== */
-let customIndustries = [];
-function loadCustomIndustries() {
+/* ==================== 自定义选项：行业 / 状态 / 工作地点（持久化，加入下拉与多选列表） ==================== */
+let customIndustries = [], customStatuses = [], customLocations = [];
+function readCustomList(key) {
   try {
-    const raw = JSON.parse(localStorage.getItem(LS_INDUSTRIES_KEY) || '[]');
-    customIndustries = Array.isArray(raw) ? raw.map(s => String(s).trim()).filter(Boolean) : [];
-  } catch (e) { customIndustries = []; }
+    const raw = JSON.parse(localStorage.getItem(key) || '[]');
+    return Array.isArray(raw) ? raw.map(s => String(s).trim()).filter(Boolean) : [];
+  } catch (e) { return []; }
 }
-function saveCustomIndustries() { try { localStorage.setItem(LS_INDUSTRIES_KEY, JSON.stringify(customIndustries)); } catch (e) {} }
-function allIndustries() {
-  const out = [...PRESET_INDUSTRIES];
-  for (const c of customIndustries) if (!out.includes(c)) out.push(c);
-  for (const e of state.entries) {
-    const v = String(e.industry || '').trim();
-    if (v && !out.includes(v)) out.push(v); // Agent / 导入写入的新行业自动进入下拉
-  }
+function writeCustomList(key, arr) { try { localStorage.setItem(key, JSON.stringify(arr)); } catch (e) {} }
+function loadCustomLists() {
+  customIndustries = readCustomList(LS_INDUSTRIES_KEY);
+  customStatuses = readCustomList(LS_STATUSES_KEY);
+  customLocations = readCustomList(LS_LOCATIONS_KEY);
+}
+/* 预设 + 自定义 + 数据中已出现的值（Agent / CSV 导入写入的新值自动收录） */
+function mergeOptions(presets, custom, used) {
+  const out = [...presets];
+  for (const c of custom) if (!out.includes(c)) out.push(c);
+  for (const v of used) if (v && !out.includes(v)) out.push(v);
   return out;
 }
-function addCustomIndustry(name) {
+function addCustomOption(list, key, name) {
   name = String(name || '').trim();
   if (!name) return null;
-  const known = allIndustries().find(v => v.toLowerCase() === name.toLowerCase());
+  const known = list.find(v => v.toLowerCase() === name.toLowerCase());
   if (known) return known;
-  customIndustries.push(name);
-  saveCustomIndustries();
+  list.push(name);
+  writeCustomList(key, list);
   return name;
 }
+function allIndustries() { return mergeOptions(PRESET_INDUSTRIES, customIndustries, state.entries.map(e => String(e.industry || '').trim())); }
+function allStatuses() { return mergeOptions(STATUSES, customStatuses, state.entries.map(e => String(e.status || '').trim())); }
+function allLocations() { return mergeOptions(PRESET_LOCATIONS, customLocations, state.entries.flatMap(e => parseLoc(e.location))); }
 
 /* ==================== CSV 解析 / 序列化 ==================== */
 function parseCSV(text) {
@@ -890,8 +900,11 @@ function mailCreate(emailId) {
   openEntryModal(null, { company: cleanCompanyName(m.fromName || m.from), source: '邮箱提取' });
   modalContext = { emailId };
 }
-function buildStatusOptions() {
-  $('#statusSelect').innerHTML = STATUSES.map(s => `<option>${s}</option>`).join('');
+function buildStatusOptions(selected) {
+  const sel = $('#statusSelect'), list = allStatuses();
+  sel.innerHTML = list.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('') +
+    `<option value="__custom__">＋ 新增状态…</option>`;
+  sel.value = selected && list.includes(selected) ? selected : '待投递';
 }
 function buildIndustryOptions(selected) {
   const sel = $('#industrySelect');
@@ -912,11 +925,22 @@ function buildLocationMS(selected) {
   wrap.innerHTML = `<button type="button" class="input ms-toggle" id="msToggle">
       <span class="ms-vals" id="msVals"></span>${svg('<path d="m6 9 6 6 6-6"/>', 15)}
     </button>
-    <div class="ms-panel" id="msPanel">${PRESET_LOCATIONS.map(l =>
-      `<label class="ms-opt"><input type="checkbox" value="${esc(l)}" ${selected.includes(l) ? 'checked' : ''}><span>${esc(l)}</span></label>`).join('')}</div>`;
+    <div class="ms-panel" id="msPanel">${allLocations().map(l =>
+      `<label class="ms-opt"><input type="checkbox" value="${esc(l)}" ${selected.includes(l) ? 'checked' : ''}><span>${esc(l)}</span></label>`).join('')}
+      <button type="button" class="ms-opt ms-add" id="msAdd">＋ 新增地点…</button></div>`;
   wrap.onchange = updateMsLabel;
   $('#msToggle').addEventListener('click', e => { e.stopPropagation(); wrap.classList.toggle('open'); });
-  $('#msPanel').addEventListener('click', e => e.stopPropagation());
+  $('#msPanel').addEventListener('click', e => {
+    e.stopPropagation();
+    if (!e.target.closest('#msAdd')) return;
+    const name = window.prompt('输入新的工作地点名称（保存后加入多选列表）');
+    if (!name || !name.trim()) return;
+    const vals = msSelected();
+    const v = addCustomOption(customLocations, LS_LOCATIONS_KEY, name);
+    if (v && !vals.includes(v)) vals.push(v);   // 新增后默认勾选
+    buildLocationMS(vals);
+    $('#locationMs').classList.add('open');
+  });
   updateMsLabel();
 }
 function openEntryModal(entry, prefill) {
@@ -931,10 +955,11 @@ function openEntryModal(entry, prefill) {
   }, prefill);
   const f = $('#entryForm'), el = f.elements;
   f.dataset.id = d.id; f.dataset.source = d.source; f.dataset.createdAt = d.createdAt || nowStr();
+  buildStatusOptions(d.status);
   buildIndustryOptions(d.industry);
   buildLocationMS(parseLoc(d.location));
   el.company.value = d.company; el.department.value = d.department;
-  el.position.value = d.position; el.latestDate.value = d.latestDate; el.status.value = d.status;
+  el.position.value = d.position; el.latestDate.value = d.latestDate;
   el.link.value = d.link; el.notes.value = d.notes;
   $('#modalTitle').textContent = isNew ? '新增投递' : '编辑投递';
   $('#formMeta').textContent = `${d.source} · 创建于 ${d.createdAt || '—'}`;
@@ -946,11 +971,12 @@ function submitEntry(ev) {
   ev.preventDefault();
   const f = $('#entryForm'), el = f.elements;
   const industry = el.industry.value === '__custom__' ? '' : el.industry.value;
+  const status = el.status.value === '__custom__' ? '待投递' : el.status.value;
   const data = {
     id: f.dataset.id,
     company: el.company.value.trim(),
     department: el.department.value.trim(),
-    status: el.status.value,
+    status,
     position: el.position.value.trim(),
     industry,
     location: msSelected().join(';'),
@@ -1032,9 +1058,9 @@ function filteredEntries() {
   ).sort((a, b) => (b.latestDate || '').localeCompare(a.latestDate || ''));
 }
 function statusSelectHTML(e) {
-  const c = STATUS_COLOR[e.status] || '#6B7280';
+  const c = tagColor(STATUS_COLOR, e.status); // 自定义状态自动从调色板取色
   return `<select class="status-select" data-id="${esc(e.id)}" style="color:${c};background:${c}1A">` +
-    STATUSES.map(s => `<option value="${s}" ${s === e.status ? 'selected' : ''}>${s}</option>`).join('') + '</select>';
+    allStatuses().map(s => `<option value="${esc(s)}" ${s === e.status ? 'selected' : ''}>${esc(s)}</option>`).join('') + '</select>';
 }
 function industryTagHTML(e) {
   const c = tagColor(INDUSTRY_COLOR, e.industry);
@@ -1100,7 +1126,7 @@ function viewList() {
     </select>
     <select class="select" id="statusFilter">
       <option value="">全部状态</option>
-      ${STATUSES.map(s => `<option ${ui.statusFilter === s ? 'selected' : ''}>${s}</option>`).join('')}
+      ${allStatuses().map(s => `<option ${ui.statusFilter === s ? 'selected' : ''}>${esc(s)}</option>`).join('')}
     </select>
     ${hasFilter ? `<button class="btn btn-sm" data-action="clear-filter">${I.x}清除筛选</button>` : ''}
   </div>
@@ -1109,12 +1135,12 @@ function viewList() {
 function viewKanban() {
   return pageHead('BOARD · ' + dateLine(), '进度看板', '拖拽卡片即可变更进度，点击卡片编辑详情',
     `<button class="btn btn-primary" data-action="add">${I.plus}新增投递</button>`) +
-  `<div class="kanban">${STATUSES.map(st => {
+  `<div class="kanban">${allStatuses().map(st => {
     const list = state.entries.filter(e => e.status === st)
       .sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
-    return `<div class="kanban-col" data-status="${st}">
+    return `<div class="kanban-col" data-status="${esc(st)}">
       <div class="kanban-col-head">
-        <span class="col-title"><span class="dot" style="background:${STATUS_COLOR[st]}"></span>${st}</span>
+        <span class="col-title"><span class="dot" style="background:${tagColor(STATUS_COLOR, st)}"></span>${esc(st)}</span>
         <span class="col-count">${list.length}</span>
       </div>
       <div class="kanban-cards">
@@ -1186,7 +1212,7 @@ function viewData() {
     <div class="stat"><div class="num" data-n="${s.total}">0</div><div class="lbl">累计投递</div></div>
     <div class="stat"><div class="num" data-n="${s.week}">0</div><div class="lbl">近 7 天新增</div></div>
     <div class="stat hl"><div class="num" data-n="${s.offers}" style="color:var(--accent-hover)">0</div><div class="lbl">Offer</div></div>
-    ${STATUSES.filter(st => st !== 'Offer').map(st => `<div class="stat"><div class="num" data-n="${s.byStatus[st] || 0}">0</div><div class="lbl">${st}</div></div>`).join('')}
+    ${allStatuses().filter(st => st !== 'Offer' && (STATUSES.includes(st) || s.byStatus[st])).map(st => `<div class="stat"><div class="num" data-n="${s.byStatus[st] || 0}">0</div><div class="lbl">${esc(st)}</div></div>`).join('')}
     ${allIndustries().filter(ind => s.byIndustry[ind]).map(ind => `<div class="stat"><div class="num" data-n="${s.byIndustry[ind]}">0</div><div class="lbl">${esc(ind)}</div></div>`).join('')}
   </div>
   <div class="data-grid">
@@ -1358,7 +1384,7 @@ function bindEvents() {
   $('#entryForm [data-close]').addEventListener('click', closeModal);
   $('#modalBackdrop').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-  /* 所属行业：支持自定义新增，新增后加入当前下拉列表 */
+  /* 所属行业 / 当前状态：支持自定义新增，新增后加入当前下拉列表（并同步到列表、筛选、看板、统计） */
   let industryPrev = '';
   $('#industrySelect').addEventListener('focus', () => { industryPrev = $('#industrySelect').value; });
   $('#industrySelect').addEventListener('change', e => {
@@ -1366,7 +1392,16 @@ function bindEvents() {
     if (sel.value !== '__custom__') return;
     const name = window.prompt('输入新的行业名称（保存后加入下拉列表）');
     if (!name || !name.trim()) { sel.value = industryPrev || '互联网'; return; }
-    buildIndustryOptions(addCustomIndustry(name.trim()));
+    buildIndustryOptions(addCustomOption(customIndustries, LS_INDUSTRIES_KEY, name));
+  });
+  let statusPrev = '';
+  $('#statusSelect').addEventListener('focus', () => { statusPrev = $('#statusSelect').value; });
+  $('#statusSelect').addEventListener('change', e => {
+    const sel = e.target;
+    if (sel.value !== '__custom__') return;
+    const name = window.prompt('输入新的状态名称（保存后加入下拉列表与看板列）');
+    if (!name || !name.trim()) { sel.value = statusPrev || '待投递'; return; }
+    buildStatusOptions(addCustomOption(customStatuses, LS_STATUSES_KEY, name));
   });
   /* 工作地点多选面板：点击外部收起 */
   document.addEventListener('click', e => {
@@ -1381,8 +1416,8 @@ function applySidebar() {
 
 /* ==================== 启动 ==================== */
 async function init() {
+  loadCustomLists();
   loadLocal();
-  loadCustomIndustries();
   loadUi();
   buildNav();
   buildStatusOptions();
