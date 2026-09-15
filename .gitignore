@@ -2,4 +2,4 @@
 config/secrets.local.json
 
 # 个人私有化求职数据
-data\jobmaster_data.csv
+data/jobmaster_data.csv
