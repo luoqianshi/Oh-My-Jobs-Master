@@ -1,2 +1,5 @@
 # 个人私有化邮箱数据
 config/secrets.local.json
+
+# 个人私有化求职数据
+data\jobmaster_data.csv
