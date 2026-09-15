@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<!-- Job-Master 个人秋招工作台：单文件应用（零依赖，浏览器直接打开） -->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Job-Master · 秋招工作台</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23191918'/%3E%3Cpath d='M18.5 7.5 10 16l-4.5-4.5' stroke='white' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#F6F6F4;            /* 暖纸灰底，呼应 Cursor 的克制留白 */
+  --panel:#FFFFFF;
+  --panel-2:#FAFAF8;
+  --border:#E9E9E4;
+  --border-light:#F1F1ED;
+  --ink:#191918;           /* 近黑墨 */
+  --ink-2:#5C5C56;
+  --ink-3:#A6A69E;
+  --accent:#10B981;        /* 翡翠绿：品牌强调色 */
+  --accent-hover:#059669;
+  --accent-bg:#ECFDF5;
+  --danger:#E5484D;
+  --danger-bg:#FEF2F2;
+  --radius:14px;
+  --shadow-sm:0 1px 2px rgba(22,22,19,.05);
+  --shadow-md:0 6px 20px rgba(22,22,19,.08);
+  --shadow-lg:0 24px 64px rgba(22,22,19,.18);
+  --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --font-serif:"Georgia","Songti SC","STSong","Noto Serif SC","SimSun",serif;
+  --font-mono:ui-monospace,"SF Mono","Cascadia Code","JetBrains Mono",Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.55;overflow:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(16,185,129,.18)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.app{display:flex;height:100vh}
+
+/* ===== 侧边栏 ===== */
+.sidebar{position:relative;display:flex;flex-direction:column;width:228px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--border)}
+.sidebar.collapsed{width:60px}
+.sidebar.collapsed .label,.sidebar.collapsed .app-title,.sidebar.collapsed .app-sub,.sidebar.collapsed .sync-text{display:none}
+.sidebar-header{display:flex;align-items:center;gap:10px;padding:18px 14px;min-height:64px}
+.sidebar.collapsed .sidebar-header{justify-content:center;gap:0;padding:18px 8px}
+.logo{width:30px;height:30px;flex-shrink:0;border-radius:9px;background:linear-gradient(135deg,#2A2A28 0%,#191918 100%);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.28);cursor:pointer;transition:transform .15s,box-shadow .15s}
+.logo:hover{transform:scale(1.06);box-shadow:0 3px 10px rgba(0,0,0,.32)}
+.app-title{font-weight:600;font-size:14.5px;letter-spacing:.01em;white-space:nowrap;line-height:1.2}
+.app-sub{display:block;font-family:var(--font-serif);font-size:11px;color:var(--ink-3);letter-spacing:.14em;margin-top:1px}
+.collapse-btn{margin-left:auto;color:var(--ink-3)}
+.sidebar.collapsed .collapse-btn{display:none}
+.nav{flex:1;padding:10px 0;display:flex;flex-direction:column;gap:3px;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;margin:0 8px;border:none;background:none;border-radius:10px;cursor:pointer;color:var(--ink-2);font-size:13.5px;text-align:left;width:calc(100% - 16px);transition:background .15s,color .15s}
+.nav-item svg{flex-shrink:0}
+.nav-item:hover{background:var(--panel-2);color:var(--ink)}
+.nav-item.active{background:var(--ink);color:#fff;font-weight:500;box-shadow:var(--shadow-sm)}
+.sidebar.collapsed .nav-item{justify-content:center;padding:10px 0}
+.sidebar-footer{padding:12px;border-top:1px solid var(--border-light)}
+.sidebar.collapsed .sidebar-footer{padding:12px 8px}
+.sync-indicator{display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px 10px;border:1px solid var(--border-light);background:var(--panel-2);border-radius:10px;font-size:11.5px;color:var(--ink-2);white-space:nowrap;font-family:var(--font-mono)}
+.sync-indicator:hover{border-color:var(--border)}
+.sidebar.collapsed .sync-indicator{justify-content:center;padding:8px 0;border:none;background:none}
+.sync-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;background:#D4D4CC}
+.sync-dot.ok{background:var(--accent)}
+.sync-dot.pending{background:#F59E0B}
+.sync-dot.err{background:var(--danger)}
+.resize-handle{position:absolute;top:0;right:-3px;width:6px;height:100%;cursor:col-resize;z-index:10}
+.sidebar.collapsed .resize-handle{display:none}
+
+/* ===== 内容区 ===== */
+.content{flex:1;overflow:auto;padding:30px 34px;min-width:0}
+.content.anim>*{animation:fadeUp .32s cubic-bezier(.22,.8,.32,1) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.page-eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase;margin-bottom:6px}
+.page-title{font-family:var(--font-serif);font-size:23px;font-weight:600;letter-spacing:.01em}
+.page-desc{font-size:13px;color:var(--ink-2);margin-top:4px}
+
+/* 工具栏 */
+.toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.input,.select{padding:8px 12px;border:1px solid var(--border);border-radius:10px;font:inherit;font-size:13px;background:#fff;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+.input:focus,.select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(16,185,129,.13)}
+.select{cursor:pointer}
+.search-wrap{position:relative}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--ink-3);width:15px;height:15px}
+.search-wrap .input{padding-left:32px;width:240px;border-radius:999px}
+
+/* 按钮：胶囊形，主按钮为 Cursor 标志性墨黑 */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:999px;border:1px solid var(--border);background:var(--panel);cursor:pointer;font-size:13px;color:var(--ink);transition:background .15s,border-color .15s,transform .12s,box-shadow .15s}
+.btn:hover{background:var(--panel-2);border-color:#D8D8D1}
+.btn:active{transform:scale(.97)}
+.btn svg{width:15px;height:15px}
+.btn-primary{background:var(--ink);border-color:var(--ink);color:#fff}
+.btn-primary:hover{background:#000;border-color:#000;transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.16)}
+.btn-primary:active{transform:scale(.97)}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-sm svg{width:13px;height:13px}
+.btn-danger-ghost{color:var(--danger)}
+.btn-danger-ghost:hover{background:var(--danger-bg);border-color:#F3C5C6}
+.icon-btn{padding:6px;border:none;background:none;color:var(--ink-3);cursor:pointer;border-radius:8px;display:inline-flex;transition:background .15s,color .15s,transform .12s}
+.icon-btn:hover{background:var(--panel-2);color:var(--ink)}
+.icon-btn:active{transform:scale(.92)}
+.icon-btn svg{width:15px;height:15px}
+.icon-btn.danger:hover{background:var(--danger-bg);color:var(--danger)}
+
+/* 表格 */
+.table-wrap{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);overflow:auto;max-height:calc(100vh - 210px);box-shadow:var(--shadow-sm)}
+table{width:100%;border-collapse:collapse;min-width:980px}
+th{position:sticky;top:0;z-index:1;background:var(--panel-2);text-align:left;font-size:11px;font-weight:500;letter-spacing:.06em;color:var(--ink-3);padding:11px 16px;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:11px 16px;border-bottom:1px solid var(--border-light);font-size:13px;vertical-align:middle}
+tbody tr{transition:background .12s}
+tbody tr:hover{background:#FAFAF7}
+tbody tr:last-child td{border-bottom:none}
+.cell-strong{font-weight:600}
+.cell-2{color:var(--ink-2)}
+.cell-3{color:var(--ink-3)}
+.notes-cell{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row-actions{display:flex;gap:2px}
+.row-link{color:var(--ink-3);display:inline-flex}
+.row-link:hover{color:var(--accent-hover)}
+.type-tag{font-size:11px;color:var(--ink-2);white-space:nowrap;border:1px solid var(--border);border-radius:999px;padding:2px 9px;background:#fff}
+.type-tag.soe{color:#2563EB;border-color:#DBE7FD;background:#F5F8FF}
+.status-select{padding:3px 10px;border:1px solid transparent;border-radius:999px;font-size:12px;background:transparent;cursor:pointer;font-weight:500;font-family:inherit;transition:box-shadow .15s}
+.status-select:hover{box-shadow:var(--shadow-sm)}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:500;white-space:nowrap}
+.badge svg{width:12px;height:12px}
+
+/* 看板 */
+.kanban{display:flex;gap:12px;overflow-x:auto;align-items:stretch;padding-bottom:8px;height:calc(100vh - 158px)}
+.kanban-col{min-width:228px;flex:1 0 228px;background:var(--panel-2);border:1px solid var(--border-light);border-radius:var(--radius);display:flex;flex-direction:column;max-height:100%;transition:border-color .15s,background .15s}
+.kanban-col.drag-over{border-color:var(--accent);background:#F0FAF6;box-shadow:0 0 0 3px rgba(16,185,129,.12)}
+.kanban-col-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border-light)}
+.col-title{font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.col-title .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.col-count{font-size:11px;font-family:var(--font-mono);color:var(--ink-2);background:#fff;border:1px solid var(--border-light);border-radius:999px;padding:1px 8px}
+.kanban-cards{padding:10px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;flex:1}
+.k-card{background:#fff;border:1px solid var(--border-light);border-radius:11px;padding:11px 13px;cursor:grab;box-shadow:var(--shadow-sm);transition:border-color .15s,box-shadow .15s,transform .15s}
+.k-card:hover{border-color:#D8D8D1;box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.k-card:active{cursor:grabbing}
+.k-company{font-weight:600;font-size:13px;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.k-position{font-size:12px;color:var(--ink-2);margin-bottom:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.k-meta{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--ink-3);font-family:var(--font-mono)}
+.k-empty{font-size:12px;color:var(--ink-3);text-align:center;padding:18px 0}
+
+/* 邮箱 */
+.mail-list{display:flex;flex-direction:column;gap:10px}
+.mail-row{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:15px 18px;box-shadow:var(--shadow-sm);transition:border-color .15s,box-shadow .15s}
+.mail-row:hover{border-color:#D8D8D1;box-shadow:var(--shadow-md)}
+.mail-row.processed{opacity:.62}
+.mail-head{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.mail-subject{font-weight:600;font-size:14px;display:flex;align-items:center;gap:8px;min-width:0}
+.mail-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.mail-date{font-size:11px;color:var(--ink-3);white-space:nowrap;flex-shrink:0;font-family:var(--font-mono)}
+.mail-sub{font-size:13px;color:var(--ink-2);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mail-foot{display:flex;gap:8px;margin-top:11px;align-items:center;flex-wrap:wrap}
+
+/* 数据管理 */
+.data-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm)}
+.card h3{font-size:14px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card h3 svg{width:16px;height:16px;color:var(--accent)}
+.kv{display:flex;justify-content:space-between;gap:12px;font-size:13px;padding:7px 0;border-bottom:1px dashed var(--border-light)}
+.kv:last-of-type{border-bottom:none}
+.kv .k{color:var(--ink-2);flex-shrink:0}
+.kv .v{text-align:right;word-break:break-all;font-family:var(--font-mono);font-size:12px}
+.hint{font-size:12px;color:var(--ink-3);margin-top:14px;line-height:1.7}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(136px,1fr));gap:12px;margin-bottom:18px}
+.stat{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden}
+.stat::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--border)}
+.stat.hl::before{background:var(--accent)}
+.stat .num{font-family:var(--font-serif);font-size:27px;font-weight:600;line-height:1.15}
+.stat .lbl{font-size:12px;color:var(--ink-2);margin-top:3px}
+
+/* 空状态 */
+.empty-state{background:var(--panel-2);border:1px dashed #DFDFD8;border-radius:16px;padding:60px 20px;text-align:center;color:var(--ink-2)}
+.empty-state svg{color:var(--ink-3)}
+.empty-state h3{color:var(--ink);font-size:17px;margin:14px 0 6px;font-weight:600;font-family:var(--font-serif)}
+.empty-state p{font-size:13px;margin-bottom:20px}
+
+/* 模态框 */
+.modal-backdrop{position:fixed;inset:0;background:rgba(22,22,19,.42);display:none;align-items:flex-start;justify-content:center;z-index:100;padding:6vh 16px;animation:backdropIn .2s ease}
+.modal-backdrop.open{display:flex}
+@keyframes backdropIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--panel);border-radius:16px;width:560px;max-width:100%;max-height:86vh;display:flex;flex-direction:column;box-shadow:var(--shadow-lg);animation:modalIn .28s cubic-bezier(.22,.9,.32,1.05)}
+@keyframes modalIn{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border-light)}
+.modal-head h3{font-size:16px;font-weight:600;font-family:var(--font-serif)}
+.modal-body{padding:22px;overflow:auto}
+.modal-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 22px;border-top:1px solid var(--border-light);background:var(--panel-2);border-radius:0 0 16px 16px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field.span2{grid-column:span 2}
+.field label{display:block;font-size:12px;color:var(--ink-2);margin-bottom:6px}
+.field .input,.field .select{width:100%}
+textarea{resize:vertical;font-family:inherit}
+.form-meta{font-size:11px;color:var(--ink-3);font-family:var(--font-mono)}
+
+/* Toast */
+.toast-wrap{position:fixed;right:20px;bottom:20px;display:flex;flex-direction:column;gap:8px;z-index:200}
+.toast{background:var(--ink);color:#fff;font-size:13px;padding:10px 16px;border-radius:11px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:8px;transition:opacity .3s;animation:toastIn .3s cubic-bezier(.22,.9,.32,1.1)}
+.toast svg{width:14px;height:14px;color:var(--accent);flex-shrink:0}
+.toast.err svg{color:#F87171}
+@keyframes toastIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:#DBDBD3;border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#BFBFB6}
+::-webkit-scrollbar-track{background:transparent}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo" id="logoBox"></div>
+      <div>
+        <span class="app-title">Job-Master</span>
+        <span class="app-sub">秋招工作台</span>
+      </div>
+      <button class="icon-btn collapse-btn" id="collapseBtn" title="收起 / 展开"></button>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="sidebar-footer">
+      <div class="sync-indicator" id="syncIndicator" title="数据同步状态，点击前往数据管理">
+        <span class="sync-dot"></span><span class="sync-text">未启用同步</span>
+      </div>
+    </div>
+    <div class="resize-handle" id="resizeHandle" title="拖动调整宽度"></div>
+  </aside>
+  <main class="content" id="content"></main>
+</div>
+
+<!-- 新增/编辑投递 模态框 -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">新增投递</h3>
+      <button class="icon-btn" id="modalClose" type="button"></button>
+    </div>
+    <form id="entryForm">
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="field"><label>所属类型</label>
+            <select class="select" name="type"><option>互联网</option><option>央国企</option></select></div>
+          <div class="field"><label>企业名称 *</label><input class="input" name="company" placeholder="如：腾讯" required></div>
+          <div class="field"><label>所属部门</label><input class="input" name="department" placeholder="选填，如：CSIG"></div>
+          <div class="field"><label>投递岗位 *</label><input class="input" name="position" placeholder="如：产品经理" required></div>
+          <div class="field"><label>投递时间</label><input class="input" type="date" name="appliedAt"></div>
+          <div class="field"><label>当前进度</label>
+            <select class="select" name="status">
+              <option>简历筛</option><option>笔试筛</option><option>专业面</option>
+              <option>主管面</option><option>HR面</option><option>Offer</option><option>已挂</option>
+            </select></div>
+          <div class="field span2"><label>官网链接</label><input class="input" type="url" name="link" placeholder="https://（选填）"></div>
+          <div class="field span2"><label>备注</label><textarea class="input" name="notes" rows="3" placeholder="选填；进度变更会自动追加记录"></textarea></div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <span class="form-meta" id="formMeta"></span>
+        <div style="display:flex;gap:10px">
+          <button type="button" class="btn" data-close>取消</button>
+          <button type="submit" class="btn btn-primary"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>保存</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+'use strict';
+/* ==================== 常量 ==================== */
+const STATUSES = ['简历筛','笔试筛','专业面','主管面','HR面','Offer','已挂'];
+const TYPES = ['互联网','央国企'];
+const FIELDS = ['id','type','company','department','position','appliedAt','status','link','source','notes','createdAt','updatedAt'];
+const CSV_FILENAME = 'jobmaster_data.csv';
+const EMAILS_FILENAME = 'emails.json';
+const DATA_DIR = 'data';   // 项目根目录下的默认数据目录（HTTP 同步模式）
+const LS_KEY = 'jobmaster_data_v1';
+const LS_UI_KEY = 'jobmaster_ui_v1';
+const STATUS_COLOR = {
+  '简历筛':'#6B7280','笔试筛':'#3B82F6','专业面':'#8B5CF6',
+  '主管面':'#F59E0B','HR面':'#06B6D4','Offer':'#10B981','已挂':'#EF4444'
+};
+
+/* ==================== 图标（自绘 SVG 图标集，stroke-width=1.5） ==================== */
+const svg = (p, s) => `<svg width="${s||18}" height="${s||18}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const I = {
+  /* 品牌标识：墨黑方块 + ✔，寓意「确认进度」 */
+  logoMark: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18.5 7 10 15.5 5.5 11"/></svg>`,
+  /* 导航 */
+  list: svg('<path d="M8.5 6.5h12M8.5 12h12M8.5 17.5h12"/><path d="M3.5 6.5h.01M3.5 12h.01M3.5 17.5h.01"/>'),
+  kanban: svg('<rect x="3.5" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="10" rx="1.5"/><rect x="16.5" y="4" width="5" height="13" rx="1.5"/>'),
+  mail: svg('<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7.5 8 6 8-6"/>'),
+  database: svg('<ellipse cx="12" cy="5.5" rx="8.5" ry="3"/><path d="M3.5 5.5v13c0 1.66 3.8 3 8.5 3s8.5-1.34 8.5-3v-13"/><path d="M3.5 12c0 1.66 3.8 3 8.5 3s8.5-1.34 8.5-3"/>'),
+  /* 操作 */
+  plus: svg('<path d="M12 5.5v13M5.5 12h13"/>', 15),
+  search: svg('<circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/>'),
+  edit: svg('<path d="M17 3.5a2.4 2.4 0 1 1 3.5 3.5L8 19.5l-4.8 1.3L4.5 16 17 3.5z"/>'),
+  trash: svg('<path d="M3.5 6h17M9 6V4.5A1.5 1.5 0 0 1 10.5 3h3A1.5 1.5 0 0 1 15 4.5V6m3.5 0-1 13.2a2 2 0 0 1-2 1.8h-7a2 2 0 0 1-2-1.8L5.5 6M10 10.5v6M14 10.5v6"/>'),
+  external: svg('<path d="M14 4h6v6"/><path d="M20 4 10.5 13.5"/><path d="M19 14v5.5A1.5 1.5 0 0 1 17.5 21h-12A1.5 1.5 0 0 1 4 19.5v-12A1.5 1.5 0 0 1 5.5 6H11"/>'),
+  refresh: svg('<path d="M20 11.5A8 8 0 1 1 17.4 6"/><path d="M20 3.5v5h-5"/>', 15),
+  download: svg('<path d="M20.5 15v4A1.5 1.5 0 0 1 19 20.5H5A1.5 1.5 0 0 1 3.5 19v-4M7 10.5l5 5 5-5M12 15.5v-12"/>', 15),
+  upload: svg('<path d="M20.5 15v4A1.5 1.5 0 0 1 19 20.5H5A1.5 1.5 0 0 1 3.5 19v-4M7 13.5l5-5 5 5M12 3.5v10"/>', 15),
+  folder: svg('<path d="M3.5 6A1.5 1.5 0 0 1 5 4.5h4l2 3h8A1.5 1.5 0 0 1 20.5 9v9A1.5 1.5 0 0 1 19 19.5H5A1.5 1.5 0 0 1 3.5 18V6z"/>', 15),
+  chevronsLeft: svg('<path d="m11 17-5-5 5-5M18 17l-5-5 5-5"/>'),
+  inbox: svg('<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>', 36),
+  check: svg('<path d="M20 6 9 17l-5-5"/>', 12),
+  x: svg('<path d="M18 6 6 18M6 6l12 12"/>'),
+  spark: svg('<path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>', 14),
+  alert: svg('<circle cx="12" cy="12" r="9"/><path d="M12 8v4.5M12 16h.01"/>', 14)
+};
+
+/* ==================== 状态 ==================== */
+const state = {
+  entries: [],          // 投递记录
+  emails: [],          // 邮件池
+  lastFetchedAt: null,
+  dirHandle: null,     // data/ 目录句柄
+  dirName: '',
+  syncEnabled: false,
+  syncStatus: 'disabled', // disabled | pending | ok | error
+  syncError: '',
+  lastReadAt: null,
+  lastWriteAt: null,
+  lastSyncedMtime: 0,  // CSV 上次同步的文件 mtime
+  writing: false,
+  pendingWrite: false,
+  emailsDirty: false,
+  serverMode: false,    // HTTP 同步模式：页面经服务器访问时自动同步 ./data
+  serverWritable: null, // HTTP 写回是否可用（PUT）；false 时降级为只读同步
+  httpCsvLM: '',        // CSV 的 Last-Modified（HTTP 模式变更检测）
+  httpMailLM: ''        // emails.json 的 Last-Modified
+};
+const ui = { module:'list', search:'', typeFilter:'', statusFilter:'', mailFilter:'unprocessed', width:228, collapsed:false };
+let emailsMtime = 0;
+let modalContext = null;   // 邮件创建投递时的上下文 { emailId }
+let watchersStarted = false;
+
+/* ==================== 工具函数 ==================== */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => document.querySelectorAll(sel);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const p2 = n => String(n).padStart(2, '0');
+function genId(prefix) { return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2, 6)}`; }
+function nowStr() { const d = new Date(); return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())} ${p2(d.getHours())}:${p2(d.getMinutes())}`; }
+function todayStr() { const d = new Date(); return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`; }
+function mmdd() { const d = new Date(); return `${p2(d.getMonth()+1)}-${p2(d.getDate())}`; }
+function dateLine() {
+  const d = new Date();
+  const wk = ['SUN','MON','TUE','WED','THU','FRI','SAT'][d.getDay()];
+  return `${d.getFullYear()}.${p2(d.getMonth()+1)}.${p2(d.getDate())} ${wk}`;
+}
+function appendNote(notes, line) { return notes ? notes + '\n' + line : line; }
+function fmtDT(v) {
+  if (!v) return '—';
+  const d = v instanceof Date ? v : new Date(String(v).replace(' ', 'T'));
+  if (isNaN(d)) return String(v);
+  return `${p2(d.getMonth()+1)}-${p2(d.getDate())} ${p2(d.getHours())}:${p2(d.getMinutes())}`;
+}
+function cleanCompanyName(s) {
+  return String(s || '')
+    .replace(/\s*[(<].*/, '')
+    .replace(/(校园招聘|社会招聘|校招|招聘|人才|官方|团队|人力资源|no-?reply|notifications?)/gi, '')
+    .replace(/[【】\[\]]/g, '').trim();
+}
+function normalizeEntry(e) {
+  e.id = e.id || genId('jm');
+  e.type = TYPES.includes(e.type) ? e.type : '互联网';
+  e.status = STATUSES.includes(e.status) ? e.status : '简历筛';
+  e.appliedAt = String(e.appliedAt || '').replace(/\//g, '-').slice(0, 10);
+  ['company','department','position','link','source','notes','createdAt','updatedAt'].forEach(k => { e[k] = String(e[k] || ''); });
+  return e;
+}
+function toast(msg, type) {
+  const el = document.createElement('div');
+  el.className = 'toast' + (type === 'err' ? ' err' : '');
+  el.innerHTML = (type === 'err' ? I.alert : I.check) + '<span></span>';
+  el.querySelector('span').textContent = msg;
+  $('#toastWrap').appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 320); }, 2800);
+}
+/* 数字滚动动画（数据管理页统计卡片） */
+function animateCounts() {
+  $$('#content [data-n]').forEach(el => {
+    const target = parseInt(el.dataset.n, 10) || 0;
+    if (!target) { el.textContent = '0'; return; }
+    const dur = 650, t0 = performance.now();
+    function tick(t) {
+      const p = Math.min(1, (t - t0) / dur);
+      el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+}
+
+/* ==================== CSV 解析 / 序列化 ==================== */
+function parseCSV(text) {
+  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1); // 去 BOM
+  const rows = []; let row = [], field = '', inQ = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQ) {
+      if (c === '"') { if (text[i+1] === '"') { field += '"'; i++; } else inQ = false; }
+      else field += c;
+    } else {
+      if (c === '"') inQ = true;
+      else if (c === ',') { row.push(field); field = ''; }
+      else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+      else if (c !== '\r') field += c;
+    }
+  }
+  if (field !== '' || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+function csvEscape(v) {
+  v = String(v ?? '');
+  return /[",\r\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+}
+function serializeCSV() {
+  const lines = [FIELDS.join(',')];
+  for (const e of state.entries) lines.push(FIELDS.map(f => csvEscape(e[f])).join(','));
+  return '\ufeff' + lines.join('\r\n') + '\r\n';
+}
+function rowsToEntries(rows) {
+  if (!rows.length) return [];
+  const header = rows[0].map(h => h.trim());
+  const idx = {};
+  FIELDS.forEach(f => { idx[f] = header.indexOf(f); });
+  const out = [];
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    if (r.length === 1 && r[0] === '') continue; // 跳过空行
+    const e = {};
+    FIELDS.forEach(f => { const j = idx[f]; e[f] = (j >= 0 && j < r.length) ? (r[j] || '') : ''; });
+    out.push(normalizeEntry(e));
+  }
+  return out;
+}
+/* 行级合并：同 id 时 updatedAt 新者胜；keepLocalOnly 控制是否保留 CSV 中不存在的本地行 */
+function mergeEntries(local, csv, keepLocalOnly) {
+  const map = new Map();
+  csv.forEach(e => map.set(e.id, e));
+  for (const l of local) {
+    const c = map.get(l.id);
+    if (!c) { if (keepLocalOnly) map.set(l.id, l); continue; }
+    if ((l.updatedAt || '') > (c.updatedAt || '')) map.set(l.id, l);
+  }
+  return Array.from(map.values());
+}
+
+/* ==================== 本地存储 ==================== */
+function persistLocal() { try { localStorage.setItem(LS_KEY, JSON.stringify(state.entries)); } catch (e) {} }
+function loadLocal() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+    state.entries = Array.isArray(raw) ? raw.map(normalizeEntry) : [];
+  } catch (e) { state.entries = []; }
+}
+function persistUi() { try { localStorage.setItem(LS_UI_KEY, JSON.stringify({ module:ui.module, width:ui.width, collapsed:ui.collapsed })); } catch (e) {} }
+function loadUi() {
+  try { Object.assign(ui, JSON.parse(localStorage.getItem(LS_UI_KEY)) || {}); } catch (e) {}
+  if (!['list','kanban','mail','data'].includes(ui.module)) ui.module = 'list';
+}
+
+/* ==================== IndexedDB（保存目录句柄） ==================== */
+function idbOpen() {
+  return new Promise((res, rej) => {
+    const req = indexedDB.open('jobmaster-fs', 1);
+    req.onupgradeneeded = () => req.result.createObjectStore('handles');
+    req.onsuccess = () => res(req.result);
+    req.onerror = () => rej(req.error);
+  });
+}
+async function idbSet(key, val) {
+  const db = await idbOpen();
+  return new Promise((res, rej) => {
+    const tx = db.transaction('handles', 'readwrite');
+    tx.objectStore('handles').put(val, key);
+    tx.oncomplete = () => { db.close(); res(); };
+    tx.onerror = () => { db.close(); rej(tx.error); };
+  });
+}
+async function idbGet(key) {
+  const db = await idbOpen();
+  return new Promise((res, rej) => {
+    const tx = db.transaction('handles', 'readonly');
+    const rq = tx.objectStore('handles').get(key);
+    rq.onsuccess = () => { db.close(); res(rq.result); };
+    rq.onerror = () => { db.close(); rej(rq.error); };
+  });
+}
+
+/* ==================== 同步层（File System Access API） ==================== */
+async function initSync() {
+  let handle = null;
+  if (window.showDirectoryPicker) {
+    try { handle = await idbGet('dirHandle'); } catch (e) { /* file:// 下 IndexedDB 可能不可用 */ }
+  }
+  if (handle) {
+    try {
+      const perm = await handle.queryPermission({ mode: 'readwrite' });
+      if (perm === 'granted') await activateSync(handle);
+      else { state.dirHandle = handle; state.dirName = handle.name; state.syncStatus = 'pending'; }
+    } catch (e) { state.syncStatus = 'error'; state.syncError = e.message; }
+    updateSyncIndicator();
+    render();
+    return;
+  }
+  /* 无目录授权时：默认尝试项目根目录 ./data 的 HTTP 同步 */
+  await detectServerSync();
+  updateSyncIndicator();
+  render();
+}
+async function activateSync(handle) {
+  state.dirHandle = handle;
+  state.dirName = handle.name;
+  state.syncEnabled = true;
+  try {
+    await reloadFromFiles(true);
+    state.syncStatus = 'ok'; state.syncError = '';
+    startWatchers();
+  } catch (e) {
+    state.syncStatus = 'error'; state.syncError = e.message || String(e);
+  }
+  updateSyncIndicator();
+  render();
+}
+async function reloadFromFiles(isInit) {
+  const fh = await state.dirHandle.getFileHandle(CSV_FILENAME, { create: true });
+  const file = await fh.getFile();
+  state.lastReadAt = new Date();
+  state.lastSyncedMtime = file.lastModified;
+  const entries = rowsToEntries(parseCSV(await file.text()));
+  if (isInit && !entries.length && state.entries.length) {
+    await writeCSVNow(); // 目录中 CSV 为空而本地有数据：以本地数据初始化文件
+  } else {
+    state.entries = mergeEntries(state.entries, entries, state.pendingWrite);
+    persistLocal();
+  }
+  await loadEmails(true);
+}
+let writeTimer = null;
+function saveAll() {
+  persistLocal();
+  if (state.dirHandle) {
+    state.pendingWrite = true;
+    clearTimeout(writeTimer);
+    writeTimer = setTimeout(writeCSVNow, 500);
+  } else if (state.serverMode) {
+    state.pendingWrite = true;
+    clearTimeout(writeTimer);
+    writeTimer = setTimeout(writeCSVHTTP, 500);
+  }
+}
+async function writeCSVNow() {
+  if (!state.syncEnabled) return;
+  clearTimeout(writeTimer);
+  state.writing = true;
+  try {
+    const fh = await state.dirHandle.getFileHandle(CSV_FILENAME, { create: true });
+    const w = await fh.createWritable();
+    await w.write(serializeCSV());
+    await w.close();
+    const file = await fh.getFile();
+    state.lastSyncedMtime = file.lastModified;
+    state.lastWriteAt = new Date();
+    state.pendingWrite = false;
+    state.syncStatus = 'ok'; state.syncError = '';
+    if (state.emailsDirty) await writeEmailsNow();
+  } catch (e) {
+    state.syncStatus = 'error'; state.syncError = e.message || String(e);
+  } finally {
+    state.writing = false;
+    updateSyncIndicator();
+  }
+}
+async function writeEmailsNow() {
+  if (!state.dirHandle) return;
+  const fh = await state.dirHandle.getFileHandle(EMAILS_FILENAME, { create: true });
+  const w = await fh.createWritable();
+  await w.write(JSON.stringify({ lastFetchedAt: state.lastFetchedAt, emails: state.emails }, null, 2));
+  await w.close();
+  const file = await fh.getFile();
+  emailsMtime = file.lastModified;
+  state.emailsDirty = false;
+}
+async function loadEmails(force) {
+  if (!state.syncEnabled) return false;
+  try {
+    const fh = await state.dirHandle.getFileHandle(EMAILS_FILENAME, { create: false });
+    const file = await fh.getFile();
+    if (!force && file.lastModified <= emailsMtime) return false;
+    emailsMtime = file.lastModified;
+    const j = JSON.parse(await file.text());
+    state.emails = Array.isArray(j.emails) ? j.emails : [];
+    state.lastFetchedAt = j.lastFetchedAt || null;
+    return true;
+  } catch (e) { return false; } // 文件不存在时静默
+}
+
+/* ==================== 同步层（HTTP 模式：项目根目录 ./data） ====================
+   页面经本地/预览服务器访问时，自动对 ./data 启用同步：
+   读取（GET）始终自动；写回（PUT）取决于服务器，若不支持则降级为只读同步，
+   可在「数据管理」中切换为目录授权同步以获得完整读写能力。 */
+async function fetchDataFile(name, method, body) {
+  const opt = { cache: 'no-store' };
+  if (method) { opt.method = method; opt.body = body; }
+  const r = await fetch(`${DATA_DIR}/${name}`, opt);
+  if (!r.ok) throw new Error(String(r.status));
+  return r;
+}
+async function detectServerSync() {
+  try {
+    const r = await fetchDataFile(CSV_FILENAME);
+    state.httpCsvLM = r.headers.get('Last-Modified') || '';
+    const entries = rowsToEntries(parseCSV(await r.text()));
+    state.entries = mergeEntries(state.entries, entries, false);
+    persistLocal();
+    state.serverMode = true;
+    state.syncEnabled = true;
+    state.syncStatus = 'ok';
+    state.lastReadAt = new Date();
+    try { await loadEmailsHTTP(true); } catch (e) { /* emails.json 不存在时忽略 */ }
+    startWatchers();
+    toast('已启用 ./data 数据同步');
+  } catch (e) { /* 服务器不可达或非 HTTP 环境：保持未启用 */ }
+}
+async function reloadFromHTTP() {
+  const r = await fetchDataFile(CSV_FILENAME);
+  state.httpCsvLM = r.headers.get('Last-Modified') || '';
+  state.lastReadAt = new Date();
+  const entries = rowsToEntries(parseCSV(await r.text()));
+  if (!entries.length && state.entries.length) {
+    await writeCSVHTTP(); // 目录中 CSV 为空而本地有数据：以本地数据初始化文件
+  } else {
+    state.entries = mergeEntries(state.entries, entries, state.pendingWrite);
+    persistLocal();
+  }
+  try { await loadEmailsHTTP(true); } catch (e) {}
+}
+async function writeCSVHTTP() {
+  if (!state.serverMode) return;
+  clearTimeout(writeTimer);
+  state.writing = true;
+  try {
+    await fetchDataFile(CSV_FILENAME, 'PUT', serializeCSV());
+    state.serverWritable = true;
+    state.lastWriteAt = new Date();
+    state.pendingWrite = false;
+    state.syncStatus = 'ok'; state.syncError = '';
+    if (state.emailsDirty) await writeEmailsHTTP();
+  } catch (e) {
+    state.serverWritable = false; // 服务器不支持 PUT：降级为只读同步
+  } finally {
+    state.writing = false;
+    updateSyncIndicator();
+  }
+}
+async function writeEmailsHTTP() {
+  try {
+    await fetchDataFile(EMAILS_FILENAME, 'PUT',
+      JSON.stringify({ lastFetchedAt: state.lastFetchedAt, emails: state.emails }, null, 2));
+    state.emailsDirty = false;
+  } catch (e) { /* 只读模式下邮件处理状态仅保留在本地 */ }
+}
+async function loadEmailsHTTP(force) {
+  if (!state.serverMode) return false;
+  const r = await fetchDataFile(EMAILS_FILENAME);
+  const lm = r.headers.get('Last-Modified') || '';
+  if (!force && lm && lm === state.httpMailLM) return false;
+  state.httpMailLM = lm;
+  const j = JSON.parse(await r.text());
+  state.emails = Array.isArray(j.emails) ? j.emails : [];
+  state.lastFetchedAt = j.lastFetchedAt || null;
+  return true;
+}
+async function checkExternalHTTP() {
+  if (!state.serverMode || state.writing || state.pendingWrite) return;
+  try {
+    let changed = false;
+    const r = await fetchDataFile(CSV_FILENAME);
+    const lm = r.headers.get('Last-Modified') || '';
+    if (!lm || lm !== state.httpCsvLM) {
+      state.httpCsvLM = lm;
+      state.lastReadAt = new Date();
+      const entries = rowsToEntries(parseCSV(await r.text()));
+      state.entries = mergeEntries(state.entries, entries, false);
+      persistLocal();
+      changed = true;
+    }
+    try { if (await loadEmailsHTTP(false)) changed = true; } catch (e) {}
+    if (changed) { render(); toast('已同步外部数据变更'); }
+  } catch (e) { /* 静默，下次再试 */ }
+}
+
+async function checkExternal() {
+  if (!state.syncEnabled || state.writing || state.pendingWrite) return;
+  try {
+    let changed = false;
+    const fh = await state.dirHandle.getFileHandle(CSV_FILENAME, { create: false });
+    const file = await fh.getFile();
+    if (file.lastModified > state.lastSyncedMtime) {
+      state.lastSyncedMtime = file.lastModified;
+      state.lastReadAt = new Date();
+      const entries = rowsToEntries(parseCSV(await file.text()));
+      state.entries = mergeEntries(state.entries, entries, false);
+      persistLocal();
+      changed = true;
+    }
+    if (await loadEmails(false)) changed = true;
+    if (changed) { render(); toast('已同步外部数据变更'); }
+  } catch (e) { /* 静默，下次再试 */ }
+}
+let extTimer = null;
+function scheduleExternalCheck() {
+  clearTimeout(extTimer);
+  extTimer = setTimeout(() => {
+    if (state.dirHandle) checkExternal();
+    else if (state.serverMode) checkExternalHTTP();
+  }, 800);
+}
+function flushPendingWrite() {
+  if (!state.pendingWrite) return;
+  if (state.dirHandle) writeCSVNow();
+  else if (state.serverMode) writeCSVHTTP();
+}
+function startWatchers() {
+  if (watchersStarted) return;
+  watchersStarted = true;
+  window.addEventListener('focus', scheduleExternalCheck);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) flushPendingWrite();
+    else scheduleExternalCheck();
+  });
+  /* 页面关闭/刷新前尽力冲刷未落盘变更 */
+  window.addEventListener('pagehide', flushPendingWrite);
+  /* 定时自动保存：本地缓存优先，每 60 秒把缓存中的变更自动保存到本地目录 */
+  setInterval(() => {
+    flushPendingWrite();
+    if (state.dirHandle) checkExternal();
+    else if (state.serverMode) checkExternalHTTP();
+  }, 60000);
+}
+async function enableSync() {
+  if (!window.showDirectoryPicker) { toast('当前浏览器不支持目录同步，请使用 Chrome / Edge', 'err'); return; }
+  try {
+    const handle = await window.showDirectoryPicker({ mode: 'readwrite' });
+    await activateSync(handle);
+    try { await idbSet('dirHandle', handle); } catch (e) {}
+    toast('数据同步已启用');
+  } catch (err) {
+    if (err.name !== 'AbortError') toast('启用失败：' + err.message, 'err');
+  }
+}
+async function reauth() {
+  try {
+    const p = await state.dirHandle.requestPermission({ mode: 'readwrite' });
+    if (p === 'granted') {
+      await activateSync(state.dirHandle);
+      try { await idbSet('dirHandle', state.dirHandle); } catch (e) {}
+      toast('已重新授权');
+    }
+  } catch (e) { toast('授权失败：' + e.message, 'err'); }
+}
+async function manualResync() {
+  if (!state.syncEnabled) return;
+  try {
+    if (state.dirHandle) {
+      await writeCSVNow();
+      await reloadFromFiles(false);
+    } else if (state.serverMode) {
+      await writeCSVHTTP();
+      await reloadFromHTTP();
+    } else return;
+    render();
+    toast('已重新同步');
+  } catch (e) {
+    state.syncStatus = 'error'; state.syncError = e.message || String(e);
+    render(); toast('同步失败：' + state.syncError, 'err');
+  }
+}
+function updateSyncIndicator() {
+  const el = $('#syncIndicator'); if (!el) return;
+  const dot = el.querySelector('.sync-dot');
+  const txt = el.querySelector('.sync-text');
+  let cls = '', text = '未启用同步';
+  if (state.syncStatus === 'ok') {
+    cls = 'ok';
+    const t = state.lastWriteAt || state.lastReadAt;
+    if (state.serverMode && !state.dirHandle) {
+      text = (state.serverWritable === false ? '只读同步 ./data' : '已同步 ./data') + (t ? ' ' + fmtDT(t) : '');
+    } else {
+      text = '已同步' + (t ? ' ' + fmtDT(t) : '');
+    }
+  }
+  else if (state.syncStatus === 'pending') { cls = 'pending'; text = '待重新授权'; }
+  else if (state.syncStatus === 'error') { cls = 'err'; text = '同步出错'; }
+  dot.className = 'sync-dot ' + cls;
+  txt.textContent = text;
+}
+
+/* ==================== 业务操作 ==================== */
+function changeStatus(id, status) {
+  const en = state.entries.find(x => x.id === id);
+  if (!en || en.status === status) return;
+  en.status = status;
+  en.updatedAt = nowStr();
+  en.notes = appendNote(en.notes, `${mmdd()} ${status}`);
+  saveAll(); render();
+}
+function markEmail(id, patch) {
+  const em = state.emails.find(x => x.id === id);
+  if (em) Object.assign(em, patch);
+  state.emailsDirty = true;
+}
+function mailCreate(emailId) {
+  const m = state.emails.find(x => x.id === emailId);
+  if (!m) return;
+  openEntryModal(null, { company: cleanCompanyName(m.fromName || m.from), source: '邮箱提取' });
+  modalContext = { emailId };
+}
+function openEntryModal(entry, prefill) {
+  modalContext = null;
+  prefill = prefill || {};
+  const isNew = !entry;
+  const d = entry ? { ...entry } : Object.assign({
+    id: genId('jm'), type: '互联网', company: '', department: '', position: '',
+    appliedAt: todayStr(), status: '简历筛', link: '', source: prefill.source || '手动创建',
+    notes: prefill.notes || '', createdAt: nowStr(), updatedAt: nowStr()
+  }, prefill);
+  const f = $('#entryForm'), el = f.elements;
+  f.dataset.id = d.id; f.dataset.source = d.source; f.dataset.createdAt = d.createdAt || nowStr();
+  el.type.value = d.type; el.company.value = d.company; el.department.value = d.department;
+  el.position.value = d.position; el.appliedAt.value = d.appliedAt; el.status.value = d.status;
+  el.link.value = d.link; el.notes.value = d.notes;
+  $('#modalTitle').textContent = isNew ? '新增投递' : '编辑投递';
+  $('#formMeta').textContent = `${d.source} · 创建于 ${d.createdAt || '—'}`;
+  $('#modalBackdrop').classList.add('open');
+  setTimeout(() => el.company.focus(), 60);
+}
+function closeModal() { $('#modalBackdrop').classList.remove('open'); modalContext = null; }
+function submitEntry(ev) {
+  ev.preventDefault();
+  const f = $('#entryForm'), el = f.elements;
+  const data = {
+    id: f.dataset.id, type: el.type.value, company: el.company.value.trim(),
+    department: el.department.value.trim(), position: el.position.value.trim(),
+    appliedAt: el.appliedAt.value || todayStr(), status: el.status.value,
+    link: el.link.value.trim(), source: f.dataset.source, notes: el.notes.value.trim(),
+    createdAt: f.dataset.createdAt || nowStr(), updatedAt: nowStr()
+  };
+  if (!data.company || !data.position) { toast('请填写企业名称和投递岗位', 'err'); return; }
+  const i = state.entries.findIndex(x => x.id === data.id);
+  if (i >= 0) {
+    const prev = state.entries[i];
+    if (prev.status !== data.status && prev.notes === data.notes) {
+      data.notes = appendNote(data.notes, `${mmdd()} ${data.status}`);
+    }
+    state.entries[i] = data;
+  } else {
+    state.entries.push(data);
+    if (modalContext && modalContext.emailId) {
+      markEmail(modalContext.emailId, { processed: true, matchedEntryId: data.id, matchedAction: '创建投递' });
+    }
+  }
+  closeModal();
+  saveAll(); render();
+  toast(i >= 0 ? '已保存' : '已新增投递');
+}
+function exportCSV() {
+  const blob = new Blob([serializeCSV()], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `jobmaster_data_${todayStr().replace(/-/g, '')}.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('已导出 CSV');
+}
+async function importCSV(file) {
+  if (!file) return;
+  try {
+    const entries = rowsToEntries(parseCSV(await file.text()));
+    if (!entries.length) { toast('文件中没有数据行', 'err'); return; }
+    state.entries = mergeEntries(state.entries, entries, true);
+    saveAll(); render();
+    toast(`已导入 ${entries.length} 条记录（按更新时间合并）`);
+  } catch (e) { toast('导入失败：' + e.message, 'err'); }
+}
+function computeStats() {
+  const byStatus = {};
+  state.entries.forEach(e => { byStatus[e.status] = (byStatus[e.status] || 0) + 1; });
+  const byType = {};
+  state.entries.forEach(e => { byType[e.type] = (byType[e.type] || 0) + 1; });
+  const weekAgo = new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
+  return {
+    total: state.entries.length,
+    byStatus, byType,
+    week: state.entries.filter(e => e.appliedAt >= weekAgo).length,
+    offers: byStatus['Offer'] || 0
+  };
+}
+
+/* ==================== 视图渲染 ==================== */
+function pageHead(eyebrow, title, desc, actionHTML) {
+  return `<div class="page-head">
+    <div>
+      <div class="page-eyebrow">${esc(eyebrow)}</div>
+      <div class="page-title">${esc(title)}</div>
+      <div class="page-desc">${desc}</div>
+    </div>
+    ${actionHTML || ''}
+  </div>`;
+}
+function filteredEntries() {
+  const q = ui.search.trim().toLowerCase();
+  return state.entries.filter(e =>
+    (!ui.typeFilter || e.type === ui.typeFilter) &&
+    (!ui.statusFilter || e.status === ui.statusFilter) &&
+    (!q || `${e.company} ${e.position} ${e.department}`.toLowerCase().includes(q))
+  ).sort((a, b) => (b.appliedAt || '').localeCompare(a.appliedAt || ''));
+}
+function statusSelectHTML(e) {
+  const c = STATUS_COLOR[e.status] || '#6B7280';
+  return `<select class="status-select" data-id="${esc(e.id)}" style="color:${c};background:${c}1A">` +
+    STATUSES.map(s => `<option value="${s}" ${s === e.status ? 'selected' : ''}>${s}</option>`).join('') + '</select>';
+}
+function listTableHTML() {
+  const list = filteredEntries();
+  if (!list.length) return `<div class="empty-state" style="padding:36px 20px"><p>没有符合条件的投递记录</p></div>`;
+  return `<div class="table-wrap"><table>
+    <thead><tr>
+      <th>类型</th><th>企业</th><th>部门</th><th>岗位</th><th>投递时间</th>
+      <th>当前进度</th><th>链接</th><th>备注</th><th style="width:76px">操作</th>
+    </tr></thead><tbody>
+    ${list.map(e => `<tr>
+      <td><span class="type-tag ${e.type === '央国企' ? 'soe' : ''}">${esc(e.type)}</span></td>
+      <td class="cell-strong">${esc(e.company)}</td>
+      <td class="cell-2">${esc(e.department) || '—'}</td>
+      <td>${esc(e.position)}</td>
+      <td class="cell-2" style="white-space:nowrap;font-family:var(--font-mono);font-size:12px">${esc(e.appliedAt)}</td>
+      <td>${statusSelectHTML(e)}</td>
+      <td>${e.link ? `<a class="row-link" href="${esc(e.link)}" target="_blank" rel="noopener" title="${esc(e.link)}">${I.external}</a>` : '<span class="cell-3">—</span>'}</td>
+      <td class="cell-2 notes-cell" title="${esc(e.notes)}">${esc(e.notes) || '—'}</td>
+      <td><div class="row-actions">
+        <button class="icon-btn" data-action="edit" data-id="${esc(e.id)}" title="编辑">${I.edit}</button>
+        <button class="icon-btn danger" data-action="delete" data-id="${esc(e.id)}" title="删除">${I.trash}</button>
+      </div></td>
+    </tr>`).join('')}
+    </tbody></table></div>`;
+}
+function emptyStateHTML() {
+  return `<div class="empty-state">
+    ${svg('<path d="M4.5 16.5c4-9 11-9 15 0"/><circle cx="12" cy="7" r="3.5"/>', 40)}
+    <h3>开始记录你的第一份投递</h3>
+    <p>点击下方按钮手动新增，或在 Trae 中对 AI 说「帮我同步今天的秋招邮件」由 Agent 自动录入</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-primary" data-action="add">${I.plus}新增投递</button>
+      ${state.syncEnabled ? '' : `<button class="btn" data-action="enable-sync">${I.folder}启用数据同步</button>`}
+    </div>
+  </div>`;
+}
+function viewList() {
+  const total = state.entries.length;
+  const hasFilter = ui.search || ui.typeFilter || ui.statusFilter;
+  const head = pageHead('TRACKER · ' + dateLine(), '投递列表',
+    `<span id="listCount">共 ${total} 条投递记录${hasFilter ? `，当前筛选 ${filteredEntries().length} 条` : ''}</span>`,
+    `<button class="btn btn-primary" data-action="add">${I.plus}新增投递</button>`);
+  if (!total && !hasFilter) return head + emptyStateHTML();
+  return head + `<div class="toolbar">
+    <div class="search-wrap">${I.search}<input class="input" id="searchInput" placeholder="搜索企业 / 岗位 / 部门" value="${esc(ui.search)}"></div>
+    <select class="select" id="typeFilter">
+      <option value="">全部类型</option>
+      ${TYPES.map(t => `<option ${ui.typeFilter === t ? 'selected' : ''}>${t}</option>`).join('')}
+    </select>
+    <select class="select" id="statusFilter">
+      <option value="">全部进度</option>
+      ${STATUSES.map(s => `<option ${ui.statusFilter === s ? 'selected' : ''}>${s}</option>`).join('')}
+    </select>
+    ${hasFilter ? `<button class="btn btn-sm" data-action="clear-filter">${I.x}清除筛选</button>` : ''}
+  </div>
+  <div id="listTableWrap">${listTableHTML()}</div>`;
+}
+function viewKanban() {
+  return pageHead('BOARD · ' + dateLine(), '进度看板', '拖拽卡片即可变更进度，点击卡片编辑详情',
+    `<button class="btn btn-primary" data-action="add">${I.plus}新增投递</button>`) +
+  `<div class="kanban">${STATUSES.map(st => {
+    const list = state.entries.filter(e => e.status === st)
+      .sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
+    return `<div class="kanban-col" data-status="${st}">
+      <div class="kanban-col-head">
+        <span class="col-title"><span class="dot" style="background:${STATUS_COLOR[st]}"></span>${st}</span>
+        <span class="col-count">${list.length}</span>
+      </div>
+      <div class="kanban-cards">
+        ${list.map(e => `<div class="k-card" draggable="true" data-id="${esc(e.id)}" data-action="edit" title="点击编辑，可拖拽变更进度">
+          <div class="k-company">${esc(e.company)}</div>
+          <div class="k-position">${esc(e.position)}${e.department ? ` · ${esc(e.department)}` : ''}</div>
+          <div class="k-meta"><span class="${e.type === '央国企' ? 'soe' : ''}" style="${e.type === '央国企' ? 'color:#2563EB' : ''}">${esc(e.type)}</span><span>${esc(e.appliedAt)}</span></div>
+        </div>`).join('') || '<div class="k-empty">暂无投递</div>'}
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+function syncGuideHTML(text) {
+  return `<div class="empty-state">
+    <h3 style="margin-top:0">尚未启用数据同步</h3>
+    <p>${esc(text)}</p>
+    <button class="btn btn-primary" data-action="enable-sync">${I.folder}启用数据同步</button>
+  </div>`;
+}
+function mailRowHTML(m) {
+  const entry = m.matchedEntryId ? state.entries.find(e => e.id === m.matchedEntryId) : null;
+  let foot;
+  if (m.processed) {
+    if (entry) foot = `<span class="badge" style="background:#ECFDF5;color:#059669">${I.check}${esc(entry.company)} · ${esc(entry.status)}</span>`;
+    else if (m.matchedAction === 'ignored') foot = `<span class="badge" style="background:#F3F4F6;color:#6B7280">已忽略</span>`;
+    else foot = `<span class="badge" style="background:#F3F4F6;color:#6B7280">已处理</span>`;
+  } else {
+    foot = `<button class="btn btn-primary btn-sm" data-action="mail-create" data-email="${esc(m.id)}">${I.plus}创建投递</button>
+            <button class="btn btn-sm" data-action="mail-ignore" data-email="${esc(m.id)}">忽略</button>`;
+  }
+  return `<div class="mail-row ${m.processed ? 'processed' : ''}">
+    <div class="mail-head"><span class="mail-subject">${m.processed ? '' : '<span class="mail-dot"></span>'}${esc(m.subject)}</span><span class="mail-date">${fmtDT(m.date)}</span></div>
+    <div class="mail-sub">${esc(m.fromName || '')}${m.from ? ` &lt;${esc(m.from)}&gt;` : ''} · ${esc(m.snippet || '')}</div>
+    <div class="mail-foot">${foot}</div>
+  </div>`;
+}
+function viewMail() {
+  const head = pageHead('INBOX · ' + dateLine(), '邮箱收件',
+    `Agent 运行邮箱同步脚本后，新邮件会出现在这里${state.lastFetchedAt ? ` · 最近拉取：${fmtDT(state.lastFetchedAt)}` : ''}`,
+    `<button class="btn" data-action="refresh-mail">${I.refresh}刷新</button>`);
+  if (!state.syncEnabled) return head + syncGuideHTML('启用数据同步后，可在这里查看从邮箱提取的秋招邮件，并一键生成投递记录');
+  const unprocessed = state.emails.filter(m => !m.processed).length;
+  let list = [...state.emails].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  if (ui.mailFilter === 'unprocessed') list = list.filter(m => !m.processed);
+  const filterBar = `<div class="toolbar">
+    <select class="select" id="mailFilter">
+      <option value="unprocessed" ${ui.mailFilter === 'unprocessed' ? 'selected' : ''}>待处理</option>
+      <option value="all" ${ui.mailFilter === 'all' ? 'selected' : ''}>全部</option>
+    </select>
+    <span class="page-desc" style="align-self:center">共 ${state.emails.length} 封，待处理 ${unprocessed} 封</span>
+  </div>`;
+  if (!list.length) return head + filterBar + `<div class="empty-state">${I.inbox}
+    <p>${state.emails.length ? '没有待处理的邮件' : '暂无邮件。在 Trae 中对 AI 说「帮我同步今天的秋招邮件」即可拉取'}</p></div>`;
+  return head + filterBar + `<div class="mail-list">${list.map(mailRowHTML).join('')}</div>`;
+}
+function syncStatusText() {
+  if (state.syncStatus === 'ok') {
+    if (state.serverMode && !state.dirHandle && state.serverWritable === false) return '<span style="color:#F59E0B">只读（HTTP）</span>';
+    return '<span style="color:var(--accent-hover)">正常</span>';
+  }
+  if (state.syncStatus === 'pending') return '<span style="color:#F59E0B">待授权</span>';
+  if (state.syncStatus === 'error') return '<span style="color:var(--danger)">出错</span>';
+  return '未启用';
+}
+function viewData() {
+  const s = computeStats();
+  return pageHead('OVERVIEW · ' + dateLine(), '数据管理', '浏览器本地数据与 data/ 目录文件的同步与备份') +
+  `<div class="stats-grid">
+    <div class="stat"><div class="num" data-n="${s.total}">0</div><div class="lbl">累计投递</div></div>
+    <div class="stat"><div class="num" data-n="${s.week}">0</div><div class="lbl">近 7 天新增</div></div>
+    <div class="stat hl"><div class="num" data-n="${s.offers}" style="color:var(--accent-hover)">0</div><div class="lbl">Offer</div></div>
+    ${STATUSES.filter(st => st !== 'Offer').map(st => `<div class="stat"><div class="num" data-n="${s.byStatus[st] || 0}">0</div><div class="lbl">${st}</div></div>`).join('')}
+    <div class="stat"><div class="num">${s.byType['互联网'] || 0} / ${s.byType['央国企'] || 0}</div><div class="lbl">互联网 / 央国企</div></div>
+  </div>
+  <div class="data-grid">
+    <div class="card">
+      <h3>${I.database}目录同步</h3>
+      <div class="kv"><span class="k">状态</span><span class="v">${syncStatusText()}</span></div>
+      <div class="kv"><span class="k">数据目录</span><span class="v">${state.dirHandle ? esc(state.dirName) : (state.serverMode ? './data（HTTP）' : '未配置')}</span></div>
+      <div class="kv"><span class="k">最近读取</span><span class="v">${state.lastReadAt ? fmtDT(state.lastReadAt) : '—'}</span></div>
+      <div class="kv"><span class="k">最近写入</span><span class="v">${state.lastWriteAt ? fmtDT(state.lastWriteAt) : '—'}</span></div>
+      ${state.syncError ? `<div class="kv"><span class="k">错误信息</span><span class="v" style="color:var(--danger)">${esc(state.syncError)}</span></div>` : ''}
+      <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+        ${state.syncEnabled
+          ? `<button class="btn" data-action="resync">${I.refresh}立即重新同步</button>
+             <button class="btn" data-action="enable-sync">${I.folder}${state.dirHandle ? '更换目录' : '切换为目录授权'}</button>`
+          : (state.dirHandle && state.syncStatus === 'pending')
+            ? `<button class="btn btn-primary" data-action="reauth">${I.folder}重新授权目录</button>`
+            : `<button class="btn btn-primary" data-action="enable-sync">${I.folder}启用数据同步</button>`}
+      </div>
+      <p class="hint">数据以浏览器本地缓存为准：所有变更先写入本地缓存确保不丢失，再由系统定时（每 60 秒、切走标签页、关闭页面前）自动保存到数据目录。目录同步默认通过 HTTP 对接项目根目录 ./data（写回需服务器支持 PUT，否则为只读）；也可授权 data/ 目录获得完整本地读写。仅 Chrome / Edge 支持目录授权。</p>
+    </div>
+    <div class="card">
+      <h3>${I.download}备份与恢复</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" data-action="export">${I.download}导出 CSV</button>
+        <button class="btn" data-action="import">${I.upload}导入 CSV</button>
+        <input type="file" id="importFile" accept=".csv,text/csv" hidden>
+      </div>
+      <p class="hint">导入按「更新时间较新者胜」行级合并；自动同步不可用时可作手动备份通道。导出文件带 BOM，可直接用 Excel 打开。</p>
+    </div>
+    <div class="card">
+      <h3>${I.trash}危险操作</h3>
+      <p class="hint" style="margin:0 0 12px">清空浏览器本地缓存。data/ 目录中的 CSV 不受影响，刷新后将从文件恢复。</p>
+      <button class="btn btn-danger-ghost" data-action="clear-cache">清空本地缓存</button>
+    </div>
+  </div>`;
+}
+function render() {
+  updateSyncIndicator();
+  $$('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.module === ui.module));
+  const c = $('#content');
+  if (ui.module === 'kanban') c.innerHTML = viewKanban();
+  else if (ui.module === 'mail') c.innerHTML = viewMail();
+  else if (ui.module === 'data') c.innerHTML = viewData();
+  else c.innerHTML = viewList();
+  c.classList.remove('anim'); void c.offsetWidth; c.classList.add('anim');
+  if (ui.module === 'data') animateCounts();
+}
+
+/* ==================== 事件绑定 ==================== */
+function buildNav() {
+  const items = [
+    ['list', I.list, '投递列表'],
+    ['kanban', I.kanban, '进度看板'],
+    ['mail', I.mail, '邮箱收件'],
+    ['data', I.database, '数据管理']
+  ];
+  $('#nav').innerHTML = items.map(([m, icon, label]) =>
+    `<button class="nav-item ${ui.module === m ? 'active' : ''}" data-module="${m}" title="${label}">${icon}<span class="label">${label}</span></button>`
+  ).join('');
+}
+function bindEvents() {
+  const content = $('#content');
+  /* 导航切换 */
+  $('#nav').addEventListener('click', e => {
+    const btn = e.target.closest('.nav-item');
+    if (!btn) return;
+    ui.module = btn.dataset.module;
+    persistUi(); render();
+  });
+  $('#syncIndicator').addEventListener('click', () => { ui.module = 'data'; persistUi(); render(); });
+  /* 侧栏折叠与拖宽：收起态隐藏箭头，点击品牌 Logo 复原 */
+  $('#collapseBtn').innerHTML = I.chevronsLeft;
+  $('#collapseBtn').addEventListener('click', () => {
+    ui.collapsed = !ui.collapsed; applySidebar(); persistUi();
+  });
+  $('#logoBox').addEventListener('click', () => {
+    if (!ui.collapsed) return;
+    ui.collapsed = false; applySidebar(); persistUi();
+  });
+  const sidebar = $('#sidebar');
+  let dragging = false;
+  $('#resizeHandle').addEventListener('mousedown', e => {
+    if (ui.collapsed) return;
+    dragging = true; document.body.style.cursor = 'col-resize'; e.preventDefault();
+  });
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    ui.width = Math.min(320, Math.max(180, e.clientX));
+    sidebar.style.width = ui.width + 'px';
+  });
+  document.addEventListener('mouseup', () => {
+    if (dragging) { dragging = false; document.body.style.cursor = ''; persistUi(); }
+  });
+  /* 内容区统一事件代理 */
+  content.addEventListener('click', async e => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    const act = btn.dataset.action, id = btn.dataset.id;
+    if (act === 'add') openEntryModal(null);
+    else if (act === 'edit') { const en = state.entries.find(x => x.id === id); if (en) openEntryModal(en); }
+    else if (act === 'delete') {
+      const en = state.entries.find(x => x.id === id);
+      if (en && window.confirm(`确定删除「${en.company} · ${en.position}」这条投递记录？`)) {
+        state.entries = state.entries.filter(x => x.id !== id);
+        saveAll(); render(); toast('已删除');
+      }
+    }
+    else if (act === 'clear-filter') { ui.search = ''; ui.typeFilter = ''; ui.statusFilter = ''; render(); }
+    else if (act === 'enable-sync') enableSync();
+    else if (act === 'reauth') reauth();
+    else if (act === 'resync') manualResync();
+    else if (act === 'export') exportCSV();
+    else if (act === 'import') $('#importFile').click();
+    else if (act === 'clear-cache') {
+      if (window.confirm('确定清空浏览器本地缓存？（data/ 目录中的 CSV 不受影响）')) {
+        localStorage.removeItem(LS_KEY); location.reload();
+      }
+    }
+    else if (act === 'refresh-mail') { await loadEmails(true); render(); }
+    else if (act === 'mail-create') mailCreate(btn.dataset.email);
+    else if (act === 'mail-ignore') {
+      markEmail(btn.dataset.email, { processed: true, matchedAction: 'ignored' });
+      saveAll(); render();
+    }
+  });
+  content.addEventListener('input', e => {
+    if (e.target.id === 'searchInput') {
+      ui.search = e.target.value;
+      const wrap = $('#listTableWrap');
+      if (wrap) wrap.innerHTML = listTableHTML();
+      const cnt = $('#listCount');
+      if (cnt) cnt.textContent = `共 ${state.entries.length} 条投递记录，当前筛选 ${filteredEntries().length} 条`;
+    }
+  });
+  content.addEventListener('change', e => {
+    if (e.target.id === 'typeFilter') { ui.typeFilter = e.target.value; render(); }
+    else if (e.target.id === 'statusFilter') { ui.statusFilter = e.target.value; render(); }
+    else if (e.target.id === 'mailFilter') { ui.mailFilter = e.target.value; render(); }
+    else if (e.target.matches('select.status-select')) changeStatus(e.target.dataset.id, e.target.value);
+    else if (e.target.id === 'importFile') { importCSV(e.target.files[0]); e.target.value = ''; }
+  });
+  /* 看板拖拽 */
+  content.addEventListener('dragstart', e => {
+    const card = e.target.closest('.k-card');
+    if (!card) return;
+    e.dataTransfer.setData('text/plain', card.dataset.id);
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  content.addEventListener('dragover', e => {
+    const col = e.target.closest('.kanban-col');
+    if (col) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; col.classList.add('drag-over'); }
+  });
+  content.addEventListener('dragleave', e => {
+    const col = e.target.closest('.kanban-col');
+    if (col && !col.contains(e.relatedTarget)) col.classList.remove('drag-over');
+  });
+  content.addEventListener('drop', e => {
+    const col = e.target.closest('.kanban-col');
+    if (!col) return;
+    e.preventDefault();
+    col.classList.remove('drag-over');
+    const id = e.dataTransfer.getData('text/plain');
+    if (id) changeStatus(id, col.dataset.status);
+  });
+  /* 模态框 */
+  $('#entryForm').addEventListener('submit', submitEntry);
+  $('#modalClose').innerHTML = I.x;
+  $('#modalClose').addEventListener('click', closeModal);
+  $('#entryForm [data-close]').addEventListener('click', closeModal);
+  $('#modalBackdrop').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+}
+function applySidebar() {
+  const sb = $('#sidebar');
+  sb.classList.toggle('collapsed', !!ui.collapsed);
+  sb.style.width = ui.collapsed ? '60px' : (ui.width || 228) + 'px';
+}
+
+/* ==================== 启动 ==================== */
+async function init() {
+  loadLocal();
+  loadUi();
+  buildNav();
+  $('#logoBox').innerHTML = I.logoMark;
+  applySidebar();
+  bindEvents();
+  render();
+  await initSync();
+}
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

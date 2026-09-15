@@ -1,0 +1,41 @@
+{
+  "lastFetchedAt": "2026-09-15T20:38:07",
+  "emails": [
+    {
+      "id": "em_1789475867315_6535",
+      "messageId": "<7eba12ee-df59-4d09-86dc-24d409c6ec12@alibaba.com>",
+      "from": "alert@amail.aminer.cn",
+      "fromName": "AMiner",
+      "subject": "AMiner 每日学术日报 | 2026-09-15",
+      "date": "2026-09-15T13:11:36+08:00",
+      "snippet": "<html> <head> <meta charset=\"utf-8\"> </head> <body style=\"font-family: Microsoft YaHei, Helvetica, Arial, sans-serif; color:#2D3748;\"> <div style=\"max-width: 700px; margin: 0 auto; padding: 20px;\"> <div style=\"text-align:center; margin-bottom:8px;\"> <img src=\"https://fileserver.aminer.cn/sys/aminer/",
+      "processed": true,
+      "matchedEntryId": null,
+      "matchedAction": "ignored"
+    },
+    {
+      "id": "em_1789475867416_7e44",
+      "messageId": "<1402005259.19200299.1789474898860.JavaMail.member@service.netease.com>",
+      "from": "member@service.netease.com",
+      "fromName": "网易邮箱安全管家",
+      "subject": "登录安全，也能按你的习惯来",
+      "date": "2026-09-15T20:21:40+08:00",
+      "snippet": "<!doctype html> <html lang=\"zh-CN\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:v=\"urn:schemas-microsoft-com:vml\"> <head> <meta content=\"address=no\" name=\"format-detection\"> <meta content=\"date=no\" name=\"format-detection\"> <meta content=\"email=no\" name",
+      "processed": true,
+      "matchedEntryId": null,
+      "matchedAction": "ignored"
+    },
+    {
+      "id": "em_1789475867516_6b52",
+      "messageId": "<1709008478.19200300.1789474898863.JavaMail.safe@service.netease.com>",
+      "from": "safe@service.netease.com",
+      "fromName": "网易邮箱账号安全",
+      "subject": "新设备登录提醒",
+      "date": "2026-09-15T20:21:43+08:00",
+      "snippet": "<!doctype html> <html lang=\"zh-CN\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:v=\"urn:schemas-microsoft-com:vml\"> <head> <meta content=\"address=no\" name=\"format-detection\"> <meta content=\"date=no\" name=\"format-detection\"> <meta content=\"email=no\" name",
+      "processed": true,
+      "matchedEntryId": null,
+      "matchedAction": "ignored"
+    }
+  ]
+}
