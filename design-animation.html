@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job-Master · 双模式设计思路动画</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23191918'/%3E%3Cpath d='M9 16.5l5 5L23 11' stroke='%23fff' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#F6F6F4; --panel:#FFFFFF; --line:#E9E9E4; --ink:#191918;
+  --emerald:#10B981; --emerald-soft:rgba(16,185,129,.12); --muted:#8A8A85;
+  --serif:Georgia,"Times New Roman","Songti SC",SimSun,serif;
+  --mono:ui-monospace,SFMono-Regular,"JetBrains Mono",Consolas,"Courier New",monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--sans)}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px 28px}
+
+/* ---------- header ---------- */
+header{width:100%;max-width:1240px;text-align:center;margin-bottom:26px}
+.brand-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px}
+.logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#2b2b29,#191918);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(25,25,24,.25);transition:transform .25s}
+.logo:hover{transform:scale(1.06)}
+.logo svg{width:18px;height:18px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--muted)}
+h1{font-family:var(--serif);font-size:clamp(24px,3.4vw,34px);font-weight:600;letter-spacing:.02em;margin:6px 0 10px}
+h1 .em{color:var(--emerald)}
+.sub{font-size:13.5px;color:var(--muted);max-width:760px;margin:0 auto;line-height:1.8}
+.sub b{color:var(--ink);font-weight:600}
+.mode-pills{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.pill{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--muted)}
+.pill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+/* ---------- stage ---------- */
+.stage{position:relative;width:100%;max-width:1240px;display:grid;grid-template-columns:1fr 1.15fr .95fr 1.15fr;gap:16px;align-items:stretch}
+.device{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 1px 3px rgba(25,25,24,.05),0 12px 32px -18px rgba(25,25,24,.18);padding:14px;display:flex;flex-direction:column;min-height:330px;transition:box-shadow .4s,transform .4s,opacity .5s}
+.device.hot{box-shadow:0 0 0 2px var(--emerald-soft),0 1px 3px rgba(25,25,24,.05),0 16px 40px -18px rgba(16,185,129,.35);transform:translateY(-3px)}
+.device-head{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;padding-bottom:10px;border-bottom:1px dashed var(--line);margin-bottom:12px}
+.device-head .dot{width:7px;height:7px;border-radius:50%;background:var(--emerald);box-shadow:0 0 0 3px var(--emerald-soft)}
+.device-head .dot.idle{background:#C9C9C3;box-shadow:none}
+
+/* phone */
+.wx-bubble{max-width:88%;padding:9px 12px;border-radius:12px;font-size:12.5px;line-height:1.65;margin-bottom:10px;opacity:0;transform:translateY(8px) scale(.96);transition:opacity .45s,transform .45s cubic-bezier(.34,1.56,.64,1)}
+.wx-bubble.show{opacity:1;transform:none}
+.wx-in{background:#F1F1EC;border:1px solid var(--line);border-top-left-radius:4px}
+.wx-in .t{display:block;font-size:10.5px;color:var(--muted);font-family:var(--mono);margin-bottom:3px}
+.wx-out{background:var(--emerald);color:#fff;margin-left:auto;border-bottom-right-radius:4px;box-shadow:0 4px 12px -4px rgba(16,185,129,.5)}
+.wx-out .t{display:block;font-size:10.5px;color:rgba(255,255,255,.75);font-family:var(--mono);margin-bottom:3px}
+.wx-sender{display:flex;align-items:center;gap:6px;margin:2px 0 8px;opacity:0;transition:opacity .4s}
+.wx-sender.show{opacity:1}
+.avatar{width:20px;height:20px;border-radius:5px;background:linear-gradient(135deg,#D8D8D2,#BFBFB8);font-size:10px;display:flex;align-items:center;justify-content:center;color:#fff}
+.wx-sender span{font-size:11px;color:var(--muted)}
+
+/* agent */
+.term{font-family:var(--mono);font-size:11.5px;line-height:1.9;background:#FBFBF9;border:1px solid var(--line);border-radius:10px;padding:12px;flex:1}
+.term .bar{display:flex;gap:5px;margin-bottom:9px}
+.term .bar i{width:8px;height:8px;border-radius:50%;background:#E2E2DC;display:inline-block}
+.term .bar i:first-child{background:#F4B8B0}
+.log{color:#6E6E68;white-space:pre-wrap;word-break:break-all;opacity:0;transform:translateX(-6px);transition:opacity .4s,transform .4s}
+.log.show{opacity:1;transform:none}
+.log .p{color:var(--emerald);font-weight:700}
+.log.ok{color:var(--ink)}
+.log.ok .p{color:var(--emerald)}
+.cursor{display:inline-block;width:7px;height:13px;background:var(--emerald);vertical-align:-2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* data hub */
+.hub{border:1.5px solid var(--emerald);background:linear-gradient(180deg,#FFFFFF,var(--emerald-soft));justify-content:flex-start}
+.hub-ring{position:absolute;inset:-2px;border-radius:18px;pointer-events:none;opacity:0}
+.hub-ring.flash{animation:ring 1.2s ease-out}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(16,185,129,.45)}100%{box-shadow:0 0 0 26px rgba(16,185,129,0)}}
+.csvfile{font-family:var(--mono);font-size:12px;background:var(--ink);color:#F6F6F4;border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px;box-shadow:0 8px 20px -8px rgba(25,25,24,.5)}
+.csvfile svg{width:14px;height:14px;flex:none}
+.truth{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--emerald);margin:12px 0 10px;text-align:center}
+.chips{display:flex;flex-direction:column;gap:8px;flex:1}
+.chip{font-size:12px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px;opacity:0;transform:scale(.92);transition:opacity .4s,transform .4s cubic-bezier(.34,1.56,.64,1)}
+.chip.show{opacity:1;transform:none}
+.chip .co{font-weight:600;font-size:12px}
+.chip .st{font-family:var(--mono);font-size:10.5px;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.st.s0{background:#EFEFEB;color:#6E6E68}
+.st.s1{background:var(--emerald-soft);color:#0B815A;border:1px solid rgba(16,185,129,.35)}
+.st.s2{background:rgba(16,185,129,.2);color:#065F46}
+.chip.pulse{animation:chipPulse .8s ease}
+@keyframes chipPulse{40%{box-shadow:0 0 0 4px var(--emerald-soft);border-color:var(--emerald)}}
+.syncnote{margin-top:10px;font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center;letter-spacing:.06em}
+
+/* kanban */
+.kanban{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex:1}
+.kcol{background:#FBFBF9;border:1px solid var(--line);border-radius:10px;padding:8px;display:flex;flex-direction:column;min-height:200px;transition:background .3s,border-color .3s}
+.kcol.lit{background:var(--emerald-soft);border-color:rgba(16,185,129,.4)}
+.kcol h4{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--muted);text-align:center;margin-bottom:8px;font-weight:600}
+.kcard{background:#fff;border:1px solid var(--line);border-radius:9px;padding:8px;font-size:11.5px;box-shadow:0 2px 6px -2px rgba(25,25,24,.15);opacity:0;transform:scale(.9);transition:opacity .4s,transform .4s cubic-bezier(.34,1.56,.64,1),box-shadow .3s}
+.kcard.show{opacity:1;transform:none}
+.kcard .co{font-weight:600;display:block}
+.kcard .po{color:var(--muted);font-size:10.5px}
+.kcard.move{animation:cardMove .7s cubic-bezier(.34,1.3,.64,1)}
+@keyframes cardMove{35%{box-shadow:0 10px 24px -6px rgba(16,185,129,.45);border-color:var(--emerald)}}
+.kdrag{margin-top:auto;text-align:center;font-family:var(--mono);font-size:9.5px;color:#C9C9C3;letter-spacing:.1em;padding-top:8px}
+
+/* ---------- packet ---------- */
+.packet{position:fixed;z-index:50;left:0;top:0;display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10.5px;color:#fff;background:var(--ink);padding:5px 11px;border-radius:999px;box-shadow:0 6px 18px -4px rgba(25,25,24,.55);opacity:0;pointer-events:none;white-space:nowrap}
+.packet::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--emerald);box-shadow:0 0 0 3px rgba(16,185,129,.3)}
+.packet.fly{transition:transform var(--dur,.95s) cubic-bezier(.5,.05,.3,1),opacity .25s}
+
+/* ---------- footer ---------- */
+footer{width:100%;max-width:1240px;margin-top:20px;display:flex;flex-direction:column;gap:12px}
+.caption-box{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 18px;box-shadow:0 1px 3px rgba(25,25,24,.05)}
+.caption-dot{width:9px;height:9px;border-radius:50%;background:var(--emerald);flex:none;animation:capPulse 1.6s ease infinite}
+@keyframes capPulse{50%{box-shadow:0 0 0 5px var(--emerald-soft)}}
+.caption{font-family:var(--mono);font-size:12.5px;letter-spacing:.05em;color:var(--ink)}
+.caption b{color:var(--emerald);font-weight:700}
+.controls{display:flex;align-items:center;justify-content:center;gap:14px}
+button#toggle{font-family:var(--mono);font-size:12px;letter-spacing:.1em;background:var(--ink);color:#fff;border:none;border-radius:999px;padding:9px 22px;cursor:pointer;transition:transform .15s,opacity .2s;box-shadow:0 4px 14px -4px rgba(25,25,24,.5)}
+button#toggle:hover{transform:scale(1.04)}
+button#toggle:active{transform:scale(.97)}
+.loop-note{font-family:var(--mono);font-size:10.5px;color:var(--muted);letter-spacing:.14em}
+.foot-note{margin-top:6px;text-align:center;font-size:12px;color:var(--muted);line-height:1.8}
+.foot-note a{color:var(--emerald);text-decoration:none;font-weight:600}
+.foot-note a:hover{text-decoration:underline}
+
+.dyn{transition:opacity .5s}
+.stage.fadeout .dyn{opacity:0!important}
+
+/* ---------- responsive ---------- */
+@media (max-width:1020px){
+  .stage{grid-template-columns:1fr 1fr;grid-auto-rows:auto}
+  .device{min-height:280px}
+}
+@media (max-width:560px){
+  .stage{grid-template-columns:1fr}
+  body{padding:26px 12px 22px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01s!important;transition-duration:.01s!important}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand-row">
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="eyebrow">JOB-MASTER · DESIGN MOTION</div>
+  </div>
+  <h1>手机下单 · Agent 打工 · 浏览器验收</h1>
+  <p class="sub">「<b>普通模式</b>」数据只存在你的浏览器与本地 CSV，打开即用；「<b>TRAE 模式</b>」让 AI Agent 与浏览器<b>共管同一份数据</b>——下面 20 秒，演示 TRAE 模式的一天。</p>
+  <div class="mode-pills">
+    <span class="pill">普通模式 · 手动管理</span>
+    <span class="pill on">TRAE 模式 · Agent 共管</span>
+  </div>
+</header>
+
+<main class="stage" id="stage">
+
+  <!-- 手机 -->
+  <section class="device" id="devPhone">
+    <div class="device-head"><span class="dot idle" id="dotPhone"></span>手机 · 碎片时间</div>
+    <div class="wx-sender" id="wxSender"><span class="avatar">群</span><span>秋招信息互助群</span></div>
+    <div class="wx-bubble wx-in" id="wxMsg">XX集团 2026 全球校园招聘启动！<br>管培生（上海/杭州）· 专业不限</div>
+    <div class="wx-bubble wx-out" id="wxTask">帮我记为待投递 → TRAE</div>
+  </section>
+
+  <!-- Agent -->
+  <section class="device" id="devAgent">
+    <div class="device-head"><span class="dot idle" id="dotAgent"></span>TraeCode Agent · 电脑端</div>
+    <div class="term">
+      <div class="bar"><i></i><i></i><i></i></div>
+      <div class="log" id="log1"><span class="p">&gt;</span> 收到手机端任务：从推文创建待投递</div>
+      <div class="log" id="log2"><span class="p">&gt;</span> 解析完成：企业=XX集团 · 岗位=管培生 · 地点=上海</div>
+      <div class="log ok" id="log3"><span class="p">&gt;</span> 已写入 jobmaster_data.csv ✔ <span class="cursor" id="cursor"></span></div>
+      <div class="log ok" id="log4"><span class="p">&gt;</span> 邮件「XX集团笔试通知」→ 状态=笔试筛 ✔</div>
+    </div>
+  </section>
+
+  <!-- 数据中枢 -->
+  <section class="device hub" id="devData">
+    <div class="hub-ring" id="hubRing"></div>
+    <div class="device-head"><span class="dot"></span>data/ · 唯一真相</div>
+    <div class="csvfile">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M6 3h9l4 4v14H6z" stroke="#10B981" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 3v5h5" stroke="#10B981" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      jobmaster_data.csv
+    </div>
+    <div class="truth">SINGLE SOURCE OF TRUTH</div>
+    <div class="chips" id="chips">
+      <div class="chip" id="chip1"><span class="co">XX集团 · 管培生</span><span class="st s0" id="chipSt">待投递</span></div>
+    </div>
+    <div class="syncnote">60s 定时 / 切页 / 关页前 自动落盘<br>焦点回归 · 行级合并</div>
+  </section>
+
+  <!-- 浏览器看板 -->
+  <section class="device" id="devWeb">
+    <div class="device-head"><span class="dot idle" id="dotWeb"></span>浏览器 · 专注时间</div>
+    <div class="kanban">
+      <div class="kcol" id="kcol0"><h4>待投递</h4><div class="kcard" id="kcard"><span class="co">XX集团</span><span class="po">管培生 · 上海</span></div><div class="kdrag">DRAG →</div></div>
+      <div class="kcol" id="kcol1"><h4>笔试筛</h4></div>
+      <div class="kcol" id="kcol2"><h4>OFFER</h4></div>
+    </div>
+  </section>
+
+</main>
+
+<div class="packet" id="packet">同步</div>
+
+<footer>
+  <div class="caption-box">
+    <span class="caption-dot"></span>
+    <div class="caption" id="caption">正在载入动画…</div>
+  </div>
+  <div class="controls">
+    <button id="toggle">暂停</button>
+    <span class="loop-note">AUTO LOOP · 自动循环</span>
+  </div>
+  <p class="foot-note">普通模式无需配置：数据仅保存在你的浏览器与本地 CSV。<br>TRAE 模式完整教程见 <a href="https://github.com/luoqianshi/Oh-My-Jobs-Master#readme" target="_blank" rel="noopener">GitHub README</a> · <a href="index.html" target="_blank" rel="noopener">打开工作台</a></p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  var packet = $("packet"), caption = $("caption"), stage = $("stage"), toggle = $("toggle");
+
+  var running = false, paused = false, gen = 0;
+
+  function sleep(ms){
+    return new Promise(function(res){
+      var left = ms;
+      var iv = setInterval(function(){
+        if(!paused){ left -= 100; if(left <= 0){ clearInterval(iv); res(); } }
+      }, 100);
+    });
+  }
+
+  function captionSet(html){ caption.innerHTML = html; }
+
+  function hot(id, on){
+    var el = $(id);
+    el.classList[on ? "add" : "remove"]("hot");
+    var dot = el.querySelector(".device-head .dot");
+    if(dot && dot.classList.contains("idle")) dot.classList[on ? "remove" : "add"]("idle");
+  }
+
+  /* 飞行数据包：从 from 元素中心飞到 to 元素中心 */
+  function fly(fromEl, toEl, label, dur){
+    return new Promise(function(res){
+      var a = fromEl.getBoundingClientRect(), b = toEl.getBoundingClientRect();
+      var ax = a.left + a.width/2,  ay = a.top + a.height/2;
+      var bx = b.left + b.width/2,  by = b.top + b.height/2;
+      packet.textContent = label || "同步";
+      packet.style.setProperty("--dur", (dur||950)+"ms");
+      packet.style.transition = "none";
+      packet.style.transform = "translate(" + ax + "px," + ay + "px) translate(-50%,-50%)";
+      packet.style.opacity = "1";
+      packet.offsetWidth; /* reflow */
+      packet.classList.add("fly");
+      packet.style.transform = "translate(" + bx + "px," + by + "px) translate(-50%,-50%)";
+      setTimeout(function(){
+        packet.style.opacity = "0";
+        setTimeout(function(){ packet.classList.remove("fly"); res(); }, 260);
+      }, dur || 950);
+    });
+  }
+
+  function show(el){ el.classList.add("show"); }
+  function hide(el){ el.classList.remove("show"); }
+
+  /* ---------- 一次完整循环 ---------- */
+  async function playOnce(myGen){
+    var phone = $("devPhone"), agent = $("devAgent"), data = $("devData"), web = $("devWeb");
+    var kcard = $("kcard");
+
+    /* STEP 01 碎片时间刷到推文 */
+    captionSet("<b>STEP 01</b> · 碎片时间：微信群刷到一条秋招推文");
+    hot("devPhone", true); show($("wxSender"));
+    await sleep(500); show($("wxMsg"));
+    await sleep(2400);
+
+    if(stale(myGen)) return;
+    /* STEP 02 一句话派活 */
+    captionSet("<b>STEP 02</b> · 一句话派活：转发给手机端 TRAE");
+    show($("wxTask"));
+    await sleep(2400);
+
+    if(stale(myGen)) return;
+    /* STEP 03 Agent 解析 */
+    captionSet("<b>STEP 03</b> · 电脑端 TraeCode Agent 自动解析推文");
+    hot("devPhone", false); hot("devAgent", true);
+    await fly($("wxTask"), agent, "推文任务");
+    show($("log1")); await sleep(1100); show($("log2")); await sleep(1200);
+
+    if(stale(myGen)) return;
+    /* STEP 04 写入唯一真相 */
+    captionSet("<b>STEP 04</b> · 写入唯一真相：data/jobmaster_data.csv");
+    show($("log3"));
+    await fly(agent, data, "新增待投递");
+    hot("devAgent", false); hot("devData", true);
+    show($("chip1")); flashRing();
+    await sleep(1800);
+
+    if(stale(myGen)) return;
+    /* STEP 05 看板就绪 */
+    captionSet("<b>STEP 05</b> · 专注时间：打开浏览器看板，新投递已就位");
+    await fly(data, web, "同步 → 看板");
+    hot("devData", false); hot("devWeb", true);
+    $("kcol0").classList.add("lit"); show(kcard);
+    await sleep(2000);
+
+    if(stale(myGen)) return;
+    /* STEP 06 拖拽投递 */
+    captionSet("<b>STEP 06</b> · 拖拽卡片：待投递 → 笔试筛（简历已投出）");
+    await sleep(500);
+    $("kcol0").classList.remove("lit"); $("kcol1").classList.add("lit");
+    kcard.classList.add("move");
+    $("kcol1").appendChild(kcard);
+    await sleep(1900);
+
+    if(stale(myGen)) return;
+    /* STEP 07 浏览器落盘 */
+    captionSet("<b>STEP 07</b> · 浏览器改动自动落盘：60 秒内写回 data/");
+    hot("devWeb", false); hot("devData", true);
+    await fly(web, data, "60s 落盘");
+    $("chipSt").textContent = "笔试筛"; $("chipSt").className = "st s1";
+    pulseChip(); flashRing();
+    await sleep(1700);
+
+    if(stale(myGen)) return;
+    /* STEP 08 Agent 处理邮件 */
+    captionSet("<b>STEP 08</b> · Agent 识别邮箱里的笔试通知，自动更新进度");
+    hot("devData", false); hot("devAgent", true);
+    show($("log4"));
+    await fly(agent, data, "状态更新");
+    $("chipSt").textContent = "笔试筛 ✔"; $("chipSt").className = "st s2";
+    pulseChip(); flashRing();
+    await sleep(1800);
+
+    if(stale(myGen)) return;
+    /* STEP 09 双向合并 */
+    captionSet("<b>STEP 09</b> · 打开页面自动合并：浏览器与 Agent 共享同一份真相");
+    hot("devAgent", false); hot("devWeb", true); hot("devData", true);
+    kcard.classList.add("move");
+    await sleep(2200);
+
+    if(stale(myGen)) return;
+    /* LOOP 尾声 */
+    captionSet("<b>LOOP</b> · 一天循环往复，秋招进度永远最新");
+    await sleep(1800);
+
+    if(stale(myGen)) return;
+    stage.classList.add("fadeout");
+    await sleep(650);
+    reset();
+    stage.classList.remove("fadeout");
+    await sleep(350);
+  }
+
+  function stale(g){ return g !== gen; }
+
+  function pulseChip(){
+    var c = $("chip1");
+    c.classList.remove("pulse"); c.offsetWidth; c.classList.add("pulse");
+  }
+  function flashRing(){
+    var r = $("hubRing");
+    r.classList.remove("flash"); r.offsetWidth; r.classList.add("flash");
+  }
+
+  function reset(){
+    ["wxSender","wxMsg","wxTask","log1","log2","log3","log4","chip1"].forEach(function(id){ hide($(id)); });
+    var kcard = $("kcard");
+    $("kcol0").appendChild(kcard);
+    kcard.classList.remove("show","move");
+    $("kcol0").classList.remove("lit"); $("kcol1").classList.remove("lit");
+    $("chipSt").textContent = "待投递"; $("chipSt").className = "st s0";
+    ["devPhone","devAgent","devWeb","devData"].forEach(function(id){ hot(id, false); });
+  }
+
+  async function loop(){
+    var myGen = gen;
+    running = true;
+    while(!stale(myGen)){
+      await playOnce(myGen);
+      if(stale(myGen)) return;
+      await sleep(400);
+    }
+  }
+
+  toggle.addEventListener("click", function(){
+    paused = !paused;
+    toggle.textContent = paused ? "播放" : "暂停";
+  });
+
+  window.addEventListener("resize", function(){
+    /* 尺寸变化时中断当前飞行，直接重开一轮 */
+    if(running){ gen++; packet.style.opacity = "0"; reset(); loop(); }
+  });
+
+  reset();
+  loop();
+})();
+</script>
+</body>
+</html>
