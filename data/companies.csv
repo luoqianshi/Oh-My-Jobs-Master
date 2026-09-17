@@ -1,0 +1,418 @@
+﻿序号,公司名称,招聘链接,所属类型,数据来源
+1,腾讯社招,https://careers.tencent.com,互联网大厂,大厂公司区·秋招信息源
+2,腾讯校招,https://join.qq.com,互联网大厂,大厂公司区·秋招信息源
+3,阿里巴巴,https://talent.alibaba.com,互联网大厂,大厂公司区·秋招信息源
+4,阿里云招聘,https://careers.aliyun.com,互联网大厂,大厂公司区·秋招信息源
+5,蚂蚁集团,https://talent.antgroup.com,互联网大厂,大厂公司区·秋招信息源
+6,字节跳动,https://jobs.bytedance.com,互联网大厂,大厂公司区·秋招信息源
+7,百度,https://talent.baidu.com,互联网大厂,大厂公司区·秋招信息源
+8,京东社招,https://zhaopin.jd.com,互联网大厂,大厂公司区·秋招信息源
+9,京东校招,https://campus.jd.com,互联网大厂,大厂公司区·秋招信息源
+10,美团,https://zhaopin.meituan.com,互联网大厂,大厂公司区·秋招信息源
+11,滴滴出行,https://talent.didiglobal.com,互联网大厂,大厂公司区·秋招信息源
+12,小米集团,https://hr.xiaomi.com,互联网大厂,大厂公司区·秋招信息源
+13,快手,https://zhaopin.kuaishou.cn,互联网大厂,大厂公司区·秋招信息源
+14,网易,https://campus.163.com,互联网大厂,大厂公司区·秋招信息源
+15,拼多多,https://careers.pddglobalhr.com,互联网大厂,大厂公司区·秋招信息源
+16,小红书,https://job.xiaohongshu.com,互联网大厂,大厂公司区·秋招信息源
+17,携程,https://job.ctrip.com,互联网大厂,大厂公司区·秋招信息源
+18,贝壳找房,https://campus.ke.com,互联网大厂,大厂公司区·秋招信息源
+19,知乎,https://careers.zhihu.com,互联网大厂,大厂公司区·秋招信息源
+20,B 站（哔哩哔哩）,https://hr.bilibili.com,互联网大厂,大厂公司区·秋招信息源
+21,搜狐,https://hr.sohu.com,互联网大厂,大厂公司区·秋招信息源
+22,新浪,https://hr.sina.com.cn,互联网大厂,大厂公司区·秋招信息源
+23,奇安信（360）,https://hr.360.cn,互联网大厂,大厂公司区·秋招信息源
+24,去哪儿网,https://job.qunar.com,互联网大厂,大厂公司区·秋招信息源
+25,猿辅导,https://hr.yuanfudao.com,互联网大厂,大厂公司区·秋招信息源
+26,米哈游（原神）,https://campus.mihoyo.com,互联网大厂,大厂公司区·秋招信息源
+27,叠纸游戏,https://career.papegames.com/campus/position/list,互联网大厂,大厂公司区·秋招信息源
+28,莉莉丝游戏,https://jobs.lilith.com,互联网大厂,大厂公司区·秋招信息源
+29,完美世界,https://recruit.games.wanmei.com/,互联网大厂,大厂公司区·秋招信息源
+30,畅游,https://campus.changyou.com,互联网大厂,大厂公司区·秋招信息源
+31,心动公司,https://www.xd.com/hr/,互联网大厂,大厂公司区·秋招信息源
+32,鹰角网络,https://campus.hypergryph.com,互联网大厂,大厂公司区·秋招信息源
+33,网易游戏,https://game.campus.163.com,互联网大厂,大厂公司区·秋招信息源
+34,阿里达摩院,https://damo.alibaba.com/careers,互联网大厂,大厂公司区·秋招信息源
+35,阿里云智能,https://careers.aliyun.com,互联网大厂,大厂公司区·秋招信息源
+36,腾讯云,https://join.tencent-cloud.com,互联网大厂,大厂公司区·秋招信息源
+37,火山引擎（字节云）,https://jobs.bytedance.com/campus,互联网大厂,大厂公司区·秋招信息源
+38,百度智能云,https://talent.baidu.com,互联网大厂,大厂公司区·秋招信息源
+39,金山云,https://campus.ksyun.com,互联网大厂,大厂公司区·秋招信息源
+40,用友网络,http://career.yonyou.com,互联网大厂,大厂公司区·秋招信息源
+41,金蝶软件,https://campus.51job.com/kingdee/,互联网大厂,大厂公司区·秋招信息源
+42,深信服科技,https://hr.sangfor.com,互联网大厂,大厂公司区·秋招信息源
+43,启明星辰,https://venustech2.zhiye.com/campus/jobs,互联网大厂,大厂公司区·秋招信息源
+44,天融信,https://topsec.zhiye.com/,互联网大厂,大厂公司区·秋招信息源
+45,商汤科技,https://www.sensetime.com/careers,互联网大厂,大厂公司区·秋招信息源
+46,旷视科技,https://www.megvii.com/careers,互联网大厂,大厂公司区·秋招信息源
+47,云从科技,http://campus.cloudwalk.cn/,互联网大厂,大厂公司区·秋招信息源
+48,依图科技,https://www.yitutech.com/join,互联网大厂,大厂公司区·秋招信息源
+49,智谱 AI,https://www.zhipuai.cn/career,互联网大厂,大厂公司区·秋招信息源
+50,百川智能,https://campus.baichuan-inc.com/,互联网大厂,大厂公司区·秋招信息源
+51,字节跳动朝夕光年（游戏）,https://jobs.bytedance.com/campus,互联网大厂,大厂公司区·秋招信息源
+52,贝壳租房链家总部,https://campus.ke.com,互联网大厂,大厂公司区·秋招信息源
+53,同程旅行,http://join.ly.com,互联网大厂,大厂公司区·秋招信息源
+54,飞猪旅行,https://campus.alibaba.com,互联网大厂,大厂公司区·秋招信息源
+55,哈啰出行,https://careers.hellobike.com,互联网大厂,大厂公司区·秋招信息源
+56,闪送,https://www.ishansong.com/recruit,互联网大厂,大厂公司区·秋招信息源
+57,极兔速递,https://www.jtexpress.com.cn/recruit,互联网大厂,大厂公司区·秋招信息源
+58,小红书商业化,https://job.xiaohongshu.com,互联网大厂,大厂公司区·秋招信息源
+59,斗鱼直播,https://campus.douyu.com,互联网大厂,大厂公司区·秋招信息源
+60,B 站游戏分部,https://campus.bilibili.com,互联网大厂,大厂公司区·秋招信息源
+61,脉脉,https://maimai.zhiye.com,互联网大厂,大厂公司区·秋招信息源
+62,虎嗅,mailto:jobs@huxiu.com,互联网大厂,大厂公司区·秋招信息源
+63,36氪,https://zhaopin.36kr.com,互联网大厂,大厂公司区·秋招信息源
+64,荔枝,https://jobs.lizhiinc.com,互联网大厂,大厂公司区·秋招信息源
+65,喜马拉雅,https://jobs.ximalaya.com,互联网大厂,大厂公司区·秋招信息源
+66,爱奇艺,https://campus.iqiyi.com,互联网大厂,大厂公司区·秋招信息源
+67,优酷,https://campus.alibaba.com,互联网大厂,大厂公司区·秋招信息源
+68,芒果TV,https://app.mokahr.com/campus-recruitment/mgtv/44490,互联网大厂,大厂公司区·秋招信息源
+69,搜狐视频,https://app.mokahr.com/su/ozxnwp,互联网大厂,大厂公司区·秋招信息源
+70,作业帮,https://app.mokahr.com/campus-recruitment/zuoyebang/150514,互联网大厂,大厂公司区·秋招信息源
+71,好未来,https://app.mokahr.com/campus-recruitment/tal/95443,互联网大厂,大厂公司区·秋招信息源
+72,58同城 & 安居客,https://campus.58.com,互联网大厂,大厂公司区·秋招信息源
+73,赶集直招,https://campus.58.com,互联网大厂,大厂公司区·秋招信息源
+74,去哪儿旅行,https://campus.qunar.com,互联网大厂,大厂公司区·秋招信息源
+75,美图公司,https://campus.meitu.com,互联网大厂,大厂公司区·秋招信息源
+76,华为,https://career.huawei.com,通信 / 电子硬件,大厂公司区·秋招信息源
+77,中兴通讯,https://job.zte.com.cn,通信 / 电子硬件,大厂公司区·秋招信息源
+78,OPPO,https://careers.oppo.com,通信 / 电子硬件,大厂公司区·秋招信息源
+79,vivo,https://hr.vivo.com,通信 / 电子硬件,大厂公司区·秋招信息源
+80,一加（OnePlus）,https://www.oneplus.com,通信 / 电子硬件,大厂公司区·秋招信息源
+81,联想中国,https://talent.lenovo.com.cn,通信 / 电子硬件,大厂公司区·秋招信息源
+82,海信集团,https://hisense.hotjob.cn,通信 / 电子硬件,大厂公司区·秋招信息源
+83,TCL 科技,https://tcl.jobs.feishu.cn,通信 / 电子硬件,大厂公司区·秋招信息源
+84,京东方（BOE）,https://www.boe.com,通信 / 电子硬件,大厂公司区·秋招信息源
+85,中芯国际,https://www.smics.com,通信 / 电子硬件,大厂公司区·秋招信息源
+86,寒武纪,https://www.cambricon.com,通信 / 电子硬件,大厂公司区·秋招信息源
+87,地平线,https://horizon.ai,通信 / 电子硬件,大厂公司区·秋招信息源
+88,海光信息,https://www.hygon.cn/career,通信 / 电子硬件,大厂公司区·秋招信息源
+89,兆易创新,https://www.giga-device.com,通信 / 电子硬件,大厂公司区·秋招信息源
+90,汇顶科技,https://www.goodix.com,通信 / 电子硬件,大厂公司区·秋招信息源
+91,长电科技,https://www.jcetglobal.com,通信 / 电子硬件,大厂公司区·秋招信息源
+92,紫光集团,https://www.unigroup.com.cn,通信 / 电子硬件,大厂公司区·秋招信息源
+93,锐捷网络,https://ruijie.hotjob.cn,通信 / 电子硬件,大厂公司区·秋招信息源
+94,深信服,https://hr.sangfor.com,通信 / 电子硬件,大厂公司区·秋招信息源
+95,科大讯飞,https://campus.iflytek.com,通信 / 电子硬件,大厂公司区·秋招信息源
+96,中国移动,https://job.10086.cn,三大运营商,大厂公司区·秋招信息源
+97,中国电信,https://job.chinatelecom.com.cn,三大运营商,大厂公司区·秋招信息源
+98,中国联通,https://zhaopin.chinaunicom.com,三大运营商,大厂公司区·秋招信息源
+99,中国移动设计院,https://job.10086.cn,三大运营商,大厂公司区·秋招信息源
+100,中国通服,https://job.chinatelecom.com.cn,三大运营商,大厂公司区·秋招信息源
+101,铁塔集团,https://www.china-tower.com,三大运营商,大厂公司区·秋招信息源
+102,国家电网,https://zhaopin.sgcc.com.cn,能源电力央企,大厂公司区·秋招信息源
+103,南方电网,https://zhaopin.csg.cn,能源电力央企,大厂公司区·秋招信息源
+104,中国石油,https://zhaopin.cnpc.com.cn,能源电力央企,大厂公司区·秋招信息源
+105,中国石化,https://job.sinopec.com,能源电力央企,大厂公司区·秋招信息源
+106,中国海油,http://cnooc.zhaopin.com,能源电力央企,大厂公司区·秋招信息源
+107,国家能源集团,https://zhaopin.chnenergy.com.cn,能源电力央企,大厂公司区·秋招信息源
+108,中国华能,https://www.chng.com.cn,能源电力央企,大厂公司区·秋招信息源
+109,中国大唐,https://www.china-cdt.com,能源电力央企,大厂公司区·秋招信息源
+110,中国华电,https://www.chd.com.cn,能源电力央企,大厂公司区·秋招信息源
+111,国家电投,https://www.spic.com.cn,能源电力央企,大厂公司区·秋招信息源
+112,三峡集团,https://www.ctg.com.cn,能源电力央企,大厂公司区·秋招信息源
+113,中广核,https://www.cgn.com.cn,能源电力央企,大厂公司区·秋招信息源
+114,中国核电,https://www.cnnp.com.cn,能源电力央企,大厂公司区·秋招信息源
+115,中国核工业集团,https://cnnc.zhiye.com,能源电力央企,大厂公司区·秋招信息源
+116,中国电建,https://www.powerchina.cn,能源电力央企,大厂公司区·秋招信息源
+117,中国能建,https://www.ceec.net.cn,能源电力央企,大厂公司区·秋招信息源
+118,陕煤集团,https://www.shccig.com,能源电力央企,大厂公司区·秋招信息源
+119,兖矿能源,https://www.yanzhoucoal.com.cn,能源电力央企,大厂公司区·秋招信息源
+120,潞安化工,https://www.chinaluan.com,能源电力央企,大厂公司区·秋招信息源
+121,晋能控股,https://www.jnkgjt.com.cn,能源电力央企,大厂公司区·秋招信息源
+122,国投集团,https://www.sdic.com.cn,能源电力央企,大厂公司区·秋招信息源
+123,华润电力,https://www.crpower.com.cn,能源电力央企,大厂公司区·秋招信息源
+124,中国建筑,https://cscec.zhiye.com,建筑工程央企,大厂公司区·秋招信息源
+125,中国中铁,https://recruit.crec.cn,建筑工程央企,大厂公司区·秋招信息源
+126,中国铁建,https://hr.crcc.cn,建筑工程央企,大厂公司区·秋招信息源
+127,中国交建,https://www.ccccltd.cn,建筑工程央企,大厂公司区·秋招信息源
+128,中国中冶,https://www.mccgroup.com.cn,建筑工程央企,大厂公司区·秋招信息源
+129,中国五矿,https://www.minmetals.com.cn,建筑工程央企,大厂公司区·秋招信息源
+130,中国有色集团,https://www.cnmc.com.cn,建筑工程央企,大厂公司区·秋招信息源
+131,中国建材,https://www.cnbm.com.cn,建筑工程央企,大厂公司区·秋招信息源
+132,保利发展,https://www.polycn.com,建筑工程央企,大厂公司区·秋招信息源
+133,绿地集团,https://www.ldgroup.com,建筑工程央企,大厂公司区·秋招信息源
+134,中建科工,https://cscec.zhiye.com,建筑工程央企,大厂公司区·秋招信息源
+135,中交一公局,https://www.ccg1.com,建筑工程央企,大厂公司区·秋招信息源
+136,航天科技,https://www.spacechina.com,航天航空军工,大厂公司区·秋招信息源
+137,航天科工,https://www.casic.com.cn,航天航空军工,大厂公司区·秋招信息源
+138,航空工业,https://www.avic.com,航天航空军工,大厂公司区·秋招信息源
+139,航发集团,https://www.aecc.cn,航天航空军工,大厂公司区·秋招信息源
+140,兵器工业,https://www.norincogroup.com.cn,航天航空军工,大厂公司区·秋招信息源
+141,兵器装备,https://www.csgc.com.cn,航天航空军工,大厂公司区·秋招信息源
+142,中国船舶,https://www.cssc.net.cn,航天航空军工,大厂公司区·秋招信息源
+143,中国电子 CEC,https://www.cec.com.cn,航天航空军工,大厂公司区·秋招信息源
+144,中国电科 CETC,https://www.cetc.com.cn,航天航空军工,大厂公司区·秋招信息源
+145,中国中车,https://www.crrcgc.cc,航天航空军工,大厂公司区·秋招信息源
+146,航天三江,https://www.casic.com.cn,航天航空军工,大厂公司区·秋招信息源
+147,航天八院,https://sast.zhiye.com,航天航空军工,大厂公司区·秋招信息源
+148,航空工业西飞,https://www.xac.com.cn,航天航空军工,大厂公司区·秋招信息源
+149,航空工业成飞,https://www.cac.com.cn,航天航空军工,大厂公司区·秋招信息源
+150,中国火箭,https://www.cascspace.com,航天航空军工,大厂公司区·秋招信息源
+151,工行,https://job.icbc.com.cn,国有六大行 + 股份制银行,大厂公司区·秋招信息源
+152,农行,https://career.abchina.com.cn,国有六大行 + 股份制银行,大厂公司区·秋招信息源
+153,中行,https://www.boc.cn/aboutboc/bi4/,国有六大行 + 股份制银行,大厂公司区·秋招信息源
+154,建行,http://job.ccb.com,国有六大行 + 股份制银行,大厂公司区·秋招信息源
+155,交行,https://job.bankcomm.com,国有六大行 + 股份制银行,大厂公司区·秋招信息源
+156,邮储银行,https://www.psbc.com/cn/gyyc/rczp/xyzp/,国有六大行 + 股份制银行,大厂公司区·秋招信息源
+157,招行,https://career.cmbchina.com,国有六大行 + 股份制银行,大厂公司区·秋招信息源
+158,浦发,https://job.spdb.com.cn,国有六大行 + 股份制银行,大厂公司区·秋招信息源
+159,中信银行,https://www.citicbank.com,国有六大行 + 股份制银行,大厂公司区·秋招信息源
+160,光大,https://www.cebbank.com/site/hr/index.html,国有六大行 + 股份制银行,大厂公司区·秋招信息源
+161,民生,https://career.cmbc.com.cn,国有六大行 + 股份制银行,大厂公司区·秋招信息源
+162,兴业,https://www.cib.com.cn,国有六大行 + 股份制银行,大厂公司区·秋招信息源
+163,华夏,https://www.hxb.com.cn,国有六大行 + 股份制银行,大厂公司区·秋招信息源
+164,平安银行,https://talent.pingan.com,国有六大行 + 股份制银行,大厂公司区·秋招信息源
+165,浙商,https://www.czbank.com,国有六大行 + 股份制银行,大厂公司区·秋招信息源
+166,恒丰,https://www.hfbank.com.cn,国有六大行 + 股份制银行,大厂公司区·秋招信息源
+167,渤海,https://www.cbhb.com.cn,国有六大行 + 股份制银行,大厂公司区·秋招信息源
+168,广发,https://www.cgbchina.com.cn,国有六大行 + 股份制银行,大厂公司区·秋招信息源
+169,北京银行,https://www.bankofbeijing.com.cn,国有六大行 + 股份制银行,大厂公司区·秋招信息源
+170,上海银行,https://www.bosc.cn,国有六大行 + 股份制银行,大厂公司区·秋招信息源
+171,中国人寿,http://www.chinalife.com.cn,保险金融头部,大厂公司区·秋招信息源
+172,中国人保,https://www.picc.com,保险金融头部,大厂公司区·秋招信息源
+173,中国平安,https://talent.pingan.com,保险金融头部,大厂公司区·秋招信息源
+174,太平洋保险,https://www.cpic.com,保险金融头部,大厂公司区·秋招信息源
+175,新华保险,https://www.newchinalife.com,保险金融头部,大厂公司区·秋招信息源
+176,阳光保险,https://www.ygbx.com,保险金融头部,大厂公司区·秋招信息源
+177,中信证券,https://www.cs.ecitic.com,保险金融头部,大厂公司区·秋招信息源
+178,国泰君安,https://www.gtja.com,保险金融头部,大厂公司区·秋招信息源
+179,东方证券,https://www.orientsec.com.cn,保险金融头部,大厂公司区·秋招信息源
+180,华泰证券,https://www.htsc.com.cn,保险金融头部,大厂公司区·秋招信息源
+181,比亚迪,https://job.byd.com,汽车整车 & 新能源,大厂公司区·秋招信息源
+182,吉利,https://campus.geely.com,汽车整车 & 新能源,大厂公司区·秋招信息源
+183,长城汽车,https://gwm.zhiye.com,汽车整车 & 新能源,大厂公司区·秋招信息源
+184,广汽集团,https://www.gagc.com.cn,汽车整车 & 新能源,大厂公司区·秋招信息源
+185,上汽集团,https://www.saicgroup.com,汽车整车 & 新能源,大厂公司区·秋招信息源
+186,一汽集团,https://zhaopin.faw.com.cn,汽车整车 & 新能源,大厂公司区·秋招信息源
+187,东风集团,https://zhaopin.dongfeng.net,汽车整车 & 新能源,大厂公司区·秋招信息源
+188,蔚来,https://nio.jobs.feishu.cn,汽车整车 & 新能源,大厂公司区·秋招信息源
+189,小鹏,https://xiaopeng.jobs.feishu.cn,汽车整车 & 新能源,大厂公司区·秋招信息源
+190,理想,https://lixiang.com/joinus,汽车整车 & 新能源,大厂公司区·秋招信息源
+191,极氪,https://www.zeekr.com,汽车整车 & 新能源,大厂公司区·秋招信息源
+192,哪吒,https://www.nezhaauto.com,汽车整车 & 新能源,大厂公司区·秋招信息源
+193,零跑,https://www.leapmotor.com,汽车整车 & 新能源,大厂公司区·秋招信息源
+194,赛力斯,https://www.seres.com.cn,汽车整车 & 新能源,大厂公司区·秋招信息源
+195,奇瑞,https://www.chery.cn,汽车整车 & 新能源,大厂公司区·秋招信息源
+196,北汽,https://www.baicgroup.com.cn,汽车整车 & 新能源,大厂公司区·秋招信息源
+197,长安汽车,http://changan.zhiye.com,汽车整车 & 新能源,大厂公司区·秋招信息源
+198,宁德时代,https://talent.catl.com,汽车整车 & 新能源,大厂公司区·秋招信息源
+199,顺丰,https://campus.sf-express.com,物流零售快消,大厂公司区·秋招信息源
+200,中通,https://hr.zto.com,物流零售快消,大厂公司区·秋招信息源
+201,圆通,https://www.yto.net.cn,物流零售快消,大厂公司区·秋招信息源
+202,韵达,https://www.yundaex.com,物流零售快消,大厂公司区·秋招信息源
+203,中国邮政,https://www.chinapost.com.cn,物流零售快消,大厂公司区·秋招信息源
+204,永辉,https://www.yonghui.com.cn,物流零售快消,大厂公司区·秋招信息源
+205,苏宁易购,https://campus.suning.cn/rps-campus/,物流零售快消,大厂公司区·秋招信息源
+206,华润万家,https://www.crv.com.cn,物流零售快消,大厂公司区·秋招信息源
+207,农夫山泉,https://www.nongfushanquan.com,物流零售快消,大厂公司区·秋招信息源
+208,伊利,https://www.yili.com,物流零售快消,大厂公司区·秋招信息源
+209,蒙牛,https://www.mengniu.com.cn,物流零售快消,大厂公司区·秋招信息源
+210,娃哈哈,https://www.wahaha.com.cn,物流零售快消,大厂公司区·秋招信息源
+211,统一,https://www.uni-president.com.cn,物流零售快消,大厂公司区·秋招信息源
+212,海天味业,https://www.haitian-food.com/recruit,物流零售快消,大厂公司区·秋招信息源
+213,洽洽食品,https://www.qiaqiafood.com,物流零售快消,大厂公司区·秋招信息源
+214,百联集团,https://www.blgroup.com.cn,物流零售快消,大厂公司区·秋招信息源
+215,物美,https://www.wumart.com,物流零售快消,大厂公司区·秋招信息源
+216,国航,http://zhaopin.airchina.com.cn,文旅航空交通,大厂公司区·秋招信息源
+217,东航,https://job.ceair.com,文旅航空交通,大厂公司区·秋招信息源
+218,南航,https://job.csair.com,文旅航空交通,大厂公司区·秋招信息源
+219,海航,https://recruitment.hnair.com,文旅航空交通,大厂公司区·秋招信息源
+220,春秋航空,https://www.springairlines.com,文旅航空交通,大厂公司区·秋招信息源
+221,中国铁路招聘,https://rczp.china-railway.com.cn,文旅航空交通,大厂公司区·秋招信息源
+222,中旅集团,https://www.ctg.cn,文旅航空交通,大厂公司区·秋招信息源
+223,华侨城,https://www.octgroup.com,文旅航空交通,大厂公司区·秋招信息源
+224,万达,https://www.wanda.cn,文旅航空交通,大厂公司区·秋招信息源
+225,宋城演艺,https://www.songcn.com/career,文旅航空交通,大厂公司区·秋招信息源
+226,上海机场,https://www.shairport.com,文旅航空交通,大厂公司区·秋招信息源
+227,首都机场,https://www.bcia.com.cn,文旅航空交通,大厂公司区·秋招信息源
+228,恒瑞医药,https://www.hengrui.com,医药生物,大厂公司区·秋招信息源
+229,迈瑞医疗,https://www.mindray.com,医药生物,大厂公司区·秋招信息源
+230,药明康德,https://www.wuxiapptec.com/careers,医药生物,大厂公司区·秋招信息源
+231,百济神州,https://www.beigene.cn,医药生物,大厂公司区·秋招信息源
+232,信达生物,https://www.innoventbio.com/career,医药生物,大厂公司区·秋招信息源
+233,复星医药,https://www.fosunpharma.com/careers,医药生物,大厂公司区·秋招信息源
+234,云南白药,https://www.yunnanbaiyao.com.cn,医药生物,大厂公司区·秋招信息源
+235,同仁堂,https://www.tongrentang.com,医药生物,大厂公司区·秋招信息源
+236,国药集团,https://www.sinopharm.com,医药生物,大厂公司区·秋招信息源
+237,上药集团,https://www.sinepharm.com/recruit,医药生物,大厂公司区·秋招信息源
+238,齐鲁制药,https://www.qilu-pharma.com,医药生物,大厂公司区·秋招信息源
+239,爱尔眼科,https://www.aierchina.com,医药生物,大厂公司区·秋招信息源
+240,泰格医药,https://www.tigermed.com,医药生物,大厂公司区·秋招信息源
+241,中国烟草,https://www.tobacco.gov.cn,烟草 & 官方招聘聚合,大厂公司区·秋招信息源
+242,国聘网,https://www.iguopin.com,烟草 & 官方招聘聚合,大厂公司区·秋招信息源
+243,国家大学生就业服务平台,https://www.ncss.cn,烟草 & 官方招聘聚合,大厂公司区·秋招信息源
+244,中国公共招聘网,http://job.mohrss.gov.cn,烟草 & 官方招聘聚合,大厂公司区·秋招信息源
+245,中智招聘,https://www.ciicscjob.com,烟草 & 官方招聘聚合,大厂公司区·秋招信息源
+246,国资委央企招聘专栏,http://www.sasac.gov.cn,烟草 & 官方招聘聚合,大厂公司区·秋招信息源
+247,中国人才网,https://www.newjobs.com.cn,烟草 & 官方招聘聚合,大厂公司区·秋招信息源
+248,前程无忧国企专区,https://www.51job.com,烟草 & 官方招聘聚合,大厂公司区·秋招信息源
+249,智联招聘央企通道,https://www.zhaopin.com,烟草 & 官方招聘聚合,大厂公司区·秋招信息源
+250,北森招聘入口,https://www.beisen.com/career,烟草 & 官方招聘聚合,大厂公司区·秋招信息源
+251,字节跳动,https://jobs.bytedance.com,互联网,秋招信息源·27届官网名录
+252,腾讯,https://join.qq.com,互联网,秋招信息源·27届官网名录
+253,阿里巴巴,https://campus-talent.alibaba.com,互联网,秋招信息源·27届官网名录
+254,蚂蚁集团,https://talent.antgroup.com,互联网,秋招信息源·27届官网名录
+255,百度,https://talent.baidu.com,互联网,秋招信息源·27届官网名录
+256,美团,https://zhaopin.meituan.com,互联网,秋招信息源·27届官网名录
+257,京东,https://campus.jd.com,互联网,秋招信息源·27届官网名录
+258,小米,https://hr.xiaomi.com,互联网,秋招信息源·27届官网名录
+259,B站哔哩哔哩,https://jobs.bilibili.com,互联网,秋招信息源·27届官网名录
+260,快手,https://campus.kuaishou.cn,互联网,秋招信息源·27届官网名录
+261,华为,https://career.huawei.com,互联网,秋招信息源·27届官网名录
+262,滴滴出行,https://campus.didiglobal.com,互联网,秋招信息源·27届官网名录
+263,多益网络,https://xz.duoyi.com,互联网,秋招信息源·27届官网名录
+264,广联达,https://glodon.zhiye.com,互联网,秋招信息源·27届官网名录
+265,莉莉丝游戏,https://lilithgames.zhiye.com,互联网,秋招信息源·27届官网名录
+266,TP-LINK,https://tp-link.hotjob.cn,互联网,秋招信息源·27届官网名录
+267,合合信息,https://campus.intsig.com,互联网,秋招信息源·27届官网名录
+268,神州信息,https://www.sinosoft.com.cn/campus,互联网,秋招信息源·27届官网名录
+269,大疆DJI,https://careers.dji.com,半导体/硬件,秋招信息源·27届官网名录
+270,宁德时代,https://campus.catl.com,半导体/硬件,秋招信息源·27届官网名录
+271,长江存储,https://ymtc-campus.zhiye.com,半导体/硬件,秋招信息源·27届官网名录
+272,摩尔线程,https://www.mthreads.com/campus,半导体/硬件,秋招信息源·27届官网名录
+273,长鑫存储,https://campus.cxmt.com,半导体/硬件,秋招信息源·27届官网名录
+274,中微公司,https://www.amec-inc.com/campus,半导体/硬件,秋招信息源·27届官网名录
+275,兆易创新,https://giga-device.zhiye.com,半导体/硬件,秋招信息源·27届官网名录
+276,紫光展锐,https://unigroup.zhiye.com,半导体/硬件,秋招信息源·27届官网名录
+277,飞腾信息,https://www.phytium.com/campus,半导体/硬件,秋招信息源·27届官网名录
+278,豪威集团,https://www.ovt.com/campus,半导体/硬件,秋招信息源·27届官网名录
+279,精测电子,https://www.jingce.com/campus,半导体/硬件,秋招信息源·27届官网名录
+280,禾赛科技,https://www.hesaitech.com/recruit,半导体/硬件,秋招信息源·27届官网名录
+281,歌尔股份,https://goertek.hotjob.cn,半导体/硬件,秋招信息源·27届官网名录
+282,汇川技术,https://campus.inovance.com,半导体/硬件,秋招信息源·27届官网名录
+283,阳光电源,https://jobs.sungrowpower.com,半导体/硬件,秋招信息源·27届官网名录
+284,远景能源,https://envision-group.com/campus,半导体/硬件,秋招信息源·27届官网名录
+285,美的集团,https://careers.midea.com,半导体/硬件,秋招信息源·27届官网名录
+286,TCL,https://campus.tcl.com,半导体/硬件,秋招信息源·27届官网名录
+287,吉利控股,https://campus.geely.com,半导体/硬件,秋招信息源·27届官网名录
+288,三一集团,https://sany.zhiye.com,半导体/硬件,秋招信息源·27届官网名录
+289,东风汽车,https://dfmc.zhiye.com,半导体/硬件,秋招信息源·27届官网名录
+290,雅迪科技,https://yadea.hotjob.cn,半导体/硬件,秋招信息源·27届官网名录
+291,国家电网,https://zhaopin.sgcc.com.cn,央企/能源,秋招信息源·27届官网名录
+292,南方电网,https://zhaopin.csg.cn,央企/能源,秋招信息源·27届官网名录
+293,中国石油,https://zhaopin.cnpc.com.cn,央企/能源,秋招信息源·27届官网名录
+294,中国海油,https://cnooc.zhaopin.com,央企/能源,秋招信息源·27届官网名录
+295,中国华能,https://zhaopin.chng.com.cn,央企/能源,秋招信息源·27届官网名录
+296,国家能源集团,https://zhaopin.shenhua.cc,央企/能源,秋招信息源·27届官网名录
+297,中国能建,https://www.ceec.net.cn/campus,央企/能源,秋招信息源·27届官网名录
+298,招商局集团,https://cmhk.zhiye.com,央企/能源,秋招信息源·27届官网名录
+299,国机集团,https://zhaopin.sinomach.com.cn,央企/能源,秋招信息源·27届官网名录
+300,中国电科CETC,https://www.cetc.com.cn/recruit,央企/能源,秋招信息源·27届官网名录
+301,中国航发,https://aecc.zhiye.com,央企/能源,秋招信息源·27届官网名录
+302,上海电气,https://shanghai-electric.zhiye.com,央企/能源,秋招信息源·27届官网名录
+303,中国国新,https://www.crgp.cn/recruit,央企/能源,秋招信息源·27届官网名录
+304,工商银行,https://job.icbc.com.cn,金融,秋招信息源·27届官网名录
+305,建设银行,https://job.ccb.com,金融,秋招信息源·27届官网名录
+306,农业银行,https://job.abchina.com,金融,秋招信息源·27届官网名录
+307,中国银行,https://www.boc.cn/aboutboc/ab6,金融,秋招信息源·27届官网名录
+308,交通银行,https://job.bankcomm.com,金融,秋招信息源·27届官网名录
+309,邮储银行,https://www.psbc.com/cn/Recruit,金融,秋招信息源·27届官网名录
+310,中信证券,https://careers.citics.com,金融,秋招信息源·27届官网名录
+311,中金公司,https://cicc.zhiye.com,金融,秋招信息源·27届官网名录
+312,中信建投证券,https://csc108.zhiye.com,金融,秋招信息源·27届官网名录
+313,中国人保,https://picc.zhiye.com,金融,秋招信息源·27届官网名录
+314,中国人寿,https://chinalife.zhiye.com,金融,秋招信息源·27届官网名录
+315,南京银行,https://job.njcb.com.cn,金融,秋招信息源·27届官网名录
+316,安踏集团,https://anta.zhiye.com,消费/外企,秋招信息源·27届官网名录
+317,欧莱雅中国,https://lorealcampus.com.cn,消费/外企,秋招信息源·27届官网名录
+318,极米科技,https://xgimi.zhiye.com,消费/外企,秋招信息源·27届官网名录
+319,海能达,https://hytera.zhiye.com,消费/外企,秋招信息源·27届官网名录
+320,三环集团,https://www.trigroup.com.cn/campus,消费/外企,秋招信息源·27届官网名录
+321,三未信安,https://www.sansec.com.cn/campus,消费/外企,秋招信息源·27届官网名录
+322,杰瑞集团,https://www.jereh.com/campus,消费/外企,秋招信息源·27届官网名录
+323,博瑞集信,https://borui-ic.zhiye.com,消费/外企,秋招信息源·27届官网名录
+324,富特科技,https://www.futech.com/campus,消费/外企,秋招信息源·27届官网名录
+325,格思航天,https://www.gaispace.com/campus,消费/外企,秋招信息源·27届官网名录
+326,联合飞机,https://www.uatair.com/recruit,消费/外企,秋招信息源·27届官网名录
+327,科华数据,https://kehua.com.cn/recruit,消费/外企,秋招信息源·27届官网名录
+328,丹纳赫中国,https://www.danaher.com/cn/careers/campus,消费/外企,秋招信息源·27届官网名录
+329,碧桂园服务,https://bgyfw.zhiye.com,消费/外企,秋招信息源·27届官网名录
+330,拼多多,https://careers.pinduoduo.com,互联网,秋招信息源·27届官网名录
+331,网易（含网易互娱）,https://campus.163.com,互联网,秋招信息源·27届官网名录
+332,网易游戏,https://game.campus.163.com,互联网,秋招信息源·27届官网名录
+333,搜狐畅游,https://campus.changyou.com,互联网,秋招信息源·27届官网名录
+334,三七互娱,https://app.mokahr.com/campus_apply/sanqi,互联网,秋招信息源·27届官网名录
+335,巨人网络,https://ztgame.zhiye.com,互联网,秋招信息源·27届官网名录
+336,深信服,https://career.sangfor.com,互联网,秋招信息源·27届官网名录
+337,OPPO,https://careers.oppo.com,互联网,秋招信息源·27届官网名录
+338,vivo,https://career.vivo.com.cn,互联网,秋招信息源·27届官网名录
+339,影石Insta360,https://insta360.zhiye.com,互联网,秋招信息源·27届官网名录
+340,腾讯音乐,https://join.tencentmusic.com,互联网,秋招信息源·27届官网名录
+341,贝壳找房,https://campus.ke.com,互联网,秋招信息源·27届官网名录
+342,得物,https://campus.dewu.com,互联网,秋招信息源·27届官网名录
+343,理想汽车,https://career.lixiang.com,互联网,秋招信息源·27届官网名录
+344,小鹏汽车,https://campus.xiaopeng.com,互联网,秋招信息源·27届官网名录
+345,蔚来,https://campus.nio.com,互联网,秋招信息源·27届官网名录
+346,云从科技,https://www.cloudwalk.com/campus,互联网,秋招信息源·27届官网名录
+347,依图科技,https://www.yitutech.com/campus,互联网,秋招信息源·27届官网名录
+348,DeepSeek深度求索,https://app.mokahr.com/campus_apply/deepseek,互联网,秋招信息源·27届官网名录
+349,菜鸟,https://campus.cainiao.com,互联网,秋招信息源·27届官网名录
+350,高德,https://campus.amap.com,互联网,秋招信息源·27届官网名录
+351,有赞,https://campus.youzan.com,互联网,秋招信息源·27届官网名录
+352,喜马拉雅,https://job.ximalaya.com,互联网,秋招信息源·27届官网名录
+353,阅文集团,https://campus.yuewen.com,互联网,秋招信息源·27届官网名录
+354,中科芯,https://csic58.zhiye.com,半导体/硬件,秋招信息源·27届官网名录
+355,国电南自,https://sac.hotjob.cn,半导体/硬件,秋招信息源·27届官网名录
+356,芯原股份,https://www.verisilicon.com/campus,半导体/硬件,秋招信息源·27届官网名录
+357,景嘉微,https://www.jingjiawei.com/campus,半导体/硬件,秋招信息源·27届官网名录
+358,瑞芯微,https://rockchip.zhiye.com,半导体/硬件,秋招信息源·27届官网名录
+359,安路科技,https://anlogic.zhiye.com,半导体/硬件,秋招信息源·27届官网名录
+360,概伦电子,https://www.goldenengin.com/campus,半导体/硬件,秋招信息源·27届官网名录
+361,上汽集团,https://saic.zhiye.com,半导体/硬件,秋招信息源·27届官网名录
+362,上汽通用五菱,https://sgmw.zhiye.com,半导体/硬件,秋招信息源·27届官网名录
+363,长城汽车,https://campus.gwm.com.cn,半导体/硬件,秋招信息源·27届官网名录
+364,比亚迪,https://career.byd.com,半导体/硬件,秋招信息源·27届官网名录
+365,中创新航,https://campus.avicli.com,半导体/硬件,秋招信息源·27届官网名录
+366,亿纬锂能,https://eve.zhiye.com,半导体/硬件,秋招信息源·27届官网名录
+367,璞泰来,https://www.pulte.com/campus,半导体/硬件,秋招信息源·27届官网名录
+368,容百科技,https://ronbay.zhiye.com,半导体/硬件,秋招信息源·27届官网名录
+369,禾望电气,https://hopewind.zhiye.com,半导体/硬件,秋招信息源·27届官网名录
+370,四方继保,https://sf-auto.zhiye.com,半导体/硬件,秋招信息源·27届官网名录
+371,华大半导体,https://hdsc.zhiye.com,半导体/硬件,秋招信息源·27届官网名录
+372,量旋科技,https://quantum.zhiye.com,半导体/硬件,秋招信息源·27届官网名录
+373,琻捷电子,https://sensat.zhiye.com,半导体/硬件,秋招信息源·27届官网名录
+374,积海半导体,https://jihaisemi.zhiye.com,半导体/硬件,秋招信息源·27届官网名录
+375,灵感机器人,https://inspire-robotics.zhiye.com,半导体/硬件,秋招信息源·27届官网名录
+376,国家电投,https://spic.zhiye.com,央企/能源,秋招信息源·27届官网名录
+377,中广核,https://cgn.hotjob.cn,央企/能源,秋招信息源·27届官网名录
+378,中国五矿,https://minmetals.hotjob.cn,央企/能源,秋招信息源·27届官网名录
+379,中国中化,https://sinochem.zhiye.com,央企/能源,秋招信息源·27届官网名录
+380,中国核建,https://cnnc.zhiye.com,央企/能源,秋招信息源·27届官网名录
+381,中国物流集团,https://chinalogisticsgroup.hotjob.cn,央企/能源,秋招信息源·27届官网名录
+382,中盐集团,https://salt.zhiye.com,央企/能源,秋招信息源·27届官网名录
+383,中国融通集团,https://rongtong.zhiye.com,央企/能源,秋招信息源·27届官网名录
+384,兵器工业,https://www.norincogroup.com.cn/recruit,央企/能源,秋招信息源·27届官网名录
+385,兵器装备,https://www.csgc.com.cn/recruit,央企/能源,秋招信息源·27届官网名录
+386,中国交建,https://ccccltd.zhiye.com,央企/能源,秋招信息源·27届官网名录
+387,中国中铁,https://crec.zhiye.com,央企/能源,秋招信息源·27届官网名录
+388,中国铁建,https://crcc.zhiye.com,央企/能源,秋招信息源·27届官网名录
+389,中国建筑,https://cscec.zhiye.com,央企/能源,秋招信息源·27届官网名录
+390,中国建材,https://cnbm.zhiye.com,央企/能源,秋招信息源·27届官网名录
+391,中国大唐,https://zhaopin.cdt-ec.com,央企/能源,秋招信息源·27届官网名录
+392,中国电建,https://powerchina.zhiye.com,央企/能源,秋招信息源·27届官网名录
+393,国投集团,https://sdic.zhiye.com,央企/能源,秋招信息源·27届官网名录
+394,中国有色,https://cnmc.hotjob.cn,央企/能源,秋招信息源·27届官网名录
+395,光电股份,https://gfgf.zhiye.com,央企/能源,秋招信息源·27届官网名录
+396,国家开发银行,https://www.cdb.com.cn/recruit,金融,秋招信息源·27届官网名录
+397,华泰证券,https://job.htsc.com.cn,金融,秋招信息源·27届官网名录
+398,财通证券,https://ctsec.zhiye.com,金融,秋招信息源·27届官网名录
+399,东北证券,https://nesc.cn/recruit,金融,秋招信息源·27届官网名录
+400,民生银行,https://career.cmbc.com.cn,金融,秋招信息源·27届官网名录
+401,招商银行,https://career.cmbchina.com,金融,秋招信息源·27届官网名录
+402,兴业银行,https://www.cib.com.cn/recruit,金融,秋招信息源·27届官网名录
+403,浦发银行,https://spdb.zhiye.com,金融,秋招信息源·27届官网名录
+404,光大银行,https://cebbank.zhiye.com,金融,秋招信息源·27届官网名录
+405,江苏银行,https://jsb.zhiye.com,金融,秋招信息源·27届官网名录
+406,民泰银行,https://mintai.bank/recruit,金融,秋招信息源·27届官网名录
+407,三峡银行,https://cccb.zhiye.com,金融,秋招信息源·27届官网名录
+408,壳牌中国,https://www.shell.com.cn/careers/campus,消费/外企,秋招信息源·27届官网名录
+409,联合利华,https://www.unilever.com.cn/campus,消费/外企,秋招信息源·27届官网名录
+410,宝洁中国,https://www.pg.com.cn/campus,消费/外企,秋招信息源·27届官网名录
+411,牧原股份,https://muyuan.zhiye.com,消费/外企,秋招信息源·27届官网名录
+412,海大集团,https://haid.zhiye.com,消费/外企,秋招信息源·27届官网名录
+413,红星美凯龙,https://job.mmall.com,消费/外企,秋招信息源·27届官网名录
+414,华夏航空,https://hxhk.zhiye.com,消费/外企,秋招信息源·27届官网名录
+415,养生堂,https://yangshengtang.zhiye.com,消费/外企,秋招信息源·27届官网名录
+416,恒瑞医药,https://hengrui.zhiye.com,消费/外企,秋招信息源·27届官网名录
+417,药明康德,https://wuxi-apptec.zhiye.com,消费/外企,秋招信息源·27届官网名录
