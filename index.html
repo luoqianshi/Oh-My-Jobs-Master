@@ -116,6 +116,19 @@ tbody tr:last-child td{border-bottom:none}
 .cell-3{color:var(--ink-3)}
 .notes-cell{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .row-actions{display:flex;gap:2px}
+/* 拖拽排序与置顶 */
+.drag-cell{width:30px;padding-left:10px;padding-right:0}
+.drag-handle{display:inline-flex;align-items:center;color:#CFCEC6;cursor:grab;border-radius:6px;padding:2px;transition:color .15s}
+.drag-handle:hover{color:var(--ink-2)}
+.drag-handle:active{cursor:grabbing}
+tbody tr.dragging{opacity:.35}
+tbody tr.drop-before td{box-shadow:inset 0 2px 0 var(--accent)}
+tbody tr.drop-after td{box-shadow:inset 0 -2px 0 var(--accent)}
+tbody tr.pinned{background:#F4FBF7}
+tbody tr.pinned:hover{background:#EDF8F2}
+tbody tr.pinned .drag-cell{box-shadow:inset 3px 0 0 var(--accent)}
+.icon-btn.pin-active{color:var(--accent)}
+.icon-btn.pin-active:hover{background:var(--accent-bg);color:var(--accent-hover)}
 .row-link{color:var(--ink-3);display:inline-flex}
 .row-link:hover{color:var(--accent-hover)}
 .type-tag{font-size:11px;color:var(--ink-2);white-space:nowrap;border:1px solid var(--border);border-radius:999px;padding:2px 9px;background:#fff}
@@ -342,7 +355,10 @@ const I = {
   check: svg('<path d="M20 6 9 17l-5-5"/>', 12),
   x: svg('<path d="M18 6 6 18M6 6l12 12"/>'),
   spark: svg('<path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>', 14),
-  alert: svg('<circle cx="12" cy="12" r="9"/><path d="M12 8v4.5M12 16h.01"/>', 14)
+  alert: svg('<circle cx="12" cy="12" r="9"/><path d="M12 8v4.5M12 16h.01"/>', 14),
+  /* 拖拽手柄（6 点）与置顶图钉 */
+  grip: svg('<circle cx="9" cy="6" r="1.1" fill="currentColor" stroke="none"/><circle cx="15" cy="6" r="1.1" fill="currentColor" stroke="none"/><circle cx="9" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="9" cy="18" r="1.1" fill="currentColor" stroke="none"/><circle cx="15" cy="18" r="1.1" fill="currentColor" stroke="none"/>', 15),
+  pin: svg('<path d="M15.5 3.5 20.5 8.5l-3 1-1.5 4.5L9 11l-4.5 4.5"/><path d="M9 11 4.2 8.3l1-3 4.5 1.5"/>', 15)
 };
 
 /* ==================== 状态 ==================== */
@@ -366,10 +382,11 @@ const state = {
   httpCsvLM: '',        // CSV 的 Last-Modified（HTTP 模式变更检测）
   httpMailLM: ''        // emails.json 的 Last-Modified
 };
-const ui = { module:'list', search:'', industryFilter:'', statusFilter:'', mailFilter:'unprocessed', width:228, collapsed:false };
+const ui = { module:'list', search:'', industryFilter:'', statusFilter:'', mailFilter:'unprocessed', width:228, collapsed:false, sortMode:'auto', pinned:[], order:[] };
 let emailsMtime = 0;
 let modalContext = null;   // 邮件创建投递时的上下文 { emailId }
 let watchersStarted = false;
+let dragRowId = '';        // 列表拖拽排序：当前被拖动的行 id
 
 /* ==================== 工具函数 ==================== */
 const $ = sel => document.querySelector(sel);
@@ -562,17 +579,21 @@ function mergeEntries(local, csv, keepLocalOnly) {
 }
 
 /* ==================== 本地存储 ==================== */
-function persistLocal() { try { localStorage.setItem(LS_KEY, JSON.stringify(state.entries)); } catch (e) {} }
+function persistLocal() { applyStoredOrder(); try { localStorage.setItem(LS_KEY, JSON.stringify(state.entries)); } catch (e) {} }
 function loadLocal() {
   try {
     const raw = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
     state.entries = Array.isArray(raw) ? raw.map(normalizeEntry) : [];
   } catch (e) { state.entries = []; }
+  applyStoredOrder(); // 手动顺序模式：按本地记忆的行序恢复
 }
-function persistUi() { try { localStorage.setItem(LS_UI_KEY, JSON.stringify({ module:ui.module, width:ui.width, collapsed:ui.collapsed })); } catch (e) {} }
+function persistUi() { try { localStorage.setItem(LS_UI_KEY, JSON.stringify({ module:ui.module, width:ui.width, collapsed:ui.collapsed, sortMode:ui.sortMode, pinned:ui.pinned, order:ui.order })); } catch (e) {} }
 function loadUi() {
   try { Object.assign(ui, JSON.parse(localStorage.getItem(LS_UI_KEY)) || {}); } catch (e) {}
   if (!['list','kanban','mail','data'].includes(ui.module)) ui.module = 'list';
+  if (!['auto','manual'].includes(ui.sortMode)) ui.sortMode = 'auto';
+  if (!Array.isArray(ui.pinned)) ui.pinned = [];
+  if (!Array.isArray(ui.order)) ui.order = [];
 }
 
 /* ==================== IndexedDB（保存目录句柄） ==================== */
@@ -1099,11 +1120,61 @@ function pageHead(eyebrow, title, desc, actionHTML) {
 }
 function filteredEntries() {
   const q = ui.search.trim().toLowerCase();
-  return state.entries.filter(e =>
+  const list = state.entries.filter(e =>
     (!ui.industryFilter || e.industry === ui.industryFilter) &&
     (!ui.statusFilter || e.status === ui.statusFilter) &&
     (!q || `${e.company} ${e.position} ${e.department} ${e.industry} ${e.location}`.toLowerCase().includes(q))
-  ).sort((a, b) => (b.latestDate || '').localeCompare(a.latestDate || ''));
+  );
+  // 置顶行始终排最前（按 ui.pinned 顺序）；其余按排序方式排列
+  const pinnedSet = new Set(ui.pinned);
+  const pinned = ui.pinned.map(id => list.find(e => e.id === id)).filter(Boolean);
+  const rest = list.filter(e => !pinnedSet.has(e.id));
+  if (ui.sortMode === 'auto') rest.sort((a, b) => (b.latestDate || '').localeCompare(a.latestDate || ''));
+  return [...pinned, ...rest];
+}
+/* 置顶 / 取消置顶 */
+function togglePin(id) {
+  const i = ui.pinned.indexOf(id);
+  if (i >= 0) {
+    ui.pinned.splice(i, 1);
+  } else {
+    ui.pinned.unshift(id);
+    const e = state.entries.find(x => x.id === id); // 置顶行移到数据最前，CSV 行序与显示一致
+    if (e) state.entries = [e, ...state.entries.filter(x => x.id !== id)];
+  }
+  syncStoredOrder(); persistUi(); saveAll(); render();
+  toast(i >= 0 ? '已取消置顶' : '已置顶');
+}
+/* 手动顺序的本地记忆：CSV 行序在只读同步下可能写不回，故同时存于 localStorage */
+function syncStoredOrder() { ui.order = state.entries.map(e => e.id); }
+function applyStoredOrder() {
+  if (ui.sortMode !== 'manual' || !Array.isArray(ui.order) || !ui.order.length) return;
+  const byId = new Map(state.entries.map(e => [e.id, e]));
+  const seen = new Set();
+  const ordered = [];
+  for (const id of ui.order) { const e = byId.get(id); if (e && !seen.has(id)) { ordered.push(e); seen.add(id); } }
+  const rest = state.entries.filter(e => !seen.has(e.id));
+  state.entries = [...ordered, ...rest];
+}
+/* 应用新的显示顺序：ids 为当前可见行的新顺序，
+   可见行占据它们原本所在的槽位，被筛选隐藏的行保持原位不动。 */
+function applyListOrder(ids) {
+  const idset = new Set(ids);
+  const byId = new Map(state.entries.map(e => [e.id, e]));
+  const ordered = ids.map(id => byId.get(id)).filter(Boolean);
+  let k = 0;
+  state.entries = state.entries.map(e => idset.has(e.id) ? ordered[k++] : e);
+  syncStoredOrder();
+}
+/* 切换排序方式：切到手动时优先恢复本地记住的手动顺序，否则固化当前显示顺序 */
+function setSortMode(mode) {
+  if (mode === ui.sortMode) return;
+  ui.sortMode = mode;
+  if (mode === 'manual') {
+    if (ui.order.length) applyStoredOrder();
+    else applyListOrder(filteredEntries().map(e => e.id));
+  }
+  persistUi(); saveAll(); render();
 }
 function statusSelectHTML(e) {
   const c = tagColor(STATUS_COLOR, e.status); // 自定义状态自动从调色板取色
@@ -1125,14 +1196,17 @@ function locTagsHTML(loc) {
 function listTableHTML() {
   const list = filteredEntries();
   if (!list.length) return `<div class="empty-state" style="padding:36px 20px"><p>没有符合条件的投递记录</p></div>`;
+  const pinnedSet = new Set(ui.pinned);
   return `<div class="table-wrap"><table>
     <thead><tr>
+      <th class="drag-cell"></th>
       <th>企业名称</th><th>部门名称</th><th>当前状态</th><th>目标岗位</th>
       <th>所属行业</th><th>工作地点</th><th>最新日期</th>
-      <th>链接</th><th>备注</th><th style="width:76px">操作</th>
+      <th>链接</th><th>备注</th><th style="width:104px">操作</th>
     </tr></thead><tbody>
-    ${list.map(e => `<tr>
-      <td class="cell-strong">${esc(e.company)}</td>
+    ${list.map(e => `<tr data-id="${esc(e.id)}" class="${pinnedSet.has(e.id) ? 'pinned' : ''}">
+      <td class="drag-cell"><span class="drag-handle" title="拖动调整顺序">${I.grip}</span></td>
+      <td class="cell-strong">${esc(e.company)}${pinnedSet.has(e.id) ? ' <span class="loc-tag" style="color:var(--accent);border-color:#A7F3D0;background:var(--accent-bg)">置顶</span>' : ''}</td>
       <td class="cell-2">${esc(e.department) || '—'}</td>
       <td>${statusSelectHTML(e)}</td>
       <td>${esc(e.position)}</td>
@@ -1142,6 +1216,7 @@ function listTableHTML() {
       <td>${e.link ? `<a class="row-link" href="${esc(e.link)}" target="_blank" rel="noopener" title="${esc(e.link)}">${I.external}</a>` : '<span class="cell-3">—</span>'}</td>
       <td class="cell-2 notes-cell" title="${esc(e.notes)}">${esc(e.notes) || '—'}</td>
       <td><div class="row-actions">
+        <button class="icon-btn ${pinnedSet.has(e.id) ? 'pin-active' : ''}" data-action="pin" data-id="${esc(e.id)}" title="${pinnedSet.has(e.id) ? '取消置顶' : '置顶该行'}">${I.pin}</button>
         <button class="icon-btn" data-action="edit" data-id="${esc(e.id)}" title="编辑">${I.edit}</button>
         <button class="icon-btn danger" data-action="delete" data-id="${esc(e.id)}" title="删除">${I.trash}</button>
       </div></td>
@@ -1175,6 +1250,10 @@ function viewList() {
     <select class="select" id="statusFilter">
       <option value="">全部状态</option>
       ${allStatuses().map(s => `<option ${ui.statusFilter === s ? 'selected' : ''}>${esc(s)}</option>`).join('')}
+    </select>
+    <select class="select" id="sortMode" title="拖拽左侧手柄可调整顺序">
+      <option value="auto" ${ui.sortMode === 'auto' ? 'selected' : ''}>按最新日期排序</option>
+      <option value="manual" ${ui.sortMode === 'manual' ? 'selected' : ''}>手动顺序（拖拽调整）</option>
     </select>
     ${hasFilter ? `<button class="btn btn-sm" data-action="clear-filter">${I.x}清除筛选</button>` : ''}
   </div>
@@ -1369,6 +1448,7 @@ function bindEvents() {
       }
     }
     else if (act === 'clear-filter') { ui.search = ''; ui.industryFilter = ''; ui.statusFilter = ''; render(); }
+    else if (act === 'pin') togglePin(id);
     else if (act === 'enable-sync') enableSync();
     else if (act === 'reauth') reauth();
     else if (act === 'resync') manualResync();
@@ -1399,6 +1479,7 @@ function bindEvents() {
     if (e.target.id === 'industryFilter') { ui.industryFilter = e.target.value; render(); }
     else if (e.target.id === 'statusFilter') { ui.statusFilter = e.target.value; render(); }
     else if (e.target.id === 'mailFilter') { ui.mailFilter = e.target.value; render(); }
+    else if (e.target.id === 'sortMode') setSortMode(e.target.value);
     else if (e.target.matches('select.status-select')) changeStatus(e.target.dataset.id, e.target.value);
     else if (e.target.id === 'importFile') { importCSV(e.target.files[0]); e.target.value = ''; }
   });
@@ -1424,6 +1505,55 @@ function bindEvents() {
     col.classList.remove('drag-over');
     const id = e.dataTransfer.getData('text/plain');
     if (id) changeStatus(id, col.dataset.status);
+  });
+  /* 投递列表：拖拽手柄调整行顺序 */
+  content.addEventListener('mousedown', e => {
+    const h = e.target.closest('.drag-handle');
+    if (!h) return;
+    const tr = h.closest('tr[data-id]');
+    if (tr) tr.draggable = true;
+  });
+  content.addEventListener('dragstart', e => {
+    const tr = e.target.closest && e.target.closest('tr[data-id]');
+    if (!tr || !tr.draggable) return;
+    dragRowId = tr.dataset.id;
+    e.dataTransfer.setData('text/plain', 'row:' + dragRowId);
+    e.dataTransfer.effectAllowed = 'move';
+    requestAnimationFrame(() => tr.classList.add('dragging'));
+    /* 自动排序下首次拖动：切换为手动顺序，并把当前显示顺序固化为数据顺序（不重渲染，避免打断拖拽） */
+    if (ui.sortMode === 'auto') {
+      ui.sortMode = 'manual';
+      applyListOrder(filteredEntries().map(x => x.id));
+      persistUi();
+    }
+  });
+  content.addEventListener('dragover', e => {
+    if (!dragRowId) return;
+    const tr = e.target.closest && e.target.closest('tbody tr[data-id]');
+    if (!tr || tr.dataset.id === dragRowId) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    const rect = tr.getBoundingClientRect();
+    const before = e.clientY < rect.top + rect.height / 2;
+    $$('#listTableWrap tbody tr').forEach(r => r.classList.remove('drop-before', 'drop-after'));
+    tr.classList.add(before ? 'drop-before' : 'drop-after');
+  });
+  content.addEventListener('drop', e => {
+    if (!dragRowId) return;
+    const tr = e.target.closest && e.target.closest('tbody tr[data-id]');
+    if (!tr || tr.dataset.id === dragRowId) return;
+    e.preventDefault();
+    const rect = tr.getBoundingClientRect();
+    const before = e.clientY < rect.top + rect.height / 2;
+    const dragging = $(`#listTableWrap tbody tr[data-id="${CSS.escape(dragRowId)}"]`);
+    if (dragging) tr.parentNode.insertBefore(dragging, before ? tr : tr.nextSibling);
+    const ids = [...$$('#listTableWrap tbody tr[data-id]')].map(r => r.dataset.id);
+    applyListOrder(ids);
+    persistUi(); saveAll(); render();
+  });
+  content.addEventListener('dragend', () => {
+    $$('#listTableWrap tbody tr').forEach(r => { r.classList.remove('dragging', 'drop-before', 'drop-after'); r.draggable = false; });
+    dragRowId = '';
   });
   /* 模态框 */
   $('#entryForm').addEventListener('submit', submitEntry);
@@ -1477,6 +1607,7 @@ async function init() {
   loadCustomLists();
   loadLocal();
   loadUi();
+  applyStoredOrder(); // ui 加载后恢复手动顺序（loadLocal 时 ui 尚未就绪）
   buildNav();
   buildStatusOptions();
   $('#logoBox').innerHTML = I.logoMark;
