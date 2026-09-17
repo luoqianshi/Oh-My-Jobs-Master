@@ -28,6 +28,11 @@
   --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
   --font-serif:"Georgia","Songti SC","STSong","Noto Serif SC","SimSun",serif;
   --font-mono:ui-monospace,"SF Mono","Cascadia Code","JetBrains Mono",Consolas,monospace;
+  /* 人文无衬线展示字体（Cursor-Light-Warmth：CursorGothic 的系统级替代） */
+  --font-display:"Avenir Next","Segoe UI Variable Display","Corbel","Candara","Optima","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --cc-muted:rgba(38,37,30,.55);   /* 双色标题法的第二级灰 */
+  --cc-hairline:rgba(38,37,30,.06);/* 近隐形卡片分界 */
+  --cinnabar:#C8451D;              /* 朱砂橙：单点强调，仅用于悬停链接 */
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -174,21 +179,34 @@ tbody tr.pinned .drag-cell{box-shadow:inset 3px 0 0 var(--accent)}
 .k-meta{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--ink-3);font-family:var(--font-mono)}
 .k-empty{font-size:12px;color:var(--ink-3);text-align:center;padding:18px 0}
 
-/* 公司信息 */
-.ind-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.ind-tab{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;border:1px solid var(--border);background:var(--panel);cursor:pointer;font-size:12.5px;color:var(--ink-2);transition:background .15s,color .15s,border-color .15s,transform .12s}
-.ind-tab:hover{background:var(--panel-2);color:var(--ink)}
-.ind-tab:active{transform:scale(.97)}
-.ind-tab.active{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:500}
-.ind-tab .cnt{font-family:var(--font-mono);font-size:10.5px;opacity:.72}
-.company-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(236px,1fr));gap:14px}
-.company-card{position:relative;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:18px 18px 46px;min-height:124px;cursor:pointer;box-shadow:var(--shadow-sm);text-decoration:none;color:inherit;transition:border-color .15s,box-shadow .15s,transform .15s}
-.company-card:hover{border-color:#D8D8D1;box-shadow:var(--shadow-md);transform:translateY(-2px)}
-.cc-name{font-size:16px;font-weight:600;line-height:1.35;letter-spacing:.01em}
-.cc-link{font-size:11px;color:var(--ink-3);font-family:var(--font-mono);margin-top:6px;word-break:break-all;line-height:1.45}
-.cc-ind{position:absolute;left:14px;bottom:12px;font-size:11px;border-radius:999px;padding:2px 9px;background:#fff;white-space:nowrap}
-.cc-ext{position:absolute;right:14px;bottom:12px;color:var(--ink-3);opacity:0;transition:opacity .15s}
-.company-card:hover .cc-ext{opacity:1;color:var(--accent-hover)}
+/* ===== 公司信息（Cursor-Light-Warmth：画廊策展式分组 + 人文无衬线展示字体） ===== */
+.ind-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.ind-tab{display:inline-flex;align-items:center;gap:7px;padding:7px 15px;border-radius:999px;border:1px solid var(--border);background:transparent;cursor:pointer;font-family:var(--font-display);font-size:13px;font-weight:500;color:var(--ink-2);transition:background .14s cubic-bezier(.25,1,.5,1),color .14s,border-color .14s,transform .14s}
+.ind-tab:hover{background:rgba(38,37,30,.04);color:var(--ink)}
+.ind-tab:active{transform:translateY(1px)}
+.ind-tab.active{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.ind-tab .cnt{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em;color:var(--cc-muted);background:rgba(38,37,30,.05);border-radius:999px;padding:1px 7px;transition:color .14s,background .14s}
+.ind-tab.active .cnt{color:rgba(247,247,244,.72);background:rgba(247,247,244,.14)}
+/* 行业分组区段：画廊分区，一组一「展厅」 */
+.cc-section{margin-bottom:34px}
+.cc-section:last-child{margin-bottom:4px}
+.cc-section-head{display:flex;align-items:baseline;gap:12px;margin:0 2px 14px;padding-bottom:10px;border-bottom:1px solid var(--cc-hairline)}
+.cc-section-title{font-family:var(--font-display);font-size:19px;font-weight:400;letter-spacing:-.325px;color:var(--ink)}
+.cc-section-title .sub{color:var(--cc-muted)} /* 双色标题法：同行降级 */
+.cc-section-count{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--cc-muted)}
+.cc-section-line{flex:1}
+.company-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.company-card{position:relative;display:flex;flex-direction:column;background:#fff;border:1px solid var(--cc-hairline);border-radius:4px;padding:16px 16px 44px;min-height:118px;cursor:pointer;box-shadow:0 0 16px rgba(0,0,0,.02),0 0 8px rgba(0,0,0,.008);text-decoration:none;color:inherit;transition:border-color .14s cubic-bezier(.25,1,.5,1),box-shadow .14s,transform .14s}
+.company-card:hover{border-color:rgba(38,37,30,.2);box-shadow:0 0 24px rgba(0,0,0,.05),0 0 10px rgba(0,0,0,.02);transform:scale(.99) translateY(-1px)}
+.cc-name{font-family:var(--font-display);font-size:15.5px;font-weight:500;line-height:1.4;letter-spacing:-.1px;color:var(--ink)}
+.cc-link{font-size:11px;color:var(--cc-muted);font-family:var(--font-mono);letter-spacing:.01em;margin-top:6px;word-break:break-all;line-height:1.45}
+.cc-ind{position:absolute;left:12px;bottom:11px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em;border-radius:4px;padding:2px 8px;background:rgba(38,37,30,.05);color:var(--ink-2);white-space:nowrap;max-width:calc(100% - 60px);overflow:hidden;text-overflow:ellipsis}
+.cc-ext{position:absolute;right:12px;bottom:11px;color:var(--ink-3);opacity:0;transform:translateX(-2px);transition:opacity .14s cubic-bezier(.25,1,.5,1),transform .14s,color .14s}
+.company-card:hover .cc-ext{opacity:1;transform:translateX(0);color:var(--cinnabar)}
+@media (prefers-reduced-motion:reduce){
+  .company-card,.ind-tab{transition:opacity .14s}
+  .company-card:hover{transform:none}
+}
 
 /* 邮箱 */
 .mail-list{display:flex;flex-direction:column;gap:10px}
@@ -1349,22 +1367,42 @@ function filteredCompanies() {
 function companyCardHTML(c) {
   const link = c.links[0] || '';
   const firstInd = c.industries[0] || '';
-  const color = tagColor(INDUSTRY_COLOR, firstInd);
-  const href = link || '#';
   const mailto = link.startsWith('mailto:');
-  return `<a class="company-card" ${link ? `href="${esc(href)}" target="_blank" rel="noopener"` : 'data-nolink="1"'} title="${esc(c.name)}${link ? ` · ${esc(link)}` : ''}">
+  return `<a class="company-card" ${link ? `href="${esc(link)}" target="_blank" rel="noopener"` : 'data-nolink="1"'} title="${esc(c.name)}${link ? ` · ${esc(link)}` : ''}">
     <span class="cc-name">${esc(c.name)}</span>
     <span class="cc-link">${esc(mailto ? link.replace(/^mailto:/, '') : link.replace(/^https?:\/\//, '')) || '—'}</span>
-    ${firstInd ? `<span class="cc-ind" style="color:${color};border:1px solid ${color}55;background:${color}12">${esc(firstInd)}</span>` : ''}
+    ${firstInd ? `<span class="cc-ind">${esc(firstInd)}</span>` : ''}
     <span class="cc-ext">${I.external}</span>
   </a>`;
+}
+/* 画廊分区：「全部」且未搜索时按第一行业分组，每组一个带标题的区段；其余情况平铺 */
+function companyGridHTML() {
+  const list = filteredCompanies();
+  if (!list.length) return `<div class="empty-state" style="padding:36px 20px"><p>没有符合条件的公司</p></div>`;
+  const grouped = !ui.companyIndustry && !ui.companySearch.trim() && list.length > 12;
+  if (!grouped) return `<div class="company-grid">${list.map(companyCardHTML).join('')}</div>`;
+  const groups = [];
+  const byInd = new Map();
+  for (const c of list) {
+    const key = c.industries[0] || '未分类';
+    if (!byInd.has(key)) { byInd.set(key, []); groups.push(key); }
+    byInd.get(key).push(c);
+  }
+  return groups.map(g => `<section class="cc-section">
+    <div class="cc-section-head">
+      <h3 class="cc-section-title">${esc(g)} <span class="sub">· 校招官网</span></h3>
+      <span class="cc-section-line"></span>
+      <span class="cc-section-count">${byInd.get(g).length} 家</span>
+    </div>
+    <div class="company-grid">${byInd.get(g).map(companyCardHTML).join('')}</div>
+  </section>`).join('');
 }
 function viewCompanies() {
   const inds = companyIndustries();
   const total = state.companies.length;
   const list = filteredCompanies();
   const head = pageHead('COMPANIES · ' + dateLine(), '公司信息',
-    total ? `校招官网速查 · 共 ${total} 家公司${ui.companyIndustry || ui.companySearch ? `，当前筛选 ${list.length} 家` : ''} · 点击卡片直达招聘官网`
+    total ? `校招官网速查 · 共 ${total} 家公司${ui.companyIndustry || ui.companySearch ? `，当前筛选 ${list.length} 家` : ` · ${companyIndustries().length} 个行业`} · 点击卡片直达招聘官网`
           : '未找到 data/companies.csv 或文件为空',
     '');
   if (!total) return head + `<div class="empty-state"><p>请将公司信息表放在 data/companies.csv（列：公司名称 / 招聘链接 / 所属类型）</p></div>`;
@@ -1379,11 +1417,6 @@ function viewCompanies() {
       }).join('')}
     </div>
     <div id="companyArea">${companyGridHTML()}</div>`;
-}
-function companyGridHTML() {
-  const list = filteredCompanies();
-  return list.length ? `<div class="company-grid">${list.map(companyCardHTML).join('')}</div>`
-    : `<div class="empty-state" style="padding:36px 20px"><p>没有符合条件的公司</p></div>`;
 }
 function syncGuideHTML(text) {
   return `<div class="empty-state">
