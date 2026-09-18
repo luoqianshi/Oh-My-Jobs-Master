@@ -1,5 +1,5 @@
 {
-  "lastFetchedAt": "2026-09-16T15:07:44",
+  "lastFetchedAt": "2026-09-18T20:57:39",
   "emails": [
     {
       "id": "em_1789475867315_6535",
@@ -44,6 +44,42 @@
       "fromName": "AMiner",
       "subject": "AMiner 每日学术日报 | 2026-09-16",
       "date": "2026-09-16T13:08:42+08:00",
+      "snippet": "<html> <head> <meta charset=\"utf-8\"> </head> <body style=\"font-family: Microsoft YaHei, Helvetica, Arial, sans-serif; color:#2D3748;\"> <div style=\"max-width: 700px; margin: 0 auto; padding: 20px;\"> <div style=\"text-align:center; margin-bottom:8px;\"> <img src=\"https://fileserver.aminer.cn/sys/aminer/",
+      "processed": true,
+      "matchedEntryId": null,
+      "matchedAction": "ignored"
+    },
+    {
+      "id": "em_1789736259363_94fa",
+      "messageId": "<05c11644-3bab-4135-991e-d6ca0660dd1f@alibaba.com>",
+      "from": "xlj@cc.xljsci.com",
+      "fromName": "小绿鲸英文文献阅读器",
+      "subject": "小绿鲸3.0版本正式上线，最高120天会员免费送！",
+      "date": "2026-09-17T08:17:11+08:00",
+      "snippet": "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"UTF-8\"> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"> <meta name=\"format-detection\" content=\"telephone=no,email=no,address=no\"> <title>邮件模板</title> <style type=\"text/css\"> /* ========== H5 移动端适配 ========== */ body { marg",
+      "processed": true,
+      "matchedEntryId": null,
+      "matchedAction": "ignored"
+    },
+    {
+      "id": "em_1789736259503_290e",
+      "messageId": "<1d95e00d-a008-4288-bdeb-e2ddc82caffc@alibaba.com>",
+      "from": "alert@amail.aminer.cn",
+      "fromName": "AMiner",
+      "subject": "AMiner 每日学术日报 | 2026-09-17",
+      "date": "2026-09-17T13:09:28+08:00",
+      "snippet": "<html> <head> <meta charset=\"utf-8\"> </head> <body style=\"font-family: Microsoft YaHei, Helvetica, Arial, sans-serif; color:#2D3748;\"> <div style=\"max-width: 700px; margin: 0 auto; padding: 20px;\"> <div style=\"text-align:center; margin-bottom:8px;\"> <img src=\"https://fileserver.aminer.cn/sys/aminer/",
+      "processed": true,
+      "matchedEntryId": null,
+      "matchedAction": "ignored"
+    },
+    {
+      "id": "em_1789736259614_5de7",
+      "messageId": "<c648de81-c8e1-49c4-bdff-7af53ad57c09@alibaba.com>",
+      "from": "alert@amail.aminer.cn",
+      "fromName": "AMiner",
+      "subject": "AMiner 每日学术日报 | 2026-09-18",
+      "date": "2026-09-18T13:14:16+08:00",
       "snippet": "<html> <head> <meta charset=\"utf-8\"> </head> <body style=\"font-family: Microsoft YaHei, Helvetica, Arial, sans-serif; color:#2D3748;\"> <div style=\"max-width: 700px; margin: 0 auto; padding: 20px;\"> <div style=\"text-align:center; margin-bottom:8px;\"> <img src=\"https://fileserver.aminer.cn/sys/aminer/",
       "processed": true,
       "matchedEntryId": null,
