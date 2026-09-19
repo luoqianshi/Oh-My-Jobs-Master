@@ -6,3 +6,4 @@ data/jobmaster_data.csv
 
 # private
 .activity/
+.emails.json
