@@ -166,9 +166,15 @@ tbody tr.pinned .drag-cell{box-shadow:inset 3px 0 0 var(--accent)}
 .kanban{display:flex;gap:12px;overflow-x:auto;align-items:stretch;padding-bottom:8px;height:calc(100vh - 158px)}
 .kanban-col{min-width:228px;flex:1 0 228px;background:var(--panel-2);border:1px solid var(--border-light);border-radius:var(--radius);display:flex;flex-direction:column;max-height:100%;transition:border-color .15s,background .15s}
 .kanban-col.drag-over{border-color:var(--accent);background:#F0FAF6;box-shadow:0 0 0 3px rgba(16,185,129,.12)}
-.kanban-col-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border-light)}
+.kanban-col.drag-over-left{box-shadow:inset 3px 0 0 0 var(--accent)}
+.kanban-col.drag-over-right{box-shadow:inset -3px 0 0 0 var(--accent)}
+.kanban-col.dragging-col{opacity:.45;transform:scale(.97);transition:opacity .15s,transform .15s}
+.kanban-col-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border-light);cursor:grab;user-select:none}
+.kanban-col-head:active{cursor:grabbing}
 .col-title{font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;white-space:nowrap}
 .col-title .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.col-drag-handle{font-size:14px;color:var(--ink-3);cursor:grab;letter-spacing:-2px;line-height:1;flex-shrink:0;opacity:.5;transition:opacity .15s}
+.kanban-col-head:hover .col-drag-handle{opacity:1}
 .col-count{font-size:11px;font-family:var(--font-mono);color:var(--ink-2);background:#fff;border:1px solid var(--border-light);border-radius:999px;padding:1px 8px}
 .kanban-cards{padding:10px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;flex:1}
 .k-card{background:#fff;border:1px solid var(--border-light);border-radius:11px;padding:11px 13px;cursor:grab;box-shadow:var(--shadow-sm);transition:border-color .15s,box-shadow .15s,transform .15s}
@@ -419,11 +425,12 @@ const state = {
   httpCsvLM: '',        // CSV 的 Last-Modified（HTTP 模式变更检测）
   httpMailLM: ''        // emails.json 的 Last-Modified
 };
-const ui = { module:'list', search:'', industryFilter:'', statusFilter:'', mailFilter:'unprocessed', width:228, collapsed:false, sortMode:'auto', pinned:[], order:[], companySearch:'', companyIndustry:'' };
+const ui = { module:'list', search:'', industryFilter:'', statusFilter:'', mailFilter:'unprocessed', width:228, collapsed:false, sortMode:'auto', pinned:[], order:[], companySearch:'', companyIndustry:'', kanbanOrder:[] };
 let emailsMtime = 0;
 let modalContext = null;   // 邮件创建投递时的上下文 { emailId }
 let watchersStarted = false;
 let dragRowId = '';        // 列表拖拽排序：当前被拖动的行 id
+let dragColStatus = '';    // 看板列拖拽排序：当前被拖动的列状态
 
 /* ==================== 工具函数 ==================== */
 const $ = sel => document.querySelector(sel);
@@ -624,13 +631,14 @@ function loadLocal() {
   } catch (e) { state.entries = []; }
   applyStoredOrder(); // 手动顺序模式：按本地记忆的行序恢复
 }
-function persistUi() { try { localStorage.setItem(LS_UI_KEY, JSON.stringify({ module:ui.module, width:ui.width, collapsed:ui.collapsed, sortMode:ui.sortMode, pinned:ui.pinned, order:ui.order })); } catch (e) {} }
+function persistUi() { try { localStorage.setItem(LS_UI_KEY, JSON.stringify({ module:ui.module, width:ui.width, collapsed:ui.collapsed, sortMode:ui.sortMode, pinned:ui.pinned, order:ui.order, kanbanOrder:ui.kanbanOrder })); } catch (e) {} }
 function loadUi() {
   try { Object.assign(ui, JSON.parse(localStorage.getItem(LS_UI_KEY)) || {}); } catch (e) {}
   if (!['list','kanban','companies','mail','data'].includes(ui.module)) ui.module = 'list';
   if (!['auto','manual'].includes(ui.sortMode)) ui.sortMode = 'auto';
   if (!Array.isArray(ui.pinned)) ui.pinned = [];
   if (!Array.isArray(ui.order)) ui.order = [];
+  if (!Array.isArray(ui.kanbanOrder)) ui.kanbanOrder = [];
 }
 
 /* ==================== IndexedDB（保存目录句柄） ==================== */
@@ -1297,15 +1305,28 @@ function viewList() {
   </div>
   <div id="listTableWrap">${listTableHTML()}</div>`;
 }
+/* 看板列按保存的顺序排列；新出现的状态追加到末尾 */
+function kanbanStatuses() {
+  const all = allStatuses();
+  if (!ui.kanbanOrder.length) return all;
+  const saved = ui.kanbanOrder.filter(s => all.includes(s));
+  const rest = all.filter(s => !saved.includes(s));
+  return [...saved, ...rest];
+}
+function saveKanbanOrder(statuses) {
+  ui.kanbanOrder = [...statuses];
+  persistUi();
+}
 function viewKanban() {
-  return pageHead('BOARD · ' + dateLine(), '进度看板', '拖拽卡片即可变更进度，点击卡片编辑详情',
+  const statuses = kanbanStatuses();
+  return pageHead('BOARD · ' + dateLine(), '进度看板', '拖拽卡片变更进度，拖拽列头调整顺序，点击卡片编辑详情',
     `<button class="btn btn-primary" data-action="add">${I.plus}新增投递</button>`) +
-  `<div class="kanban">${allStatuses().map(st => {
+  `<div class="kanban">${statuses.map(st => {
     const list = state.entries.filter(e => e.status === st)
       .sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
     return `<div class="kanban-col" data-status="${esc(st)}">
-      <div class="kanban-col-head">
-        <span class="col-title"><span class="dot" style="background:${tagColor(STATUS_COLOR, st)}"></span>${esc(st)}</span>
+      <div class="kanban-col-head" draggable="true" data-col-status="${esc(st)}">
+        <span class="col-title"><span class="col-drag-handle" title="拖拽调整列顺序">⠿</span><span class="dot" style="background:${tagColor(STATUS_COLOR, st)}"></span>${esc(st)}</span>
         <span class="col-count">${list.length}</span>
       </div>
       <div class="kanban-cards">
@@ -1634,28 +1655,74 @@ function bindEvents() {
     else if (e.target.matches('select.status-select')) changeStatus(e.target.dataset.id, e.target.value);
     else if (e.target.id === 'importFile') { importCSV(e.target.files[0]); e.target.value = ''; }
   });
-  /* 看板拖拽 */
+  /* 看板拖拽：卡片跨列变更状态 + 列头拖拽调整列顺序 */
   content.addEventListener('dragstart', e => {
+    const colHead = e.target.closest('.kanban-col-head');
     const card = e.target.closest('.k-card');
-    if (!card) return;
-    e.dataTransfer.setData('text/plain', card.dataset.id);
-    e.dataTransfer.effectAllowed = 'move';
+    if (colHead) {
+      /* 列拖拽 */
+      dragColStatus = colHead.dataset.colStatus || '';
+      e.dataTransfer.setData('text/col-status', dragColStatus);
+      e.dataTransfer.effectAllowed = 'move';
+      const col = colHead.closest('.kanban-col');
+      if (col) requestAnimationFrame(() => col.classList.add('dragging-col'));
+    } else if (card) {
+      /* 卡片拖拽 */
+      dragColStatus = '';
+      e.dataTransfer.setData('text/plain', card.dataset.id);
+      e.dataTransfer.effectAllowed = 'move';
+    }
   });
   content.addEventListener('dragover', e => {
     const col = e.target.closest('.kanban-col');
-    if (col) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; col.classList.add('drag-over'); }
+    if (!col) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (dragColStatus) {
+      /* 列拖拽：根据鼠标位置显示左/右侧指示 */
+      const rect = col.getBoundingClientRect();
+      const midX = rect.left + rect.width / 2;
+      col.classList.remove('drag-over-left', 'drag-over-right');
+      col.classList.add(e.clientX < midX ? 'drag-over-left' : 'drag-over-right');
+    } else {
+      col.classList.add('drag-over');
+    }
   });
   content.addEventListener('dragleave', e => {
     const col = e.target.closest('.kanban-col');
-    if (col && !col.contains(e.relatedTarget)) col.classList.remove('drag-over');
+    if (col && !col.contains(e.relatedTarget)) {
+      col.classList.remove('drag-over', 'drag-over-left', 'drag-over-right');
+    }
+  });
+  content.addEventListener('dragend', () => {
+    dragColStatus = '';
+    document.querySelectorAll('.kanban-col').forEach(c => c.classList.remove('dragging-col', 'drag-over', 'drag-over-left', 'drag-over-right'));
   });
   content.addEventListener('drop', e => {
     const col = e.target.closest('.kanban-col');
     if (!col) return;
     e.preventDefault();
-    col.classList.remove('drag-over');
-    const id = e.dataTransfer.getData('text/plain');
-    if (id) changeStatus(id, col.dataset.status);
+    const targetStatus = col.dataset.status;
+    col.classList.remove('drag-over', 'drag-over-left', 'drag-over-right');
+    if (dragColStatus && dragColStatus !== targetStatus) {
+      /* 列重排 */
+      const statuses = kanbanStatuses();
+      const fromIdx = statuses.indexOf(dragColStatus);
+      const toIdx = statuses.indexOf(targetStatus);
+      if (fromIdx < 0 || toIdx < 0) return;
+      const rect = col.getBoundingClientRect();
+      const insertBefore = e.clientX < rect.left + rect.width / 2;
+      statuses.splice(fromIdx, 1);
+      const newToIdx = statuses.indexOf(targetStatus);
+      statuses.splice(insertBefore ? newToIdx : newToIdx + 1, 0, dragColStatus);
+      saveKanbanOrder(statuses);
+      dragColStatus = '';
+      render();
+    } else if (!dragColStatus) {
+      /* 卡片跨列 */
+      const id = e.dataTransfer.getData('text/plain');
+      if (id) changeStatus(id, targetStatus);
+    }
   });
   /* 投递列表：拖拽手柄调整行顺序 */
   content.addEventListener('mousedown', e => {
