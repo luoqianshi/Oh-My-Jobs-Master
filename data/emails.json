@@ -1,5 +1,5 @@
 {
-  "lastFetchedAt": "2026-09-20T22:50:02",
+  "lastFetchedAt": "2026-09-21T10:06:17",
   "emails": [
     {
       "id": "em_1789915802622_803a",
@@ -12,6 +12,66 @@
       "processed": true,
       "matchedEntryId": "jm_1789915899840_e001",
       "matchedAction": "新增投递"
+    },
+    {
+      "id": "em_1789956377038_e131",
+      "messageId": "<472450775.1966542.1789890456328.JavaMail.cmbchina@mailm1ph.message.cmbchina.com>",
+      "from": "95555@message.cmbchina.com",
+      "fromName": "",
+      "subject": "邮箱验证码",
+      "date": "2026-09-20T15:47:36+08:00",
+      "snippet": "尊敬的用户，您的登录邮箱验证码为：152950，请勿泄露给他人，如非本人操作，请忽略此信息。感谢您对我司的关注与支持！[招银网络科技]",
+      "processed": true,
+      "matchedEntryId": null,
+      "matchedAction": "ignored"
+    },
+    {
+      "id": "em_1789956377102_2493",
+      "messageId": "<1789913078025_54283_246109_40558.sc-10-9-19-46-inbound0@mail.mokahr.com>",
+      "from": "kehua@mail.joinus.cc",
+      "fromName": "科华数据股份有限公司招聘",
+      "subject": "一次性验证码",
+      "date": "2026-09-20T22:04:38+08:00",
+      "snippet": "<!DOCTYPE html><html dir=\"ltr\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"view",
+      "processed": true,
+      "matchedEntryId": null,
+      "matchedAction": "ignored"
+    },
+    {
+      "id": "em_1789956377351_4fbd",
+      "messageId": "<270356519.2061090.1789951554752.JavaMail.cmbchina@mailm1ph.message.cmbchina.com>",
+      "from": "95555@message.cmbchina.com",
+      "fromName": "",
+      "subject": "【通知】招商银行·招银网络科技2027届秋季校园招聘素质测评通知",
+      "date": "2026-09-21T08:45:54+08:00",
+      "snippet": "<p style=\"margin-bottom: 10px; text-wrap: wrap; text-align: center; line-height: 1.5em;\"><span style=\"font-family: 微软雅黑, &quot;Microsoft YaHei&quot;; font-size: 20px;\"><strong>招商银行·招银网络科技</strong></span></p><p style=\"margin-bottom: 10px; text-wrap: wrap; text-align: center; line-height: 1.5em;\"><spa",
+      "processed": true,
+      "matchedEntryId": "jm_1789542958200_18e1",
+      "matchedAction": "更新进度"
+    },
+    {
+      "id": "em_1789956377491_6d62",
+      "messageId": "<1164851747.1533633.1789951580567.JavaMail.cmbchina@mailm1sh.message.cmbchina.com>",
+      "from": "95555@message.cmbchina.com",
+      "fromName": "",
+      "subject": "【通知】招商银行·招银网络科技2027届秋季校园招聘技术测评通知",
+      "date": "2026-09-21T08:46:20+08:00",
+      "snippet": "<p style=\"text-align: center; text-indent: 2em;\"><span style=\"font-size: 18px;\"><strong>招商银行·招银网络科技</strong></span></p><p style=\"text-align: center; text-indent: 2em;\"><span style=\"font-size: 18px;\"><strong>2027届秋季校园招聘技术测评通知</strong></span></p><p style=\"text-indent: 0em;\">骆锟宏，您好！</p><p style=\"text-i",
+      "processed": true,
+      "matchedEntryId": "jm_1789542958200_18e1",
+      "matchedAction": "更新进度"
+    },
+    {
+      "id": "em_1789956377605_f709",
+      "messageId": "<1789952971143_54283_246109_2279.sc-10-9-138-42-inbound0@mail.mokahr.com>",
+      "from": "kehua@mail.joinus.cc",
+      "fromName": "科华数据股份有限公司招聘",
+      "subject": "科华邀请您完成测评",
+      "date": "2026-09-21T09:09:31+08:00",
+      "snippet": "<!DOCTYPE html><html lang=\"zh-CN\" dir=\"ltr\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><me",
+      "processed": true,
+      "matchedEntryId": "jm_1789806129481_c31b",
+      "matchedAction": "更新进度"
     }
   ]
 }
