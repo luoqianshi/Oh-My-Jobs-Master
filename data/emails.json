@@ -1,5 +1,5 @@
 {
-  "lastFetchedAt": "2026-09-21T10:06:17",
+  "lastFetchedAt": "2026-09-22T17:14:44",
   "emails": [
     {
       "id": "em_1789915802622_803a",
@@ -72,6 +72,54 @@
       "processed": true,
       "matchedEntryId": "jm_1789806129481_c31b",
       "matchedAction": "更新进度"
+    },
+    {
+      "id": "em_1789991427344_66a6",
+      "messageId": "<743e6024-6341-4fa8-b05f-f9f9386958e6@alibaba.com>",
+      "from": "alert@amail.aminer.cn",
+      "fromName": "AMiner",
+      "subject": "AMiner 每日学术日报 | 2026-09-21",
+      "date": "2026-09-21T13:14:26+08:00",
+      "snippet": "<html> <head> <meta charset=\"utf-8\"> </head> <body style=\"font-family: Microsoft YaHei, Helvetica, Arial, sans-serif; color:#2D3748;\"> <div style=\"max-width: 700px; margin: 0 auto; padding: 20px;\"> <div style=\"text-align:center; margin-bottom:8px;\"> <img src=\"https://fileserver.aminer.cn/sys/aminer/",
+      "processed": true,
+      "matchedEntryId": null,
+      "matchedAction": "ignored"
+    },
+    {
+      "id": "em_1789991427464_cfd4",
+      "messageId": "<1789977092321_36926_105914_51656.sc-10-9-185-168-inbound0@test.acmcoder.com>",
+      "from": "exam@test.acmcoder.com",
+      "fromName": "小红书校招",
+      "subject": "【小红书】- 校园招聘在线考试邀请函！",
+      "date": "2026-09-21T15:51:32+08:00",
+      "snippet": "<div style=\"background:#f1f1f1; width:100%;min-width: 910px; padding: 20px 0;FONT-FAMILY: 微软雅黑, PingFang SC, Arial, system, -apple-system, sans-serif;\"><div style=\"background: rgb(255, 255, 255); width: 860px; margin: auto; font-size: 14px; padding-top: 30px;\"><div style=\"margin: 0px auto; overflow:",
+      "processed": true,
+      "matchedEntryId": "jm_1789491038452_f381",
+      "matchedAction": "更新进度"
+    },
+    {
+      "id": "em_1790068484615_bdd5",
+      "messageId": "<153ad73c-5725-4d42-92e0-b1a756396e08@alibaba.com>",
+      "from": "alert@amail.aminer.cn",
+      "fromName": "AMiner",
+      "subject": "AMiner 每日学术日报 | 2026-09-22",
+      "date": "2026-09-22T13:12:22+08:00",
+      "snippet": "<html> <head> <meta charset=\"utf-8\"> </head> <body style=\"font-family: Microsoft YaHei, Helvetica, Arial, sans-serif; color:#2D3748;\"> <div style=\"max-width: 700px; margin: 0 auto; padding: 20px;\"> <div style=\"text-align:center; margin-bottom:8px;\"> <img src=\"https://fileserver.aminer.cn/sys/aminer/",
+      "processed": false,
+      "matchedEntryId": null,
+      "matchedAction": null
+    },
+    {
+      "id": "em_1790068484672_58a4",
+      "messageId": "<msg-relay--e-1508495397.66652.1790068369327@weiyun-message-default-75b49876dd-dwgp2>",
+      "from": "talentsystem@baidu.com",
+      "fromName": "",
+      "subject": "百度在线网络技术（北京）有限公司邀您参加在线笔试考试",
+      "date": "2026-09-22T17:12:49+08:00",
+      "snippet": "<p><div class=\"_email_template_style_wrapper\" style=\"\"><table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"emailTb1 emailTb2 emailTable3 centerTable\" style=\"width: 100%;background-image: initial;background-position-x: initial;background-position-y: initial;background-size: initial;background-re",
+      "processed": false,
+      "matchedEntryId": null,
+      "matchedAction": null
     }
   ]
 }
