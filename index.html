@@ -60,7 +60,12 @@ button{font-family:inherit}
 .nav-item:hover{background:var(--panel-2);color:var(--ink)}
 .nav-item.active{background:var(--ink);color:#fff;font-weight:500;box-shadow:var(--shadow-sm)}
 .sidebar.collapsed .nav-item{justify-content:center;padding:10px 0}
-.sidebar-footer{padding:12px;border-top:1px solid var(--border-light)}
+.sidebar-footer{padding:12px;border-top:1px solid var(--border-light);display:flex;flex-direction:column;gap:8px}
+.gh-link{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--border-light);background:var(--panel-2);border-radius:10px;font-size:11.5px;color:var(--ink-2);white-space:nowrap;text-decoration:none;transition:border-color .15s,background .15s,color .15s}
+.gh-link:hover{border-color:var(--border);background:#fff;color:var(--ink)}
+.gh-link svg{flex-shrink:0;color:var(--ink)}
+.sidebar.collapsed .gh-link{justify-content:center;padding:8px 0;border:none;background:none}
+.sidebar.collapsed .gh-text{display:none}
 .sidebar.collapsed .sidebar-footer{padding:12px 8px}
 .sync-indicator{display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px 10px;border:1px solid var(--border-light);background:var(--panel-2);border-radius:10px;font-size:11.5px;color:var(--ink-2);white-space:nowrap;font-family:var(--font-mono)}
 .sync-indicator:hover{border-color:var(--border)}
@@ -225,6 +230,46 @@ tbody tr.pinned .drag-cell{box-shadow:inset 3px 0 0 var(--accent)}
 .mail-date{font-size:11px;color:var(--ink-3);white-space:nowrap;flex-shrink:0;font-family:var(--font-mono)}
 .mail-sub{font-size:13px;color:var(--ink-2);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mail-foot{display:flex;gap:8px;margin-top:11px;align-items:center;flex-wrap:wrap}
+.mail-row-actions{margin-left:auto;display:flex;gap:2px}
+
+/* 邮箱：按公司分组 */
+.mail-groups{display:flex;flex-direction:column;gap:12px}
+.mail-group{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden;transition:border-color .15s,box-shadow .15s}
+.mail-group:hover{border-color:#D8D8D1}
+.mail-group.pinned{border-color:#A7F3D0}
+.mail-group.pinned .mg-head{background:#F4FBF7}
+.mail-group.drop-before{box-shadow:0 -2px 0 var(--accent),var(--shadow-sm)}
+.mail-group.drop-after{box-shadow:0 2px 0 var(--accent),var(--shadow-sm)}
+.mail-group.dragging{opacity:.4}
+.mg-head{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;user-select:none}
+.mg-drag{display:inline-flex;color:#CFCEC6;cursor:grab;border-radius:6px;padding:2px;flex-shrink:0;transition:color .15s}
+.mg-drag:hover{color:var(--ink-2)}
+.mg-drag:active{cursor:grabbing}
+.mg-name{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;max-width:260px}
+.mg-pin-tag{font-size:10.5px;color:var(--accent);border:1px solid #A7F3D0;background:var(--accent-bg);border-radius:999px;padding:0 7px;margin-left:4px;font-weight:500}
+.mg-count{font-size:11px;font-family:var(--font-mono);color:var(--ink-2);background:var(--panel-2);border:1px solid var(--border-light);border-radius:999px;padding:1px 8px;flex-shrink:0}
+.mg-unread{font-size:10.5px;font-family:var(--font-mono);color:var(--accent-hover);background:var(--accent-bg);border-radius:999px;padding:1px 8px;flex-shrink:0}
+.mg-senders{font-size:11.5px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:30px}
+.mg-date{font-size:11px;color:var(--ink-3);font-family:var(--font-mono);white-space:nowrap;flex-shrink:0}
+.mg-actions{display:flex;gap:2px;flex-shrink:0}
+.mg-chev{transition:transform .18s}
+.mail-group.collapsed .mg-chev{transform:rotate(-90deg)}
+.mg-body{display:flex;flex-direction:column;gap:10px;padding:12px 16px 14px;border-top:1px solid var(--border-light)}
+.mail-group.collapsed .mg-body{display:none}
+.mg-body .mail-row{box-shadow:none;border-color:var(--border-light)}
+.mg-body .mail-row:hover{border-color:#D8D8D1}
+
+/* 黑名单管理 */
+.modal-wide{width:640px}
+.bl-desc{font-size:12.5px;color:var(--ink-2);line-height:1.7}
+.bl-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.bl-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--border-light);border-radius:10px;background:var(--panel-2)}
+.bl-tag{font-size:10.5px;border-radius:999px;padding:2px 9px;border:1px solid;white-space:nowrap;flex-shrink:0}
+.bl-val{font-family:var(--font-mono);font-size:12px;word-break:break-all;flex:1;min-width:0}
+.bl-meta{font-size:11px;color:var(--ink-3);white-space:nowrap;flex-shrink:0}
+.bl-add{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.bl-add .input{flex:1;min-width:180px}
+.bl-empty{font-size:12.5px;color:var(--ink-3);text-align:center;padding:22px 0;border:1px dashed var(--border);border-radius:12px;margin-top:12px}
 
 /* 数据管理 */
 .data-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
@@ -292,6 +337,9 @@ textarea{resize:vertical;font-family:inherit}
     </div>
     <nav class="nav" id="nav"></nav>
     <div class="sidebar-footer">
+      <a class="gh-link" id="ghLink" href="https://github.com/luoqianshi/Oh-My-Jobs-Master" target="_blank" rel="noopener" title="GitHub 代码仓库">
+        <span class="gh-icon"></span><span class="gh-text">GitHub 代码仓库</span>
+      </a>
       <div class="sync-indicator" id="syncIndicator" title="数据同步状态，点击前往数据管理">
         <span class="sync-dot"></span><span class="sync-text">未启用同步</span>
       </div>
@@ -336,6 +384,33 @@ textarea{resize:vertical;font-family:inherit}
   </div>
 </div>
 
+<!-- 发件人黑名单 模态框 -->
+<div class="modal-backdrop" id="blModalBackdrop">
+  <div class="modal modal-wide">
+    <div class="modal-head">
+      <h3>发件人黑名单</h3>
+      <button class="icon-btn" id="blModalClose" type="button"></button>
+    </div>
+    <div class="modal-body">
+      <p class="bl-desc">黑名单按<b>发件人来源</b>过滤邮件：邮箱同步脚本（fetch_emails.py）拉取时会自动跳过命中的邮件，页面中已有的命中邮件也会自动隐藏，避免与秋招无关的邮件（订阅日报、验证码、广告等）进入收件箱。支持三种规则：<b>发件地址</b>（精确匹配）、<b>发件域名</b>（匹配该域名及其子域名）、<b>发件人关键词</b>（发件地址或发件名称包含即命中）。</p>
+      <div id="blList"></div>
+      <div class="bl-add">
+        <select class="select" id="blType">
+          <option value="address">发件地址</option>
+          <option value="domain">发件域名</option>
+          <option value="keyword">关键词</option>
+        </select>
+        <input class="input" id="blValue" placeholder="如 alert@amail.aminer.cn / aminer.cn / AMiner">
+        <button class="btn btn-primary" type="button" id="blAddBtn">添加规则</button>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <span class="form-meta" id="blMeta"></span>
+      <button type="button" class="btn" data-bl-close>关闭</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script>
@@ -349,6 +424,25 @@ const FIELD_ALIASES = { type: 'industry', appliedAt: 'latestDate' }; // 旧表�
 const CSV_FILENAME = 'jobmaster_data.csv';
 const EMAILS_FILENAME = 'emails.json';
 const COMPANIES_FILENAME = 'companies.csv';
+const BLACKLIST_FILENAME = 'email_blacklist.json';
+const LS_BLACKLIST_KEY = 'jobmaster_blacklist_v1'; // 发件人黑名单（本地缓存，镜像到 data/）
+const GITHUB_REPO_URL = 'https://github.com/luoqianshi/Oh-My-Jobs-Master';
+/* 第三方招聘 / 测评平台域名：代发邮件不能用域名识别公司，需从发件名称 / 主题推断真实雇主 */
+const ATS_DOMAINS = ['mokahr.com','ibeisen.com','acmcoder.com','joinus.cc','nowcoder.net','liepin.com','zhaopin.com','51job.com','lagou.com','kanzhun.com','hunt.com.cn','maimai.cn'];
+/* 常见企业邮箱域名 → 公司品牌名（兜底映射；优先使用投递记录与主题识别） */
+const DOMAIN_BRANDS = {
+  'lenovo.com':'联想','baidu.com':'百度','cmbchina.com':'招商银行','cmb.com':'招商银行',
+  'aminer.cn':'AMiner','aminer.org':'AMiner','tencent.com':'腾讯','alibaba.com':'阿里巴巴',
+  'antgroup.com':'蚂蚁集团','bytedance.com':'字节跳动','xiaohongshu.com':'小红书','huawei.com':'华为',
+  'xiaomi.com':'小米','meituan.com':'美团','jd.com':'京东','didiglobal.com':'滴滴',
+  'kuaishou.cn':'快手','bilibili.com':'哔哩哔哩','kehua.com':'科华数据','yealink.com':'亿联网络',
+  'midea.com':'美的','byd.com':'比亚迪','geely.com':'吉利','gwm.com.cn':'长城汽车',
+  'nio.com':'蔚来','lixiang.com':'理想汽车','xpeng.com':'小鹏','catl.com':'宁德时代',
+  'icbc.com.cn':'工商银行','abchina.com':'农业银行','boc.cn':'中国银行','ccb.com':'建设银行',
+  'bankcomm.com':'交通银行','psbc.com':'邮储银行','spdb.com.cn':'浦发银行','citicbank.com':'中信银行',
+  'cebbank.com':'光大银行','cib.com.cn':'兴业银行','pingan.com':'中国平安'
+};
+const BL_TYPE_LABEL = { address:'发件地址', domain:'发件域名', keyword:'关键词' };
 const DATA_DIR = 'data';   // 项目根目录下的默认数据目录（HTTP 同步模式）
 const LS_KEY = 'jobmaster_data_v1';
 const LS_UI_KEY = 'jobmaster_ui_v1';
@@ -400,7 +494,13 @@ const I = {
   alert: svg('<circle cx="12" cy="12" r="9"/><path d="M12 8v4.5M12 16h.01"/>', 14),
   /* 拖拽手柄（6 点）与置顶图钉 */
   grip: svg('<circle cx="9" cy="6" r="1.1" fill="currentColor" stroke="none"/><circle cx="15" cy="6" r="1.1" fill="currentColor" stroke="none"/><circle cx="9" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="9" cy="18" r="1.1" fill="currentColor" stroke="none"/><circle cx="15" cy="18" r="1.1" fill="currentColor" stroke="none"/>', 15),
-  pin: svg('<path d="M15.5 3.5 20.5 8.5l-3 1-1.5 4.5L9 11l-4.5 4.5"/><path d="M9 11 4.2 8.3l1-3 4.5 1.5"/>', 15)
+  pin: svg('<path d="M15.5 3.5 20.5 8.5l-3 1-1.5 4.5L9 11l-4.5 4.5"/><path d="M9 11 4.2 8.3l1-3 4.5 1.5"/>', 15),
+  /* 向下折叠箭头 */
+  chevDown: svg('<path d="m6 9 6 6 6-6"/>', 15),
+  /* 拉黑（禁止符） */
+  ban: svg('<circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/>'),
+  /* GitHub 标识（填充式） */
+  github: `<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.17c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.68-1.28-1.68-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 2.9-.39c.98 0 1.97.13 2.9.39 2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>`
 };
 
 /* ==================== 状态 ==================== */
@@ -420,17 +520,21 @@ const state = {
   writing: false,
   pendingWrite: false,
   emailsDirty: false,
+  blacklistRules: [],  // 发件人黑名单 [{type:address|domain|keyword, value, createdAt}]
+  blacklistDirty: false,
   serverMode: false,    // HTTP 同步模式：页面经服务器访问时自动同步 ./data
   serverWritable: null, // HTTP 写回是否可用（PUT）；false 时降级为只读同步
   httpCsvLM: '',        // CSV 的 Last-Modified（HTTP 模式变更检测）
   httpMailLM: ''        // emails.json 的 Last-Modified
 };
-const ui = { module:'list', search:'', industryFilter:'', statusFilter:'', mailFilter:'unprocessed', width:228, collapsed:false, sortMode:'auto', pinned:[], order:[], companySearch:'', companyIndustry:'', kanbanOrder:[] };
+const ui = { module:'list', search:'', industryFilter:'', statusFilter:'', mailFilter:'unprocessed', width:228, collapsed:false, sortMode:'auto', pinned:[], order:[], companySearch:'', companyIndustry:'', kanbanOrder:[], mailSortMode:'auto', mailPinned:[], mailOrder:[], mailCollapsed:[] };
 let emailsMtime = 0;
+let blacklistMtime = 0;
 let modalContext = null;   // 邮件创建投递时的上下文 { emailId }
 let watchersStarted = false;
 let dragRowId = '';        // 列表拖拽排序：当前被拖动的行 id
 let dragColStatus = '';    // 看板列拖拽排序：当前被拖动的列状态
+let dragMailGroup = '';    // 邮箱公司组拖拽：当前被拖动的公司组 key
 
 /* ==================== 工具函数 ==================== */
 const $ = sel => document.querySelector(sel);
@@ -631,14 +735,16 @@ function loadLocal() {
   } catch (e) { state.entries = []; }
   applyStoredOrder(); // 手动顺序模式：按本地记忆的行序恢复
 }
-function persistUi() { try { localStorage.setItem(LS_UI_KEY, JSON.stringify({ module:ui.module, width:ui.width, collapsed:ui.collapsed, sortMode:ui.sortMode, pinned:ui.pinned, order:ui.order, kanbanOrder:ui.kanbanOrder })); } catch (e) {} }
+function persistUi() { try { localStorage.setItem(LS_UI_KEY, JSON.stringify({ module:ui.module, width:ui.width, collapsed:ui.collapsed, sortMode:ui.sortMode, pinned:ui.pinned, order:ui.order, kanbanOrder:ui.kanbanOrder, mailSortMode:ui.mailSortMode, mailPinned:ui.mailPinned, mailOrder:ui.mailOrder, mailCollapsed:ui.mailCollapsed })); } catch (e) {} }
 function loadUi() {
   try { Object.assign(ui, JSON.parse(localStorage.getItem(LS_UI_KEY)) || {}); } catch (e) {}
   if (!['list','kanban','companies','mail','data'].includes(ui.module)) ui.module = 'list';
   if (!['auto','manual'].includes(ui.sortMode)) ui.sortMode = 'auto';
+  if (!['auto','manual'].includes(ui.mailSortMode)) ui.mailSortMode = 'auto';
   if (!Array.isArray(ui.pinned)) ui.pinned = [];
   if (!Array.isArray(ui.order)) ui.order = [];
   if (!Array.isArray(ui.kanbanOrder)) ui.kanbanOrder = [];
+  ['mailPinned','mailOrder','mailCollapsed'].forEach(k => { if (!Array.isArray(ui[k])) ui[k] = []; });
 }
 
 /* ==================== IndexedDB（保存目录句柄） ==================== */
@@ -717,6 +823,7 @@ async function reloadFromFiles(isInit) {
     persistLocal();
   }
   await loadEmails(true);
+  await loadBlacklistFile();
 }
 let writeTimer = null;
 function saveAll() {
@@ -746,6 +853,7 @@ async function writeCSVNow() {
     state.pendingWrite = false;
     state.syncStatus = 'ok'; state.syncError = '';
     if (state.emailsDirty) await writeEmailsNow();
+    if (state.blacklistDirty) await writeBlacklistNow();
   } catch (e) {
     state.syncStatus = 'error'; state.syncError = e.message || String(e);
   } finally {
@@ -776,6 +884,29 @@ async function loadEmails(force) {
     return true;
   } catch (e) { return false; } // 文件不存在时静默
 }
+async function writeBlacklistNow() {
+  if (!state.dirHandle) return;
+  const fh = await state.dirHandle.getFileHandle(BLACKLIST_FILENAME, { create: true });
+  const w = await fh.createWritable();
+  await w.write(serializeBlacklist());
+  await w.close();
+  const file = await fh.getFile();
+  blacklistMtime = file.lastModified;
+  state.blacklistDirty = false;
+}
+async function loadBlacklistFile() {
+  if (!state.dirHandle) return false;
+  try {
+    const fh = await state.dirHandle.getFileHandle(BLACKLIST_FILENAME, { create: false });
+    const file = await fh.getFile();
+    blacklistMtime = file.lastModified;
+    normalizeBlacklistRules(JSON.parse(await file.text()));
+    return true;
+  } catch (e) {
+    if (state.blacklistRules.length) state.blacklistDirty = true; // 本地已有规则而文件缺失：补写
+    return false;
+  }
+}
 
 /* ==================== 同步层（HTTP 模式：项目根目录 ./data） ====================
    页面经本地/预览服务器访问时，自动对 ./data 启用同步：
@@ -800,6 +931,7 @@ async function detectServerSync() {
     state.syncStatus = 'ok';
     state.lastReadAt = new Date();
     try { await loadEmailsHTTP(true); } catch (e) { /* emails.json 不存在时忽略 */ }
+    try { await loadBlacklistHTTP(); } catch (e) { /* 黑名单文件不存在时忽略 */ }
     startWatchers();
     toast('已启用 ./data 数据同步');
   } catch (e) { /* 服务器不可达或非 HTTP 环境：保持未启用 */ }
@@ -816,6 +948,7 @@ async function reloadFromHTTP() {
     persistLocal();
   }
   try { await loadEmailsHTTP(true); } catch (e) {}
+  try { await loadBlacklistHTTP(); } catch (e) {}
 }
 async function writeCSVHTTP() {
   if (!state.serverMode) return;
@@ -828,6 +961,7 @@ async function writeCSVHTTP() {
     state.pendingWrite = false;
     state.syncStatus = 'ok'; state.syncError = '';
     if (state.emailsDirty) await writeEmailsHTTP();
+    if (state.blacklistDirty) await writeBlacklistHTTP();
   } catch (e) {
     state.serverWritable = false; // 服务器不支持 PUT：降级为只读同步
   } finally {
@@ -842,6 +976,12 @@ async function writeEmailsHTTP() {
     state.emailsDirty = false;
   } catch (e) { /* 只读模式下邮件处理状态仅保留在本地 */ }
 }
+async function writeBlacklistHTTP() {
+  try {
+    await fetchDataFile(BLACKLIST_FILENAME, 'PUT', serializeBlacklist());
+    state.blacklistDirty = false;
+  } catch (e) { /* 只读模式下黑名单仅保留在本地缓存 */ }
+}
 async function loadEmailsHTTP(force) {
   if (!state.serverMode) return false;
   const r = await fetchDataFile(EMAILS_FILENAME);
@@ -852,6 +992,17 @@ async function loadEmailsHTTP(force) {
   state.emails = Array.isArray(j.emails) ? j.emails : [];
   state.lastFetchedAt = j.lastFetchedAt || null;
   return true;
+}
+async function loadBlacklistHTTP() {
+  if (!state.serverMode) return false;
+  try {
+    const r = await fetchDataFile(BLACKLIST_FILENAME);
+    normalizeBlacklistRules(JSON.parse(await r.text()));
+    return true;
+  } catch (e) {
+    if (state.blacklistRules.length) state.blacklistDirty = true; // 文件缺失而本地有规则：补写
+    return false;
+  }
 }
 async function checkExternalHTTP() {
   if (!state.serverMode || state.writing || state.pendingWrite) return;
@@ -977,6 +1128,274 @@ function updateSyncIndicator() {
   else if (state.syncStatus === 'error') { cls = 'err'; text = '同步出错'; }
   dot.className = 'sync-dot ' + cls;
   txt.textContent = text;
+}
+
+/* ==================== 发件人黑名单 ==================== */
+function normalizeRule(r) {
+  if (!r || typeof r !== 'object') return null;
+  const type = ['address', 'domain', 'keyword'].includes(r.type) ? r.type : 'address';
+  const value = String(r.value || '').trim().toLowerCase();
+  if (!value) return null;
+  return { type, value, createdAt: r.createdAt || nowStr() };
+}
+function serializeBlacklist() {
+  return JSON.stringify({ updatedAt: nowStr(), rules: state.blacklistRules }, null, 2);
+}
+function loadBlacklistLocal() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(LS_BLACKLIST_KEY) || '[]');
+    const rules = (Array.isArray(raw) ? raw : []).map(normalizeRule).filter(Boolean);
+    state.blacklistRules = rules;
+  } catch (e) { state.blacklistRules = []; }
+}
+/* 文件规则与本地规则按 type|value 取并集（浏览器与脚本共管，互不覆盖） */
+function normalizeBlacklistRules(j) {
+  const raw = Array.isArray(j) ? j : (j && Array.isArray(j.rules) ? j.rules : []);
+  const incoming = raw.map(normalizeRule).filter(Boolean);
+  const map = new Map(state.blacklistRules.map(r => [`${r.type}|${r.value}`, r]));
+  let added = false;
+  for (const r of incoming) {
+    const k = `${r.type}|${r.value}`;
+    if (!map.has(k)) { map.set(k, r); added = true; }
+  }
+  state.blacklistRules = [...map.values()];
+  if (added) persistBlacklistLocal();
+  return added;
+}
+function persistBlacklistLocal() {
+  try { localStorage.setItem(LS_BLACKLIST_KEY, JSON.stringify(state.blacklistRules)); } catch (e) {}
+}
+function blacklistRuleKey(r) { return `${r.type}|${r.value}`; }
+function findBlacklistRule(type, value) {
+  const v = String(value || '').trim().toLowerCase();
+  return state.blacklistRules.find(r => r.type === type && r.value === v);
+}
+function ruleMatchSender(rule, from, fromName) {
+  const v = String(rule.value || '').trim().toLowerCase();
+  if (!v) return false;
+  const addr = String(from || '').trim().toLowerCase();
+  const name = String(fromName || '').toLowerCase();
+  if (rule.type === 'address') return addr === v;
+  if (rule.type === 'domain') {
+    const d = addr.split('@').pop() || '';
+    return d === v || d.endsWith('.' + v);
+  }
+  return addr.includes(v) || name.includes(v);
+}
+function isBlacklistedEmail(m) {
+  return state.blacklistRules.some(r => ruleMatchSender(r, m.from, m.fromName));
+}
+function addBlacklistRule(type, value) {
+  const r = normalizeRule({ type, value });
+  if (!r) return null;
+  if (findBlacklistRule(r.type, r.value)) return null; // 去重
+  state.blacklistRules.push(r);
+  state.blacklistDirty = true;
+  persistBlacklistLocal();
+  return r;
+}
+function removeBlacklistRule(index) {
+  if (index < 0 || index >= state.blacklistRules.length) return;
+  state.blacklistRules.splice(index, 1);
+  state.blacklistDirty = true;
+  persistBlacklistLocal();
+}
+/* 从邮件快捷拉黑：默认按发件地址精确拉黑 */
+function quickBlockSender(emailId) {
+  const m = state.emails.find(x => x.id === emailId);
+  if (!m) return;
+  const addr = String(m.from || '').trim();
+  if (!addr) { toast('该邮件没有发件地址，无法拉黑', 'err'); return; }
+  if (findBlacklistRule('address', addr)) { toast('该发件地址已在黑名单中'); return; }
+  if (!window.confirm(`将发件地址加入黑名单？\n\n${addr}\n\n确定后，邮箱同步时将自动忽略该地址的邮件，现有邮件也会立即隐藏。\n如需按域名整体拦截，可在「黑名单管理」中调整。`)) return;
+  addBlacklistRule('address', addr);
+  saveAll(); render();
+  toast(`已拉黑 ${addr}`);
+}
+
+/* ==================== 邮件智能公司分组 ====================
+   同一公司经不同招聘平台 / 不同代发地址发来的邮件需归为一组：
+   优先关联投递记录，其次识别主题标签，再识别企业自有域名，最后清洗发件名称。 */
+function emailFullDomain(addr) { return String(addr || '').toLowerCase().trim().split('@').pop() || ''; }
+function emailRootDomain(addr) {
+  const ps = emailFullDomain(addr).split('.');
+  if (ps.length < 2) return ps.join('.');
+  if (ps.length >= 3 && /^(com|net|org|gov|edu|ac)$/.test(ps[ps.length - 2])) return ps.slice(-3).join('.');
+  return ps.slice(-2).join('.');
+}
+function isAtsDomain(addr) {
+  const d = emailFullDomain(addr);
+  return !!d && ATS_DOMAINS.some(s => d === s || d.endsWith('.' + s));
+}
+function companyGroupKey(name) {
+  return String(name || '').toLowerCase().replace(/[^0-9a-z一-龥]/g, '') || 'unknown';
+}
+function stripCompanySuffix(s) {
+  return String(s || '').replace(/(股份有限责任公司|股份有限公司|有限责任公司|集团有限公司|集团公司|有限公司|集团|公司)$/, '').trim();
+}
+function cleanMailSenderName(s) {
+  let t = String(s || '').replace(/^['"\s]+|['"\s]+$/g, '').trim();
+  if (!t) return '';
+  t = t.replace(/campus\s+recruit(ment|ing)?/gi, '');
+  t = t.replace(/(秋季校园招聘|春季校园招聘|校园招聘|社会招聘|校招|秋招|春招|招聘团队|人才招聘|人力资源部?|招聘|人才|官方网站|官方|官网)/g, '');
+  t = stripCompanySuffix(t);
+  return t.trim();
+}
+/* 从主题中提取「XX公司」主体，如「百度在线网络技术（北京）有限公司邀您参加…」→ 百度在线网络技术（北京） */
+function companyFromSubject(subj) {
+  const m = String(subj || '').match(/^([一-龥A-Za-z0-9·（）()]{2,24}?)(?:股份有限责任公司|股份有限公司|有限责任公司|有限公司|集团)/);
+  return m ? stripCompanySuffix(m[1]) : '';
+}
+function inferMailCompany(m, entry) {
+  if (entry && entry.company) return String(entry.company).trim();
+  const name = String(m.fromName || '');
+  const subj = String(m.subject || '');
+  const text = name + ' ' + subj;
+  /* 1. 与现有投递公司名包含匹配（取最长，避免短名误匹配） */
+  let best = '';
+  for (const e of state.entries) {
+    const c = String(e.company || '').trim();
+    if (c && c.length >= 2 && text.includes(c) && c.length > best.length) best = c;
+  }
+  if (best) return best;
+  /* 2. 主题前缀【标签】，跳过「通知」等无意义标签 */
+  const tag = (subj.match(/[【\[［]([^】\]］]{2,14})[】\]］]/) || [])[1];
+  if (tag) {
+    const t = (cleanMailSenderName(tag) || tag.trim());
+    if (t && !/^(通知|系统通知|重要通知|温馨提示|系统|重要)$/.test(t)) return t;
+  }
+  /* 3. 企业自有域名（非第三方招聘平台代发）→ 品牌表 */
+  if (m.from && !isAtsDomain(m.from)) {
+    const brand = DOMAIN_BRANDS[emailFullDomain(m.from)] || DOMAIN_BRANDS[emailRootDomain(m.from)];
+    if (brand) return brand;
+  }
+  /* 4. 清洗发件人名称 */
+  const cn = cleanMailSenderName(name);
+  if (cn && !/^(no-?reply|notifications?|admin|service|hr)$/i.test(cn)) return cn;
+  /* 5. 主题公司主体 */
+  const cs = companyFromSubject(subj);
+  if (cs) return cs;
+  /* 6. 域名兜底 */
+  if (m.from) {
+    const root = emailRootDomain(m.from);
+    return DOMAIN_BRANDS[root] || (isAtsDomain(m.from) ? '未知招聘邮件' : root);
+  }
+  return name.trim() || '未知发件人';
+}
+/* 构建公司分组：
+   组身份只由邮件自身信号（发件地址 / 域名 / 主题标签 / 发件名称）聚类决定，
+   不随邮件匹配到的投递条目走——保证同一来源（同一地址 / 同一企业域名）的邮件
+   即使关联了不同投递也始终归在同一组。第三方招聘平台代发域名不参与地址 / 域名聚类。
+   组内邮件按时间新→旧；组序遵循 置顶 > 手动顺序 / 自动（按组内最新邮件时间）。 */
+function buildMailGroups() {
+  const items = [];
+  for (const m of state.emails) {
+    if (isBlacklistedEmail(m)) continue;
+    const name = inferMailCompany(m, null);
+    const addr = String(m.from || '').toLowerCase().trim();
+    const domain = emailRootDomain(m.from);
+    items.push({ m, name, key: companyGroupKey(name), addr, domain, ats: isAtsDomain(m.from) });
+  }
+  /* 并查集：同名归一；非平台域名再按 发件地址 / 域名 合并 */
+  const uf = new Map();
+  const findUf = k => {
+    let r = k;
+    while (uf.get(r) !== r) r = uf.get(r);
+    let c = k;
+    while (uf.get(c) !== r) { const n = uf.get(c); uf.set(c, r); c = n; }
+    return r;
+  };
+  const union = (a, b) => {
+    if (!uf.has(a)) uf.set(a, a);
+    if (!uf.has(b)) uf.set(b, b);
+    const ra = findUf(a), rb = findUf(b);
+    if (ra !== rb) uf.set(ra, rb);
+  };
+  for (const it of items) {
+    union(it.key, it.key);
+    if (!it.ats) {
+      if (it.addr) union(it.key, 'a:' + it.addr);
+      if (it.domain) union(it.key, 'd:' + it.domain);
+    }
+  }
+  const clusters = new Map();
+  for (const it of items) {
+    const rk = findUf(it.key);
+    if (!clusters.has(rk)) clusters.set(rk, { key: rk, emails: [], senderAddrs: new Map(), nameTally: new Map(), nameDate: new Map() });
+    const g = clusters.get(rk);
+    g.emails.push(it.m);
+    g.nameTally.set(it.name, (g.nameTally.get(it.name) || 0) + 1);
+    if (!g.nameDate.has(it.name) || (it.m.date || '') > (g.nameDate.get(it.name) || '')) g.nameDate.set(it.name, it.m.date || '');
+    if (it.addr && !g.senderAddrs.has(it.addr)) g.senderAddrs.set(it.addr, { from: it.m.from || '', name: it.m.fromName || '' });
+  }
+  const groups = [...clusters.values()].map(g => {
+    g.emails.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+    /* 组显示名：出现次数最多的推断名；平票时取最新邮件所用名称 */
+    g.name = [...g.nameTally.keys()].sort((a, b) =>
+      (g.nameTally.get(b) - g.nameTally.get(a)) || ((g.nameDate.get(b) || '').localeCompare(g.nameDate.get(a) || '')))[0] || '未知发件人';
+    g.key = companyGroupKey(g.name);
+    g.latest = g.emails[0].date || '';
+    g.unread = g.emails.filter(m => !m.processed).length;
+    g.senders = [...g.senderAddrs.values()];
+    return g;
+  });
+  const byKey = new Map(groups.map(g => [g.key, g]));
+  let base;
+  if (ui.mailSortMode === 'manual' && ui.mailOrder.length) {
+    const ordered = ui.mailOrder.map(k => byKey.get(k)).filter(Boolean);
+    const known = new Set(ordered.map(g => g.key));
+    const rest = groups.filter(g => !known.has(g.key)).sort((a, b) => b.latest.localeCompare(a.latest));
+    base = [...ordered, ...rest];
+  } else {
+    base = groups.sort((a, b) => b.latest.localeCompare(a.latest));
+  }
+  const pinned = ui.mailPinned.map(k => byKey.get(k)).filter(Boolean);
+  const pset = new Set(pinned.map(g => g.key));
+  return [...pinned, ...base.filter(g => !pset.has(g.key))];
+}
+function visibleMailGroups() {
+  const groups = buildMailGroups();
+  if (ui.mailFilter === 'all') return groups;
+  return groups
+    .map(g => ({ ...g, emails: g.emails.filter(m => !m.processed) }))
+    .filter(g => g.emails.length);
+}
+function senderSummary(g) {
+  const names = [];
+  for (const s of g.senders) {
+    const n = cleanMailSenderName(s.name) || s.from;
+    if (n && !names.includes(n)) names.push(n);
+  }
+  if (g.senders.length > 1) return names.slice(0, 2).join('、') + ` 等 ${g.senders.length} 个发件人`;
+  return names[0] || '';
+}
+function toggleMailPin(key) {
+  const i = ui.mailPinned.indexOf(key);
+  if (i >= 0) ui.mailPinned.splice(i, 1);
+  else ui.mailPinned.unshift(key);
+  persistUi(); render();
+  toast(i >= 0 ? '已取消置顶' : '公司组已置顶');
+}
+function toggleMailCollapse(key) {
+  const i = ui.mailCollapsed.indexOf(key);
+  if (i >= 0) ui.mailCollapsed.splice(i, 1);
+  else ui.mailCollapsed.push(key);
+  persistUi();
+}
+function setMailSortMode(mode) {
+  if (!['auto', 'manual'].includes(mode) || mode === ui.mailSortMode) return;
+  ui.mailSortMode = mode;
+  if (mode === 'manual' && !ui.mailOrder.length) ui.mailOrder = buildMailGroups().map(g => g.key);
+  persistUi(); render();
+}
+function deleteEmail(emailId) {
+  const m = state.emails.find(x => x.id === emailId);
+  if (!m) return;
+  if (!window.confirm(`确定删除这封邮件？删除后不可恢复。\n\n${m.subject || '（无主题）'}`)) return;
+  state.emails = state.emails.filter(x => x.id !== emailId);
+  state.emailsDirty = true;
+  saveAll(); render();
+  toast('邮件已删除');
 }
 
 /* ==================== 业务操作 ==================== */
@@ -1460,27 +1879,106 @@ function mailRowHTML(m) {
   return `<div class="mail-row ${m.processed ? 'processed' : ''}">
     <div class="mail-head"><span class="mail-subject">${m.processed ? '' : '<span class="mail-dot"></span>'}${esc(m.subject)}</span><span class="mail-date">${fmtDT(m.date)}</span></div>
     <div class="mail-sub">${esc(m.fromName || '')}${m.from ? ` &lt;${esc(m.from)}&gt;` : ''} · ${esc(m.snippet || '')}</div>
-    <div class="mail-foot">${foot}</div>
+    <div class="mail-foot">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">${foot}</div>
+      <div class="mail-row-actions">
+        <button class="icon-btn" data-action="mail-block" data-email="${esc(m.id)}" title="拉黑该发件人：同步邮件时自动忽略">${I.ban}</button>
+        <button class="icon-btn danger" data-action="mail-delete" data-email="${esc(m.id)}" title="删除该邮件">${I.trash}</button>
+      </div>
+    </div>
+  </div>`;
+}
+function mailGroupHTML(g) {
+  const collapsed = ui.mailCollapsed.includes(g.key);
+  const pinned = ui.mailPinned.includes(g.key);
+  return `<div class="mail-group ${pinned ? 'pinned' : ''} ${collapsed ? 'collapsed' : ''}" data-group="${esc(g.key)}">
+    <div class="mg-head" data-group="${esc(g.key)}">
+      <span class="mg-drag" title="拖拽调整公司组顺序">${I.grip}</span>
+      <span class="mg-name">${esc(g.name)}${pinned ? '<span class="mg-pin-tag">置顶</span>' : ''}</span>
+      <span class="mg-count" title="组内邮件数">${g.emails.length}</span>
+      ${g.unread ? `<span class="mg-unread">${g.unread} 待处理</span>` : ''}
+      <span class="mg-senders" title="${esc(g.senders.map(s => (s.name ? s.name + ' ' : '') + (s.from ? '<' + s.from + '>' : '')).join('  |  '))}">${esc(senderSummary(g))}</span>
+      <span class="mg-date">${fmtDT(g.latest)}</span>
+      <span class="mg-actions">
+        <button class="icon-btn ${pinned ? 'pin-active' : ''}" data-action="mail-pin" data-group="${esc(g.key)}" title="${pinned ? '取消置顶' : '置顶该公司组'}">${I.pin}</button>
+        <button class="icon-btn mg-chev" data-action="mail-collapse" data-group="${esc(g.key)}" title="折叠 / 展开">${I.chevDown}</button>
+      </span>
+    </div>
+    <div class="mg-body">${g.emails.map(mailRowHTML).join('')}</div>
   </div>`;
 }
 function viewMail() {
   const head = pageHead('INBOX · ' + dateLine(), '邮箱收件',
-    `Agent 运行邮箱同步脚本后，新邮件会出现在这里${state.lastFetchedAt ? ` · 最近拉取：${fmtDT(state.lastFetchedAt)}` : ''}`,
-    `<button class="btn" data-action="refresh-mail">${I.refresh}刷新</button>`);
-  if (!state.syncEnabled) return head + syncGuideHTML('启用数据同步后，可在这里查看从邮箱提取的秋招邮件，并一键生成投递记录');
+    `按公司分组管理招聘邮件，同公司不同发件人自动归并${state.lastFetchedAt ? ` · 最近拉取：${fmtDT(state.lastFetchedAt)}` : ''}`,
+    `<div style="display:flex;gap:8px">
+      <button class="btn" data-action="bl-open">${I.ban}黑名单管理${state.blacklistRules.length ? ` · ${state.blacklistRules.length}` : ''}</button>
+      <button class="btn" data-action="refresh-mail">${I.refresh}刷新</button>
+    </div>`);
+  if (!state.syncEnabled) return head + syncGuideHTML('启用数据同步后，可在这里查看从邮箱提取的秋招邮件，按公司分组管理并一键生成投递记录');
   const unprocessed = state.emails.filter(m => !m.processed).length;
-  let list = [...state.emails].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-  if (ui.mailFilter === 'unprocessed') list = list.filter(m => !m.processed);
+  const blocked = state.emails.filter(isBlacklistedEmail).length;
+  const groups = visibleMailGroups();
   const filterBar = `<div class="toolbar">
     <select class="select" id="mailFilter">
       <option value="unprocessed" ${ui.mailFilter === 'unprocessed' ? 'selected' : ''}>待处理</option>
-      <option value="all" ${ui.mailFilter === 'all' ? 'selected' : ''}>全部</option>
+      <option value="all" ${ui.mailFilter === 'all' ? 'selected' : ''}>全部邮件</option>
     </select>
-    <span class="page-desc" style="align-self:center">共 ${state.emails.length} 封，待处理 ${unprocessed} 封</span>
+    <select class="select" id="mailSortMode" title="拖拽公司组手柄可调整顺序">
+      <option value="auto" ${ui.mailSortMode === 'auto' ? 'selected' : ''}>按最新邮件排序</option>
+      <option value="manual" ${ui.mailSortMode === 'manual' ? 'selected' : ''}>手动顺序（拖拽调整）</option>
+    </select>
+    <span class="page-desc" style="align-self:center">共 ${state.emails.length} 封 · 待处理 ${unprocessed} 封${blocked ? ` · 黑名单已拦截 ${blocked} 封` : ''} · ${groups.length} 个公司组</span>
   </div>`;
-  if (!list.length) return head + filterBar + `<div class="empty-state">${I.inbox}
-    <p>${state.emails.length ? '没有待处理的邮件' : '暂无邮件。在 Trae 中对 AI 说「帮我同步今天的秋招邮件」即可拉取'}</p></div>`;
-  return head + filterBar + `<div class="mail-list">${list.map(mailRowHTML).join('')}</div>`;
+  if (!groups.length) {
+    const tip = blocked && !state.emails.filter(m => !isBlacklistedEmail(m)).length
+      ? '所有邮件均被黑名单拦截，可在「黑名单管理」中调整规则'
+      : (ui.mailFilter === 'unprocessed' ? '没有待处理的邮件' : '暂无邮件。在 Trae 中对 AI 说「帮我同步今天的秋招邮件」即可拉取');
+    return head + filterBar + `<div class="empty-state">${I.inbox}<p>${esc(tip)}</p></div>`;
+  }
+  return head + filterBar + `<div class="mail-groups" id="mailGroups">${groups.map(mailGroupHTML).join('')}</div>`;
+}
+
+/* ==================== 黑名单管理弹窗 ==================== */
+function blacklistTagStyle(type) {
+  const c = type === 'address' ? '#2563EB' : type === 'domain' ? '#7C3AED' : '#D97706';
+  return `color:${c};border-color:${c}55;background:${c}12`;
+}
+function renderBlacklistModal() {
+  const wrap = $('#blList');
+  if (!state.blacklistRules.length) {
+    wrap.innerHTML = '<div class="bl-empty">还没有黑名单规则。可在任意邮件上点击禁止符快速拉黑，或在下方手动添加。</div>';
+  } else {
+    wrap.innerHTML = '<div class="bl-list">' + state.blacklistRules.map((r, i) => {
+      const hit = state.emails.filter(m => ruleMatchSender(r, m.from, m.fromName)).length;
+      return `<div class="bl-row">
+        <span class="bl-tag" style="${blacklistTagStyle(r.type)}">${BL_TYPE_LABEL[r.type]}</span>
+        <span class="bl-val">${esc(r.value)}</span>
+        <span class="bl-meta">${hit ? `命中邮件 ${hit} 封` : '当前无命中'}</span>
+        <button class="icon-btn danger" type="button" data-bl-del="${i}" title="删除该规则">${I.trash}</button>
+      </div>`;
+    }).join('') + '</div>';
+  }
+  $('#blMeta').textContent = `共 ${state.blacklistRules.length} 条规则 · 规则同时保存到 data/${BLACKLIST_FILENAME} 供同步脚本读取`;
+}
+function openBlacklistModal() {
+  renderBlacklistModal();
+  $('#blModalBackdrop').classList.add('open');
+}
+function closeBlacklistModal() { $('#blModalBackdrop').classList.remove('open'); }
+function addBlacklistFromModal() {
+  const type = $('#blType').value;
+  const value = $('#blValue').value.trim();
+  if (!value) { toast('请输入规则内容', 'err'); return; }
+  if (type === 'address' && !value.includes('@')) { toast('发件地址需包含 @，如 alert@amail.aminer.cn', 'err'); return; }
+  if (type === 'domain' && /[@\s]/.test(value)) { toast('域名格式不正确，如 aminer.cn', 'err'); return; }
+  if (type === 'keyword' && value.length < 2) { toast('关键词至少 2 个字符', 'err'); return; }
+  const r = addBlacklistRule(type, value);
+  if (!r) { toast('该规则已存在', 'err'); return; }
+  $('#blValue').value = '';
+  saveAll();
+  renderBlacklistModal();
+  if (ui.module === 'mail') render();
+  toast('已添加黑名单规则');
 }
 function syncStatusText() {
   if (state.syncStatus === 'ok') {
@@ -1571,6 +2069,8 @@ function bindEvents() {
     persistUi(); render();
   });
   $('#syncIndicator').addEventListener('click', () => { ui.module = 'data'; persistUi(); render(); });
+  /* 左下角 GitHub 代码仓库入口 */
+  $('#ghLink .gh-icon').innerHTML = I.github;
   /* 侧栏折叠与拖宽：收起态隐藏箭头，点击品牌 Logo 复原 */
   $('#collapseBtn').innerHTML = I.chevronsLeft;
   $('#collapseBtn').addEventListener('click', () => {
@@ -1601,6 +2101,13 @@ function bindEvents() {
     if (tab) { ui.companyIndustry = tab.dataset.ind; render(); return; }
     /* 无链接的公司卡片：阻止占位跳转 */
     if (e.target.closest('a[data-nolink]')) { e.preventDefault(); return; }
+    /* 邮箱公司组：点击组头折叠 / 展开（按钮与拖拽手柄除外） */
+    const mgHead = e.target.closest('.mg-head');
+    if (mgHead && !e.target.closest('[data-action]') && !e.target.closest('.mg-drag')) {
+      toggleMailCollapse(mgHead.dataset.group);
+      mgHead.closest('.mail-group').classList.toggle('collapsed');
+      return;
+    }
     const btn = e.target.closest('[data-action]');
     if (!btn) return;
     const act = btn.dataset.action, id = btn.dataset.id;
@@ -1625,12 +2132,26 @@ function bindEvents() {
         localStorage.removeItem(LS_KEY); location.reload();
       }
     }
-    else if (act === 'refresh-mail') { await loadEmails(true); render(); }
+    else if (act === 'refresh-mail') {
+      await loadEmails(true);
+      if (state.dirHandle) await loadBlacklistFile();
+      else if (state.serverMode) { try { await loadBlacklistHTTP(); } catch (e) {} }
+      render();
+    }
     else if (act === 'mail-create') mailCreate(btn.dataset.email);
     else if (act === 'mail-ignore') {
       markEmail(btn.dataset.email, { processed: true, matchedAction: 'ignored' });
       saveAll(); render();
     }
+    else if (act === 'mail-delete') deleteEmail(btn.dataset.email);
+    else if (act === 'mail-block') quickBlockSender(btn.dataset.email);
+    else if (act === 'mail-pin') toggleMailPin(btn.dataset.group);
+    else if (act === 'mail-collapse') {
+      toggleMailCollapse(btn.dataset.group);
+      const head = btn.closest('.mg-head');
+      if (head) head.closest('.mail-group').classList.toggle('collapsed');
+    }
+    else if (act === 'bl-open') openBlacklistModal();
   });
   content.addEventListener('input', e => {
     if (e.target.id === 'companySearchInput') {
@@ -1651,6 +2172,7 @@ function bindEvents() {
     if (e.target.id === 'industryFilter') { ui.industryFilter = e.target.value; render(); }
     else if (e.target.id === 'statusFilter') { ui.statusFilter = e.target.value; render(); }
     else if (e.target.id === 'mailFilter') { ui.mailFilter = e.target.value; render(); }
+    else if (e.target.id === 'mailSortMode') setMailSortMode(e.target.value);
     else if (e.target.id === 'sortMode') setSortMode(e.target.value);
     else if (e.target.matches('select.status-select')) changeStatus(e.target.dataset.id, e.target.value);
     else if (e.target.id === 'importFile') { importCSV(e.target.files[0]); e.target.value = ''; }
@@ -1773,13 +2295,92 @@ function bindEvents() {
     $$('#listTableWrap tbody tr').forEach(r => { r.classList.remove('dragging', 'drop-before', 'drop-after'); r.draggable = false; });
     dragRowId = '';
   });
+  /* 邮箱公司组：拖拽手柄调整公司组顺序（自动排序下首次拖动自动切换为手动顺序） */
+  content.addEventListener('mousedown', e => {
+    const h = e.target.closest('.mg-drag');
+    if (!h) return;
+    const head = h.closest('.mg-head');
+    if (head) head.draggable = true;
+  });
+  content.addEventListener('dragstart', e => {
+    const head = e.target.closest && e.target.closest('.mg-head[draggable="true"]');
+    if (!head || !head.draggable) return;
+    dragMailGroup = head.dataset.group;
+    e.dataTransfer.setData('text/plain', 'mailgroup:' + dragMailGroup);
+    e.dataTransfer.effectAllowed = 'move';
+    const card = head.closest('.mail-group');
+    if (card) requestAnimationFrame(() => card.classList.add('dragging'));
+    if (ui.mailSortMode === 'auto') {
+      ui.mailSortMode = 'manual';
+      ui.mailOrder = buildMailGroups().map(g => g.key);
+      persistUi();
+    }
+  });
+  content.addEventListener('dragover', e => {
+    if (!dragMailGroup) return;
+    const head = e.target.closest && e.target.closest('.mg-head');
+    if (!head || head.dataset.group === dragMailGroup) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    const rect = head.getBoundingClientRect();
+    const before = e.clientY < rect.top + rect.height / 2;
+    $$('#mailGroups .mail-group').forEach(g => g.classList.remove('drop-before', 'drop-after'));
+    head.closest('.mail-group').classList.add(before ? 'drop-before' : 'drop-after');
+  });
+  content.addEventListener('drop', e => {
+    if (!dragMailGroup) return;
+    const head = e.target.closest && e.target.closest('.mg-head');
+    if (!head || head.dataset.group === dragMailGroup) return;
+    e.preventDefault();
+    const rect = head.getBoundingClientRect();
+    const before = e.clientY < rect.top + rect.height / 2;
+    const keys = buildMailGroups().map(g => g.key);
+    const from = keys.indexOf(dragMailGroup);
+    if (from < 0) return;
+    keys.splice(from, 1);
+    const to = keys.indexOf(head.dataset.group);
+    if (to < 0) return;
+    keys.splice(before ? to : to + 1, 0, dragMailGroup);
+    ui.mailOrder = keys;
+    persistUi(); render();
+  });
+  content.addEventListener('dragend', () => {
+    if (!dragMailGroup) return;
+    $$('#mailGroups .mail-group').forEach(g => {
+      g.classList.remove('dragging', 'drop-before', 'drop-after');
+      const h = g.querySelector('.mg-head');
+      if (h) h.draggable = false;
+    });
+    dragMailGroup = '';
+  });
   /* 模态框 */
   $('#entryForm').addEventListener('submit', submitEntry);
   $('#modalClose').innerHTML = I.x;
   $('#modalClose').addEventListener('click', closeModal);
   $('#entryForm [data-close]').addEventListener('click', closeModal);
   $('#modalBackdrop').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    closeModal();
+    closeBlacklistModal();
+  });
+  /* 发件人黑名单弹窗 */
+  $('#blModalClose').innerHTML = I.x;
+  $('#blModalClose').addEventListener('click', closeBlacklistModal);
+  $('#blModalBackdrop').addEventListener('click', e => {
+    if (e.target === e.currentTarget) { closeBlacklistModal(); return; }
+    if (e.target.closest('[data-bl-close]')) { closeBlacklistModal(); return; }
+    const del = e.target.closest('[data-bl-del]');
+    if (del) {
+      removeBlacklistRule(parseInt(del.dataset.blDel, 10));
+      saveAll();
+      renderBlacklistModal();
+      if (ui.module === 'mail') render();
+      toast('已删除黑名单规则');
+    }
+  });
+  $('#blAddBtn').addEventListener('click', addBlacklistFromModal);
+  $('#blValue').addEventListener('keydown', e => { if (e.key === 'Enter') addBlacklistFromModal(); });
   /* 所属行业 / 当前状态：支持自定义新增与删除，变更后加入/移出当前下拉列表（并同步到列表、筛选、看板、统计） */
   let industryPrev = '';
   $('#industrySelect').addEventListener('focus', () => { industryPrev = $('#industrySelect').value; });
@@ -1823,6 +2424,7 @@ function applySidebar() {
 /* ==================== 启动 ==================== */
 async function init() {
   loadCustomLists();
+  loadBlacklistLocal();
   loadLocal();
   loadUi();
   applyStoredOrder(); // ui 加载后恢复手动顺序（loadLocal 时 ui 尚未就绪）

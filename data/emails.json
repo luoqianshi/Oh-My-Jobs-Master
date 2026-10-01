@@ -1,5 +1,5 @@
 {
-  "lastFetchedAt": "2026-09-22T17:14:44",
+  "lastFetchedAt": "2026-09-29T21:31:02",
   "emails": [
     {
       "id": "em_1789915802622_803a",
@@ -105,9 +105,9 @@
       "subject": "AMiner 每日学术日报 | 2026-09-22",
       "date": "2026-09-22T13:12:22+08:00",
       "snippet": "<html> <head> <meta charset=\"utf-8\"> </head> <body style=\"font-family: Microsoft YaHei, Helvetica, Arial, sans-serif; color:#2D3748;\"> <div style=\"max-width: 700px; margin: 0 auto; padding: 20px;\"> <div style=\"text-align:center; margin-bottom:8px;\"> <img src=\"https://fileserver.aminer.cn/sys/aminer/",
-      "processed": false,
+      "processed": true,
       "matchedEntryId": null,
-      "matchedAction": null
+      "matchedAction": "ignored"
     },
     {
       "id": "em_1790068484672_58a4",
@@ -117,9 +117,81 @@
       "subject": "百度在线网络技术（北京）有限公司邀您参加在线笔试考试",
       "date": "2026-09-22T17:12:49+08:00",
       "snippet": "<p><div class=\"_email_template_style_wrapper\" style=\"\"><table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"emailTb1 emailTb2 emailTable3 centerTable\" style=\"width: 100%;background-image: initial;background-position-x: initial;background-position-y: initial;background-size: initial;background-re",
-      "processed": false,
+      "processed": true,
+      "matchedEntryId": "jm_1789737008486_6a1f",
+      "matchedAction": "更新进度"
+    },
+    {
+      "id": "em_1790688660565_fe88",
+      "messageId": "<1790071520590_29659_119810_55889.sc-10-9-66-94-inbound0@batchmail.nowcoder.net>",
+      "from": "support@batchmail.nowcoder.net",
+      "fromName": "百度",
+      "subject": "【百度】邀请你参加2027届校招在线笔试",
+      "date": "2026-09-22T18:05:20+08:00",
+      "snippet": "<table cellpadding=\"0\" cellspacing=\"0\" style=\"border:1.0px solid #C6C6C6;margin:0 auto;font-family:&quot;\" width=\"700\"> <tbody> <tr> <td style=\"background:#25BB9B;padding:7.0px;\"> </td> </tr> <tr> <td style=\"padding:60.0px 60.0px 30.0px;\"> <h1 style=\"font-size:18.0px;\"> <span style=\"font-family:'ari",
+      "processed": true,
+      "matchedEntryId": "jm_1789737008486_6a1f",
+      "matchedAction": "更新进度"
+    },
+    {
+      "id": "em_1790688662251_8946",
+      "messageId": "<13b1f3aecdb54779b03dd06ff7b36f53@lenovo.com>",
+      "from": "chinacampus@lenovo.com",
+      "fromName": "Lenovo Campus Recruitment",
+      "subject": "【联想校园招聘】感谢你的关注与参与",
+      "date": "2026-09-24T07:35:41+00:00",
+      "snippet": "[cid:image004.jpg@01DD356D.F013F4D0] 亲爱的同学： 你好，感谢你参加联想中国校园招聘！经过对当前阶段的综合评估，我们很抱歉暂时无法为你安排后续环节。 我们看到你展现出的优秀潜力和特质，你的简历将进入联想中国校园招聘的人才调剂池，希望未来或有机会邀请你参加其他岗位的面试。 同学，我们知道，在整个校招季你一定经历过许多的等待、期望、努力、欣喜、失落... ... 但请坚信：任何一次短暂的“不匹配”都不能掩盖住你的光芒！求职路上每一个坚定的脚印，都将拼凑成你更强大的铠甲。 同学，校招季辛苦了！ 再次感谢你对本次联想校园招聘工作岗位的关注及为此付出的宝贵时间。 更多",
+      "processed": true,
+      "matchedEntryId": "jm_1789484182293_1033",
+      "matchedAction": "更新进度"
+    },
+    {
+      "id": "em_1790688662333_70db",
+      "messageId": "<0ce45f7d-dcb2-4606-910e-fb2886ede59e@alibaba.com>",
+      "from": "alert@amail.aminer.cn",
+      "fromName": "AMiner",
+      "subject": "AMiner 每日学术日报 | 2026-09-25",
+      "date": "2026-09-25T13:05:15+08:00",
+      "snippet": "<html> <head> <meta charset=\"utf-8\"> </head> <body style=\"font-family: Microsoft YaHei, Helvetica, Arial, sans-serif; color:#2D3748;\"> <div style=\"max-width: 700px; margin: 0 auto; padding: 20px;\"> <div style=\"text-align:center; margin-bottom:8px;\"> <img src=\"https://fileserver.aminer.cn/sys/aminer/",
+      "processed": true,
       "matchedEntryId": null,
-      "matchedAction": null
+      "matchedAction": "ignored"
+    },
+    {
+      "id": "em_1790688662433_aaf6",
+      "messageId": "<4d19ac5f-e794-4915-91fc-455f8f977142@alibaba.com>",
+      "from": "alert@amail.aminer.cn",
+      "fromName": "AMiner",
+      "subject": "AMiner 每日学术日报 | 2026-09-28",
+      "date": "2026-09-28T13:17:48+08:00",
+      "snippet": "<html> <head> <meta charset=\"utf-8\"> </head> <body style=\"font-family: Microsoft YaHei, Helvetica, Arial, sans-serif; color:#2D3748;\"> <div style=\"max-width: 700px; margin: 0 auto; padding: 20px;\"> <div style=\"text-align:center; margin-bottom:8px;\"> <img src=\"https://fileserver.aminer.cn/sys/aminer/",
+      "processed": true,
+      "matchedEntryId": null,
+      "matchedAction": "ignored"
+    },
+    {
+      "id": "em_1790688662504_05e1",
+      "messageId": "<4fdfe3ad-b562-43fb-a881-246a013b0ff1@alibaba.com>",
+      "from": "alert@amail.aminer.cn",
+      "fromName": "AMiner",
+      "subject": "AMiner 每日学术日报 | 2026-09-29",
+      "date": "2026-09-29T13:11:51+08:00",
+      "snippet": "<html> <head> <meta charset=\"utf-8\"> </head> <body style=\"font-family: Microsoft YaHei, Helvetica, Arial, sans-serif; color:#2D3748;\"> <div style=\"max-width: 700px; margin: 0 auto; padding: 20px;\"> <div style=\"text-align:center; margin-bottom:8px;\"> <img src=\"https://fileserver.aminer.cn/sys/aminer/",
+      "processed": true,
+      "matchedEntryId": null,
+      "matchedAction": "ignored"
+    },
+    {
+      "id": "em_1790688662611_466b",
+      "messageId": "<1790674334336_19243_4044871_3168.sc-10-9-156-212-inbound0@shmail.ibeisen.com>",
+      "from": "noreply@shmail.ibeisen.com",
+      "fromName": "厦门亿联网络技术股份有限公司",
+      "subject": "厦门亿联网络技术股份有限公司诚邀您对本次面试进行评价",
+      "date": "2026-09-29T17:32:14+08:00",
+      "snippet": "<div class=\"_email_template_style_wrapper\" style=\"null; ;\" contenteditable=\"false\"><table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"emailTb1 emailTb2 emailTable3 centerTable\" style=\" width: 100%; background: #F0F2F5; border-radius: 0 0 3px 3px; border-collapse: collapse; -webkit-font-smoothi",
+      "processed": true,
+      "matchedEntryId": "jm_1789817648870_0873",
+      "matchedAction": "更新进度"
     }
   ]
 }

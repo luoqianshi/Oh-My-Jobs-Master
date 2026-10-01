@@ -13,7 +13,7 @@ description: 拉取网易邮箱新增邮件并自动更新秋招进度表（data
 ## 流程
 
 1. 读 `data/emails.json`，取 `lastFetchedAt` 的日期作为 `--since`（无记录则用今天）
-2. 运行：`python scripts/fetch_emails.py --since YYYY-MM-DD`，从输出确认"新增 N 封"
+2. 运行：`python scripts/fetch_emails.py --since YYYY-MM-DD`，从输出确认"新增 N 封"（脚本会自动读取 `data/email_blacklist.json`，输出"按黑名单自动忽略 N 封"属正常现象，这些邮件不会进入 emails.json，无需再处理）
 3. 读 `data/emails.json` 中 `processed=false` 的邮件
 4. 读 `data/jobmaster_data.csv`，准备现有投递的企业列表（完整数据模型见 `.trae/rules/project_rules.md`）
 5. 逐封判断是否秋招相关：
@@ -39,6 +39,7 @@ description: 拉取网易邮箱新增邮件并自动更新秋招进度表（data
 ## 约束
 
 - 与秋招无关的邮件（如【验证码】、【AMiner 每日学术日报】等验证码、订阅日报、广告、系统通知）**必须自动忽略**：不提取信息、不写入 CSV、不记录到 emails.json 的业务字段，仅标记 `processed=true, matchedAction='ignored'`
+- 发件人黑名单由用户在页面「邮箱收件 → 黑名单管理」维护（`data/email_blacklist.json`），脚本已自动过滤，Agent 不需要手动跳过，也不要把该文件中的规则目标邮件再写回 emails.json
 - 授权码绝不回显
 - 不确定的信息宁可列为待确认，不要臆造企业名/岗位
 - 完成后提醒用户：浏览器打开 index.html 会自动合并这些变更

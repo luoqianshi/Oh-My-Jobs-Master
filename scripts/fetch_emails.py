@@ -13,6 +13,11 @@
 
 本脚本只负责采集（按 Message-ID 去重后追加），不做任何秋招业务判断；
 是否为秋招邮件、如何更新进度，由 Trae Agent 结合 SKILL 处理。
+
+发件人黑名单：读取 data/email_blacklist.json（由页面「邮箱收件 → 黑名单管理」
+维护），拉取时自动跳过命中的邮件，不写入 emails.json。规则类型：
+address（发件地址精确匹配）/ domain（域名及子域名）/ keyword（发件地址或
+发件名称包含关键词）。
 """
 import argparse
 import email as email_lib
@@ -87,6 +92,48 @@ def gen_email_id():
     return 'em_%d_%04x' % (int(datetime.now().timestamp() * 1000), random.randint(0, 0xFFFF))
 
 
+def load_blacklist(data_dir):
+    """读取 data/email_blacklist.json，返回规则列表 [{type, value}, ...]；文件不存在时返回空列表"""
+    path = os.path.join(data_dir, 'email_blacklist.json')
+    if not os.path.exists(path):
+        return []
+    try:
+        with open(path, encoding='utf-8-sig') as f:
+            data = json.load(f)
+    except Exception as e:
+        print('警告：读取黑名单失败（%s）：%s，本次拉取不启用黑名单过滤' % (path, e))
+        return []
+    rules = data.get('rules', []) if isinstance(data, dict) else (data if isinstance(data, list) else [])
+    out = []
+    for r in rules:
+        if not isinstance(r, dict):
+            continue
+        rtype = r.get('type') if r.get('type') in ('address', 'domain', 'keyword') else 'address'
+        value = str(r.get('value', '')).strip().lower()
+        if value:
+            out.append({'type': rtype, 'value': value})
+    return out
+
+
+def is_blacklisted(from_addr, from_name, rules):
+    """按黑名单规则判断邮件是否应被忽略（大小写不敏感）"""
+    addr = (from_addr or '').strip().lower()
+    name = (from_name or '').lower()
+    for r in rules:
+        v = r['value']
+        if r['type'] == 'address':
+            if addr == v:
+                return True
+        elif r['type'] == 'domain':
+            domain = addr.split('@')[-1]
+            if domain == v or domain.endswith('.' + v):
+                return True
+        else:  # keyword：发件地址或发件名称包含即命中
+            if v in addr or v in name:
+                return True
+    return False
+
+
 def main():
     parser = argparse.ArgumentParser(description='拉取网易邮箱新邮件到 data/emails.json')
     parser.add_argument('--since', default=date.today().isoformat(), help='起始日期 YYYY-MM-DD，默认今天')
@@ -112,6 +159,7 @@ def main():
         except Exception as e:
             sys.exit('读取 %s 失败：%s' % (emails_path, e))
     seen = set(m.get('messageId') for m in pool.get('emails', []) if m.get('messageId'))
+    rules = load_blacklist(args.data_dir)
 
     # 连接邮箱
     try:
@@ -134,6 +182,7 @@ def main():
         pass  # 服务器不支持 ID 时按原流程继续
 
     added = []
+    skipped = 0
     try:
         typ, sel_data = mail.select('INBOX', readonly=True)
         if typ != 'OK':
@@ -147,12 +196,17 @@ def main():
             if typ != 'OK' or not md or not md[0]:
                 continue
             msg = email_lib.message_from_bytes(md[0][1])
+            from_name_raw, from_addr = parseaddr(msg.get('From', ''))
+            from_name = decode_str(from_name_raw)
+            # 黑名单优先：命中则直接跳过，不记录 Message-ID，移出黑名单后仍可重新拉取
+            if is_blacklisted(from_addr, from_name, rules):
+                skipped += 1
+                continue
             mid = (msg.get('Message-ID') or '').strip()
             if mid and mid in seen:
                 continue
             if mid:
                 seen.add(mid)
-            from_name, from_addr = parseaddr(msg.get('From', ''))
             try:
                 dt = parsedate_to_datetime(msg.get('Date', '')).isoformat()
             except Exception:
@@ -161,7 +215,7 @@ def main():
                 'id': gen_email_id(),
                 'messageId': mid,
                 'from': from_addr or msg.get('From', ''),
-                'fromName': decode_str(from_name),
+                'fromName': from_name,
                 'subject': decode_str(msg.get('Subject', '')),
                 'date': dt,
                 'snippet': body_snippet(msg),
@@ -182,7 +236,9 @@ def main():
     with open(emails_path, 'w', encoding='utf-8') as f:
         json.dump(pool, f, ensure_ascii=False, indent=2)
 
-    print('本次拉取范围：%s 起（最多 %d 封）' % (args.since, args.limit))
+    print('本次拉取范围：%s 起（最多 %d 封），黑名单规则 %d 条' % (args.since, args.limit, len(rules)))
+    if skipped:
+        print('按黑名单自动忽略 %d 封' % skipped)
     print('新增 %d 封，emails.json 现共 %d 封' % (len(added), len(pool['emails'])))
     for r in added:
         print('  [%s] %s | %s | %s' % (
