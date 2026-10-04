@@ -1,5 +1,5 @@
 {
-  "lastFetchedAt": "2026-09-29T21:31:02",
+  "lastFetchedAt": "2026-10-04T16:22:43",
   "emails": [
     {
       "id": "em_1789915802622_803a",
@@ -12,30 +12,6 @@
       "processed": true,
       "matchedEntryId": "jm_1789915899840_e001",
       "matchedAction": "新增投递"
-    },
-    {
-      "id": "em_1789956377038_e131",
-      "messageId": "<472450775.1966542.1789890456328.JavaMail.cmbchina@mailm1ph.message.cmbchina.com>",
-      "from": "95555@message.cmbchina.com",
-      "fromName": "",
-      "subject": "邮箱验证码",
-      "date": "2026-09-20T15:47:36+08:00",
-      "snippet": "尊敬的用户，您的登录邮箱验证码为：152950，请勿泄露给他人，如非本人操作，请忽略此信息。感谢您对我司的关注与支持！[招银网络科技]",
-      "processed": true,
-      "matchedEntryId": null,
-      "matchedAction": "ignored"
-    },
-    {
-      "id": "em_1789956377102_2493",
-      "messageId": "<1789913078025_54283_246109_40558.sc-10-9-19-46-inbound0@mail.mokahr.com>",
-      "from": "kehua@mail.joinus.cc",
-      "fromName": "科华数据股份有限公司招聘",
-      "subject": "一次性验证码",
-      "date": "2026-09-20T22:04:38+08:00",
-      "snippet": "<!DOCTYPE html><html dir=\"ltr\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"view",
-      "processed": true,
-      "matchedEntryId": null,
-      "matchedAction": "ignored"
     },
     {
       "id": "em_1789956377351_4fbd",
@@ -191,6 +167,30 @@
       "snippet": "<div class=\"_email_template_style_wrapper\" style=\"null; ;\" contenteditable=\"false\"><table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"emailTb1 emailTb2 emailTable3 centerTable\" style=\" width: 100%; background: #F0F2F5; border-radius: 0 0 3px 3px; border-collapse: collapse; -webkit-font-smoothi",
       "processed": true,
       "matchedEntryId": "jm_1789817648870_0873",
+      "matchedAction": "更新进度"
+    },
+    {
+      "id": "em_1791102162780_988b",
+      "messageId": "<CAMVYLr1d+6e4Dhw_3i4W0sGUvJ4PhS4mu-JhFKhK8NFnVr8wgA@mail.gmail.com>",
+      "from": "hwx@xmu.edu.cn",
+      "fromName": "Wenxing Hong",
+      "subject": "Re: 毕业论文框架及数据科学分栏进展",
+      "date": "2026-10-01T10:58:07+08:00",
+      "snippet": "Hi，all. 肖凡的科研成果，供大家参考，互相比对分析。 1. iccse 2025， 论文名称， 对应于大论文的哪个章节。ei。 2. ccf c类会议论文 ，题目，对应？【摸高，要符合AI院的要求，甚至要整理全部的三年研究，搞成AI+教育的期刊论文。 】 3. 软件（www.dscourse.cn）,专利，提炼一个重大技术问题。表达成软件工程。 【钉钉上，产品说明、技术开发交流】【预计10.13 演讲，最迟10.20 演讲、发布。】 4. 总体背景设计： hong.xmu.edu.cn -> Teaching 页面，要提炼。 辛苦各位啦。 [image: b6585b6108b9c79f",
+      "processed": true,
+      "matchedEntryId": null,
+      "matchedAction": "ignored"
+    },
+    {
+      "id": "em_1791102163033_0734",
+      "messageId": "<20261004050414.8009C417A250@quickmail.51job.com>",
+      "from": "services@51job.com",
+      "fromName": "",
+      "subject": "厦门航空测评邀请信",
+      "date": "2026-10-04T13:04:14+08:00",
+      "snippet": "<p>骆锟宏，您好！</p><p>感谢您投递厦门航空校招岗位，现邀请您参加在线测评，测评结果将作为简历筛选和面试考核的重要依据，请务必于收到测评后72h内完成测评，测评通过后方能进入下一环节，逾时未完成视为放弃。</p><p><a href='https://s.51job.com/2P8fFv'>点击登录</a><br>如“点击登录”无法正常访问，请将下方链接完整复制到浏览器地址栏再打开<br /><a href='https://s.51job.com/2P8fFv'>https://s.51job.com/2P8fFv</a></p><p>为了保证您的测评能够顺利进行，请认真阅读以下内容",
+      "processed": true,
+      "matchedEntryId": "jm_1789826710394_6c9b",
       "matchedAction": "更新进度"
     }
   ]
