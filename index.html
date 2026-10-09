@@ -527,7 +527,7 @@ const state = {
   httpCsvLM: '',        // CSV 的 Last-Modified（HTTP 模式变更检测）
   httpMailLM: ''        // emails.json 的 Last-Modified
 };
-const ui = { module:'list', search:'', industryFilter:'', statusFilter:'', mailFilter:'unprocessed', width:228, collapsed:false, sortMode:'auto', pinned:[], order:[], companySearch:'', companyIndustry:'', kanbanOrder:[], mailSortMode:'auto', mailPinned:[], mailOrder:[], mailCollapsed:[] };
+const ui = { module:'list', search:'', industryFilter:'', statusFilter:'', width:228, collapsed:false, sortMode:'auto', pinned:[], order:[], companySearch:'', companyIndustry:'', kanbanOrder:[], mailSortMode:'auto', mailPinned:[], mailOrder:[], mailCollapsed:[] };
 let emailsMtime = 0;
 let blacklistMtime = 0;
 let modalContext = null;   // 邮件创建投递时的上下文 { emailId }
@@ -1353,13 +1353,7 @@ function buildMailGroups() {
   const pset = new Set(pinned.map(g => g.key));
   return [...pinned, ...base.filter(g => !pset.has(g.key))];
 }
-function visibleMailGroups() {
-  const groups = buildMailGroups();
-  if (ui.mailFilter === 'all') return groups;
-  return groups
-    .map(g => ({ ...g, emails: g.emails.filter(m => !m.processed) }))
-    .filter(g => g.emails.length);
-}
+
 function senderSummary(g) {
   const names = [];
   for (const s of g.senders) {
@@ -1917,12 +1911,8 @@ function viewMail() {
   if (!state.syncEnabled) return head + syncGuideHTML('启用数据同步后，可在这里查看从邮箱提取的秋招邮件，按公司分组管理并一键生成投递记录');
   const unprocessed = state.emails.filter(m => !m.processed).length;
   const blocked = state.emails.filter(isBlacklistedEmail).length;
-  const groups = visibleMailGroups();
+  const groups = buildMailGroups();
   const filterBar = `<div class="toolbar">
-    <select class="select" id="mailFilter">
-      <option value="unprocessed" ${ui.mailFilter === 'unprocessed' ? 'selected' : ''}>待处理</option>
-      <option value="all" ${ui.mailFilter === 'all' ? 'selected' : ''}>全部邮件</option>
-    </select>
     <select class="select" id="mailSortMode" title="拖拽公司组手柄可调整顺序">
       <option value="auto" ${ui.mailSortMode === 'auto' ? 'selected' : ''}>按最新邮件排序</option>
       <option value="manual" ${ui.mailSortMode === 'manual' ? 'selected' : ''}>手动顺序（拖拽调整）</option>
@@ -1932,7 +1922,7 @@ function viewMail() {
   if (!groups.length) {
     const tip = blocked && !state.emails.filter(m => !isBlacklistedEmail(m)).length
       ? '所有邮件均被黑名单拦截，可在「黑名单管理」中调整规则'
-      : (ui.mailFilter === 'unprocessed' ? '没有待处理的邮件' : '暂无邮件。在 Trae 中对 AI 说「帮我同步今天的秋招邮件」即可拉取');
+      : '暂无邮件。在 Trae 中对 AI 说「帮我同步今天的秋招邮件」即可拉取';
     return head + filterBar + `<div class="empty-state">${I.inbox}<p>${esc(tip)}</p></div>`;
   }
   return head + filterBar + `<div class="mail-groups" id="mailGroups">${groups.map(mailGroupHTML).join('')}</div>`;
@@ -2171,7 +2161,6 @@ function bindEvents() {
   content.addEventListener('change', e => {
     if (e.target.id === 'industryFilter') { ui.industryFilter = e.target.value; render(); }
     else if (e.target.id === 'statusFilter') { ui.statusFilter = e.target.value; render(); }
-    else if (e.target.id === 'mailFilter') { ui.mailFilter = e.target.value; render(); }
     else if (e.target.id === 'mailSortMode') setMailSortMode(e.target.value);
     else if (e.target.id === 'sortMode') setSortMode(e.target.value);
     else if (e.target.matches('select.status-select')) changeStatus(e.target.dataset.id, e.target.value);

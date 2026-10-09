@@ -1,5 +1,5 @@
 {
-  "lastFetchedAt": "2026-10-04T16:22:43",
+  "lastFetchedAt": "2026-10-09T22:00:40",
   "emails": [
     {
       "id": "em_1789915802622_803a",
@@ -191,6 +191,54 @@
       "snippet": "<p>骆锟宏，您好！</p><p>感谢您投递厦门航空校招岗位，现邀请您参加在线测评，测评结果将作为简历筛选和面试考核的重要依据，请务必于收到测评后72h内完成测评，测评通过后方能进入下一环节，逾时未完成视为放弃。</p><p><a href='https://s.51job.com/2P8fFv'>点击登录</a><br>如“点击登录”无法正常访问，请将下方链接完整复制到浏览器地址栏再打开<br /><a href='https://s.51job.com/2P8fFv'>https://s.51job.com/2P8fFv</a></p><p>为了保证您的测评能够顺利进行，请认真阅读以下内容",
       "processed": true,
       "matchedEntryId": "jm_1789826710394_6c9b",
+      "matchedAction": "更新进度"
+    },
+    {
+      "id": "em_1791554439817_03fd",
+      "messageId": "<1296148836.7196.1791118464009@erms-portal-service-amd-6c6c6fb4f4-qkpb7>",
+      "from": "no-reply@cib.com.cn",
+      "fromName": "CIB_Recruit",
+      "subject": "邮箱验证码",
+      "date": "2026-10-04T20:54:24+08:00",
+      "snippet": "<p class=\"MsoNormal\"><span style=\"mso-spacerun: 'yes'; font-family: Calibri; mso-fareast-font-family: 宋体; mso-bidi-font-family: 'Times New Roman'; font-size: 11.0000pt; mso-font-kerning: 1.0000pt;\"><span style=\"font-family: 宋体;\">您好，</span></span></p><p class=\"MsoNormal\" style=\"text-indent: 27.7500pt",
+      "processed": true,
+      "matchedEntryId": null,
+      "matchedAction": "ignored"
+    },
+    {
+      "id": "em_1791554440196_be0f",
+      "messageId": "<1246640375.15015318.1791280152602@careertalk-message-task-5dcfbdb77b-bz2pf>",
+      "from": "campus@mailf.wisdomore.com",
+      "fromName": "智联招聘",
+      "subject": "尊敬的骆同学【智联推荐】平安点创租赁 2027届校园招聘进行中！",
+      "date": "2026-10-06T17:49:12+08:00",
+      "snippet": "<html> <head></head> <body> <p style=\"text-align: center;\"><strong>网申： </strong><a href=\"https://campus.pingan.com/dczl\" target=\"_blank\"><strong>https://campus.pingan.com/dczl</strong></a><strong> </strong></p> <p style=\"text-align: center;\"><img src=\"https://storage-public.zhaopin.cn/information/te",
+      "processed": true,
+      "matchedEntryId": null,
+      "matchedAction": "ignored"
+    },
+    {
+      "id": "em_1791554440834_19b5",
+      "messageId": "<1725593460.17999548.1791522831254@careertalk-message-task-68c4474cf-tvd7v>",
+      "from": "campus@mailf.wisdomore.com",
+      "fromName": "智联招聘",
+      "subject": "尊敬的骆同学【智联推荐】平安点创租赁 2027届校园招聘火热进行中！",
+      "date": "2026-10-09T13:13:55+08:00",
+      "snippet": "<html> <head></head> <body> <h3 style=\"text-align: center;\">简历投递官网： <a href=\"https://campus.pingan.com/dczl\" target=\"_blank\">https://campus.pingan.com/dczl</a></h3> <p style=\"text-align: start;\"><img src=\"https://storage-public.zhaopin.cn/information/team/public/1789885764108212967/%E5%B9%B3%E5%AE%8",
+      "processed": true,
+      "matchedEntryId": null,
+      "matchedAction": "ignored"
+    },
+    {
+      "id": "em_1791554440924_e0e3",
+      "messageId": "<1791531004315_54283_104203_41132.sc-10-9-185-168-inbound0@mail.mokahr.com>",
+      "from": "didiglobal-no-reply@mail.mokahr.com",
+      "fromName": "滴滴招聘",
+      "subject": "【滴滴招聘】简历成功投递通知",
+      "date": "2026-10-09T15:30:04+08:00",
+      "snippet": "<!DOCTYPE html><html lang=\"zh-CN\" dir=\"ltr\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><me",
+      "processed": true,
+      "matchedEntryId": "jm_1789542934527_6444",
       "matchedAction": "更新进度"
     }
   ]
