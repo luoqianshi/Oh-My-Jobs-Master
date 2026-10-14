@@ -142,8 +142,38 @@ tbody tr.pinned .drag-cell{box-shadow:inset 3px 0 0 var(--accent)}
 .row-link{color:var(--ink-3);display:inline-flex}
 .row-link:hover{color:var(--accent-hover)}
 .type-tag{font-size:11px;color:var(--ink-2);white-space:nowrap;border:1px solid var(--border);border-radius:999px;padding:2px 9px;background:#fff}
-.status-select{padding:3px 10px;border:1px solid transparent;border-radius:999px;font-size:12px;background:transparent;cursor:pointer;font-weight:500;font-family:inherit;transition:box-shadow .15s}
-.status-select:hover{box-shadow:var(--shadow-sm)}
+.status-select{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border:1px solid transparent;border-radius:999px;font-size:12px;background:transparent;cursor:pointer;font-weight:500;font-family:inherit;transition:box-shadow .15s,border-color .15s}
+.status-select:hover,.status-select.open{box-shadow:var(--shadow-sm)}
+.status-select>svg{width:11px;height:11px;opacity:.7;flex-shrink:0}
+
+/* 自定义下拉（替代追踪列表原生 select 的系统菜单，风格与整体一致） */
+.dd-trigger{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--border);border-radius:10px;font:inherit;font-size:13px;background:#fff;color:var(--ink);cursor:pointer;white-space:nowrap;transition:border-color .15s,box-shadow .15s}
+.dd-trigger:hover{border-color:#D8D8D1}
+.dd-trigger.open{border-color:var(--accent);box-shadow:0 0 0 3px rgba(16,185,129,.13)}
+.dd-trigger>.dd-label{overflow:hidden;text-overflow:ellipsis}
+.dd-trigger>svg{width:14px;height:14px;color:var(--ink-3);flex-shrink:0;transition:transform .15s}
+.dd-trigger.open>svg{transform:rotate(180deg)}
+.dd-float{position:fixed;z-index:300;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:5px;min-width:150px;max-height:280px;overflow-y:auto;animation:ddIn .14s ease}
+@keyframes ddIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.dd-opt{display:flex;align-items:center;gap:8px;width:100%;padding:7px 30px 7px 10px;position:relative;border:none;background:none;border-radius:8px;font:inherit;font-size:13px;color:var(--ink);cursor:pointer;text-align:left;white-space:nowrap}
+.dd-opt:hover,.dd-opt.kb{background:var(--panel-2)}
+.dd-opt.selected{color:var(--accent-hover);font-weight:500}
+.dd-opt .dd-label{overflow:hidden;text-overflow:ellipsis}
+.dd-tick{position:absolute;right:9px;top:50%;transform:translateY(-50%);display:inline-flex;color:var(--accent);opacity:0}
+.dd-tick svg{width:12px;height:12px}
+.dd-opt.selected .dd-tick{opacity:1}
+.dd-sep{height:1px;background:var(--border-light);margin:5px 8px}
+
+/* 数据管理：状态顺序自定义 */
+.card-wide{grid-column:span 2}
+.so-list{display:flex;flex-direction:column;gap:4px}
+.so-row{display:flex;align-items:center;gap:9px;padding:7px 10px;border:1px solid var(--border-light);border-radius:10px;background:var(--panel-2);transition:border-color .15s}
+.so-row:hover{border-color:var(--border)}
+.so-name{font-size:13px;font-weight:500}
+.so-tag{font-size:10px;color:var(--accent-hover);border:1px solid #A7F3D0;background:var(--accent-bg);border-radius:999px;padding:0 7px;white-space:nowrap}
+.so-actions{margin-left:auto;display:flex;gap:2px}
+.icon-btn[disabled]{opacity:.32;pointer-events:none}
+@media (max-width:760px){.card-wide{grid-column:auto}}
 .badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:500;white-space:nowrap}
 .badge svg{width:12px;height:12px}
 .loc-tags{display:flex;gap:4px;flex-wrap:wrap}
@@ -417,6 +447,14 @@ textarea{resize:vertical;font-family:inherit}
 'use strict';
 /* ==================== 常量 ==================== */
 const STATUSES = ['待投递','简历筛','笔试筛','专业面','主管面','HR面','Offer','已挂'];
+/* 投递列表排序方式：auto 按最新日期 / status-asc、status-desc 按自定义状态顺序 / manual 手动拖拽；置顶行始终不受影响 */
+const SORT_MODES = [
+  { value:'auto', label:'按最新日期排序' },
+  { value:'status-asc', label:'按状态升序' },
+  { value:'status-desc', label:'按状态降序' },
+  { value:'manual', label:'手动顺序（拖拽调整）' }
+];
+function sortLabel(v) { return (SORT_MODES.find(m => m.value === v) || SORT_MODES[0]).label; }
 const PRESET_INDUSTRIES = ['银行','制造','车企','互联网','央企','证券'];
 const PRESET_LOCATIONS = ['杭州','上海','广州','天津','合肥','北京','深圳','南京'];
 const FIELDS = ['id','company','department','status','position','industry','location','latestDate','link','source','notes','createdAt','updatedAt'];
@@ -497,6 +535,9 @@ const I = {
   pin: svg('<path d="M15.5 3.5 20.5 8.5l-3 1-1.5 4.5L9 11l-4.5 4.5"/><path d="M9 11 4.2 8.3l1-3 4.5 1.5"/>', 15),
   /* 向下折叠箭头 */
   chevDown: svg('<path d="m6 9 6 6 6-6"/>', 15),
+  /* 上移 / 下移（状态顺序自定义） */
+  arrowUp: svg('<path d="M12 19V5M5 12l7-7 7 7"/>', 14),
+  arrowDown: svg('<path d="M12 5v14M19 12l-7 7-7-7"/>', 14),
   /* 拉黑（禁止符） */
   ban: svg('<circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/>'),
   /* GitHub 标识（填充式） */
@@ -533,6 +574,7 @@ let blacklistMtime = 0;
 let modalContext = null;   // 邮件创建投递时的上下文 { emailId }
 let watchersStarted = false;
 let dragRowId = '';        // 列表拖拽排序：当前被拖动的行 id
+let dragRowPinned = false; // 列表拖拽：被拖动行是否属于置顶区
 let dragColStatus = '';    // 看板列拖拽排序：当前被拖动的列状态
 let dragMailGroup = '';    // 邮箱公司组拖拽：当前被拖动的公司组 key
 
@@ -649,6 +691,10 @@ function deleteCustomOption(kind, list, key, name) {
   const used = customUsedCount(kind, name);
   if (used) { toast(`「${name}」正被 ${used} 条投递使用，请先修改这些投递后再删除`, 'err'); return false; }
   if (!removeCustomOption(list, key, name)) return false;
+  if (kind === 'status' && ui.kanbanOrder.includes(name)) {
+    ui.kanbanOrder = ui.kanbanOrder.filter(s => s !== name); // 清理状态顺序中的残留
+    persistUi();
+  }
   render(); // 同步刷新筛选器 / 看板列 / 统计
   toast(`已删除自定义${kind === 'status' ? '状态' : kind === 'industry' ? '行业' : '地点'}「${name}」`);
   return true;
@@ -739,7 +785,7 @@ function persistUi() { try { localStorage.setItem(LS_UI_KEY, JSON.stringify({ mo
 function loadUi() {
   try { Object.assign(ui, JSON.parse(localStorage.getItem(LS_UI_KEY)) || {}); } catch (e) {}
   if (!['list','kanban','companies','mail','data'].includes(ui.module)) ui.module = 'list';
-  if (!['auto','manual'].includes(ui.sortMode)) ui.sortMode = 'auto';
+  if (!SORT_MODES.some(m => m.value === ui.sortMode)) ui.sortMode = 'auto';
   if (!['auto','manual'].includes(ui.mailSortMode)) ui.mailSortMode = 'auto';
   if (!Array.isArray(ui.pinned)) ui.pinned = [];
   if (!Array.isArray(ui.order)) ui.order = [];
@@ -1392,6 +1438,83 @@ function deleteEmail(emailId) {
   toast('邮件已删除');
 }
 
+/* ==================== 自定义下拉（浮动面板，替代追踪列表原生 select 的系统菜单） ====================
+   触发器保持原有 .select / .status-select 外观；面板挂到 body 层并按视口智能定位，
+   风格沿用暖纸白底 + 翡翠绿选中态。items: [{value,label,color?}]，含 {sep:true} 渲染分隔线。 */
+const dd = { el:null, trigger:null, index:-1, items:[], onSelect:null };
+function closeDropdown() {
+  if (dd.el) { dd.el.remove(); dd.el = null; }
+  if (dd.trigger) { dd.trigger.classList.remove('open'); dd.trigger = null; }
+  dd.index = -1; dd.items = []; dd.onSelect = null;
+}
+function openDropdown(trigger, items, value, onSelect) {
+  closeDropdown();
+  const el = document.createElement('div');
+  el.className = 'dd-float';
+  el.setAttribute('role', 'listbox');
+  el.innerHTML = items.map(it => it.sep
+    ? '<div class="dd-sep"></div>'
+    : `<button type="button" class="dd-opt ${it.value === value ? 'selected' : ''}" data-val="${esc(it.value)}" role="option">${it.color ? `<span class="dd-dot" style="background:${esc(it.color)}"></span>` : ''}<span class="dd-label">${esc(it.label)}</span><span class="dd-tick">${I.check}</span></button>`
+  ).join('');
+  document.body.appendChild(el);
+  /* 定位：默认贴触发器下沿，下方空间不足时上翻，左右不越出视口 */
+  const r = trigger.getBoundingClientRect();
+  el.style.minWidth = Math.max(r.width, 150) + 'px';
+  const h = el.offsetHeight, w = el.offsetWidth;
+  let left = r.left, top = r.bottom + 6;
+  if (top + h > window.innerHeight - 8) top = Math.max(8, r.top - h - 6);
+  if (left + w > window.innerWidth - 8) left = Math.max(8, window.innerWidth - 8 - w);
+  el.style.left = left + 'px'; el.style.top = top + 'px';
+  trigger.classList.add('open');
+  dd.el = el; dd.trigger = trigger; dd.items = items.filter(it => !it.sep); dd.onSelect = onSelect;
+  dd.index = dd.items.findIndex(it => it.value === value);
+  el.addEventListener('mousedown', ev => ev.preventDefault()); // 防止触发器失焦 / 外部点击判定提前关闭
+  el.addEventListener('click', ev => {
+    const b = ev.target.closest('.dd-opt');
+    if (!b) return;
+    const val = b.dataset.val;
+    closeDropdown();
+    onSelect(val);
+  });
+  /* 鼠标移动时同步键盘高亮项 */
+  el.addEventListener('mousemove', ev => {
+    const b = ev.target.closest('.dd-opt');
+    if (!b) return;
+    dd.index = [...el.querySelectorAll('.dd-opt')].indexOf(b);
+    el.querySelectorAll('.dd-opt').forEach((x, i) => x.classList.toggle('kb', i === dd.index));
+  });
+}
+function ddMove(step) {
+  if (!dd.el) return;
+  const opts = [...dd.el.querySelectorAll('.dd-opt')];
+  if (!opts.length) return;
+  dd.index = (dd.index + step + opts.length) % opts.length;
+  opts.forEach((o, i) => o.classList.toggle('kb', i === dd.index));
+  opts[dd.index].scrollIntoView({ block: 'nearest' });
+}
+function bindDropdownGlobal() {
+  document.addEventListener('mousedown', e => {
+    if (!dd.el) return;
+    if (dd.el.contains(e.target) || (dd.trigger && dd.trigger.contains(e.target))) return;
+    closeDropdown();
+  }, true);
+  document.addEventListener('keydown', e => {
+    if (!dd.el) return;
+    if (e.key === 'Escape') closeDropdown();
+    else if (e.key === 'ArrowDown') { e.preventDefault(); ddMove(1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); ddMove(-1); }
+    else if (e.key === 'Enter') {
+      e.preventDefault();
+      const opts = [...dd.el.querySelectorAll('.dd-opt')];
+      const pick = opts[dd.index >= 0 ? dd.index : 0];
+      if (pick) { const val = pick.dataset.val; closeDropdown(); dd.onSelect && dd.onSelect(val); }
+    }
+  }, true);
+  /* 表格内部滚动或窗口滚动 / 缩放时直接收起，避免浮层错位 */
+  window.addEventListener('scroll', closeDropdown, true);
+  window.addEventListener('resize', closeDropdown);
+}
+
 /* ==================== 业务操作 ==================== */
 function changeStatus(id, status) {
   const en = state.entries.find(x => x.id === id);
@@ -1414,7 +1537,7 @@ function mailCreate(emailId) {
   modalContext = { emailId };
 }
 function buildStatusOptions(selected) {
-  const sel = $('#statusSelect'), list = allStatuses();
+  const sel = $('#statusSelect'), list = kanbanStatuses(); // 与看板、列表排序一致的状态顺序
   sel.innerHTML = list.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('') +
     `<option value="__custom__">＋ 新增状态…</option>` +
     (customStatuses.length ? `<option value="__del__">－ 删除自定义状态…</option>` : '');
@@ -1584,11 +1707,25 @@ function filteredEntries() {
     (!ui.statusFilter || e.status === ui.statusFilter) &&
     (!q || `${e.company} ${e.position} ${e.department} ${e.industry} ${e.location}`.toLowerCase().includes(q))
   );
-  // 置顶行始终排最前（按 ui.pinned 顺序）；其余按排序方式排列
+  // 置顶行始终排最前（按 ui.pinned 顺序，可在置顶区内部拖拽调整）；其余按排序方式排列
   const pinnedSet = new Set(ui.pinned);
   const pinned = ui.pinned.map(id => list.find(e => e.id === id)).filter(Boolean);
   const rest = list.filter(e => !pinnedSet.has(e.id));
-  if (ui.sortMode === 'auto') rest.sort((a, b) => (b.latestDate || '').localeCompare(a.latestDate || ''));
+  if (ui.sortMode === 'auto') {
+    rest.sort((a, b) => (b.latestDate || '').localeCompare(a.latestDate || ''));
+  } else if (ui.sortMode === 'status-asc' || ui.sortMode === 'status-desc') {
+    /* 按自定义状态顺序排列；同状态内以最新日期、更新时间细分 */
+    const ranks = new Map();
+    kanbanStatuses().forEach((s, i) => ranks.set(s, i));
+    const dir = ui.sortMode === 'status-asc' ? 1 : -1;
+    rest.sort((a, b) => {
+      const ra = ranks.has(a.status) ? ranks.get(a.status) : Number.MAX_SAFE_INTEGER;
+      const rb = ranks.has(b.status) ? ranks.get(b.status) : Number.MAX_SAFE_INTEGER;
+      if (ra !== rb) return (ra - rb) * dir;
+      return (b.latestDate || '').localeCompare(a.latestDate || '')
+        || (b.updatedAt || '').localeCompare(a.updatedAt || '');
+    });
+  }
   return [...pinned, ...rest];
 }
 /* 置顶 / 取消置顶 */
@@ -1625,20 +1762,23 @@ function applyListOrder(ids) {
   state.entries = state.entries.map(e => idset.has(e.id) ? ordered[k++] : e);
   syncStoredOrder();
 }
-/* 切换排序方式：切到手动时优先恢复本地记住的手动顺序，否则固化当前显示顺序 */
+/* 切换排序方式：切到手动时优先恢复本地记住的手动顺序，否则固化当前非置顶行的显示顺序 */
 function setSortMode(mode) {
-  if (mode === ui.sortMode) return;
+  if (!SORT_MODES.some(m => m.value === mode) || mode === ui.sortMode) return;
+  let restIds = null;
+  if (mode === 'manual' && !ui.order.length) {
+    restIds = filteredEntries().filter(e => !ui.pinned.includes(e.id)).map(e => e.id); // 旧排序下的显示顺序
+  }
   ui.sortMode = mode;
   if (mode === 'manual') {
     if (ui.order.length) applyStoredOrder();
-    else applyListOrder(filteredEntries().map(e => e.id));
+    else applyListOrder(restIds);
   }
   persistUi(); saveAll(); render();
 }
 function statusSelectHTML(e) {
   const c = tagColor(STATUS_COLOR, e.status); // 自定义状态自动从调色板取色
-  return `<select class="status-select" data-id="${esc(e.id)}" style="color:${c};background:${c}1A">` +
-    allStatuses().map(s => `<option value="${esc(s)}" ${s === e.status ? 'selected' : ''}>${esc(s)}</option>`).join('') + '</select>';
+  return `<button type="button" class="status-select" data-id="${esc(e.id)}" style="color:${c};background:${c}1A" title="点击变更状态"><span class="dd-label">${esc(e.status)}</span>${I.chevDown}</button>`;
 }
 function industryTagHTML(e) {
   const c = tagColor(INDUSTRY_COLOR, e.industry);
@@ -1702,23 +1842,15 @@ function viewList() {
   if (!total && !hasFilter) return head + emptyStateHTML();
   return head + `<div class="toolbar">
     <div class="search-wrap">${I.search}<input class="input" id="searchInput" placeholder="搜索企业 / 岗位 / 部门 / 地点" value="${esc(ui.search)}"></div>
-    <select class="select" id="industryFilter">
-      <option value="">全部行业</option>
-      ${allIndustries().map(t => `<option ${ui.industryFilter === t ? 'selected' : ''}>${esc(t)}</option>`).join('')}
-    </select>
-    <select class="select" id="statusFilter">
-      <option value="">全部状态</option>
-      ${allStatuses().map(s => `<option ${ui.statusFilter === s ? 'selected' : ''}>${esc(s)}</option>`).join('')}
-    </select>
-    <select class="select" id="sortMode" title="拖拽左侧手柄可调整顺序">
-      <option value="auto" ${ui.sortMode === 'auto' ? 'selected' : ''}>按最新日期排序</option>
-      <option value="manual" ${ui.sortMode === 'manual' ? 'selected' : ''}>手动顺序（拖拽调整）</option>
-    </select>
+    <button type="button" class="dd-trigger" data-dd="industryFilter" title="按行业筛选"><span class="dd-label">${esc(ui.industryFilter || '全部行业')}</span>${I.chevDown}</button>
+    <button type="button" class="dd-trigger" data-dd="statusFilter" title="按状态筛选"><span class="dd-label">${esc(ui.statusFilter || '全部状态')}</span>${I.chevDown}</button>
+    <button type="button" class="dd-trigger" data-dd="sortMode" title="置顶行不受排序影响；拖拽行手柄可切换为手动顺序"><span class="dd-label">${esc(sortLabel(ui.sortMode))}</span>${I.chevDown}</button>
     ${hasFilter ? `<button class="btn btn-sm" data-action="clear-filter">${I.x}清除筛选</button>` : ''}
   </div>
   <div id="listTableWrap">${listTableHTML()}</div>`;
 }
-/* 看板列按保存的顺序排列；新出现的状态追加到末尾 */
+/* 全应用统一的状态顺序：看板列、列表「按状态排序」、筛选器 / 表单 / 统计均以此为准；
+   顺序由看板拖拽列头或「数据管理 → 状态顺序」自定义，新出现的状态追加到末尾 */
 function kanbanStatuses() {
   const all = allStatuses();
   if (!ui.kanbanOrder.length) return all;
@@ -1729,6 +1861,46 @@ function kanbanStatuses() {
 function saveKanbanOrder(statuses) {
   ui.kanbanOrder = [...statuses];
   persistUi();
+}
+/* 数据管理：状态顺序上移 / 下移 / 恢复默认 */
+function moveStatusOrder(index, delta) {
+  const order = kanbanStatuses();
+  const j = index + delta;
+  if (index < 0 || j < 0 || j >= order.length) return;
+  const v = order.splice(index, 1)[0];
+  order.splice(j, 0, v);
+  saveKanbanOrder(order);
+  render();
+  toast('状态顺序已调整');
+}
+function resetStatusOrder() {
+  ui.kanbanOrder = []; // 空顺序即回落到预设 → 自定义 → 数据中已出现值的默认顺序
+  persistUi();
+  render();
+  toast('已恢复默认状态顺序');
+}
+function statusOrderCardHTML() {
+  const order = kanbanStatuses();
+  return `<div class="card card-wide">
+    <h3>${I.kanban}状态顺序</h3>
+    <p class="hint" style="margin:0 0 12px">自定义状态的排列顺序，用于进度看板列、投递列表「按状态升序 / 降序」以及筛选器、表单、统计中的状态展示。点击 ↑ / ↓ 调整；置顶行始终不受排序影响。</p>
+    <div class="so-list">${order.map((s, i) => {
+      const c = tagColor(STATUS_COLOR, s);
+      const isCustom = !STATUSES.includes(s);
+      return `<div class="so-row">
+        <span class="dd-dot" style="background:${c}"></span>
+        <span class="so-name">${esc(s)}</span>
+        ${isCustom ? '<span class="so-tag">自定义</span>' : ''}
+        <span class="so-actions">
+          <button class="icon-btn" type="button" data-so-up="${i}" ${i === 0 ? 'disabled' : ''} title="上移">${I.arrowUp}</button>
+          <button class="icon-btn" type="button" data-so-down="${i}" ${i === order.length - 1 ? 'disabled' : ''} title="下移">${I.arrowDown}</button>
+        </span>
+      </div>`;
+    }).join('')}</div>
+    <div style="margin-top:12px;display:flex;gap:8px">
+      <button class="btn btn-sm" type="button" data-so-reset>${I.refresh}恢复默认顺序</button>
+    </div>
+  </div>`;
 }
 function viewKanban() {
   const statuses = kanbanStatuses();
@@ -1986,10 +2158,11 @@ function viewData() {
     <div class="stat"><div class="num" data-n="${s.total}">0</div><div class="lbl">累计投递</div></div>
     <div class="stat"><div class="num" data-n="${s.week}">0</div><div class="lbl">近 7 天新增</div></div>
     <div class="stat hl"><div class="num" data-n="${s.offers}" style="color:var(--accent-hover)">0</div><div class="lbl">Offer</div></div>
-    ${allStatuses().filter(st => st !== 'Offer' && (STATUSES.includes(st) || s.byStatus[st])).map(st => `<div class="stat"><div class="num" data-n="${s.byStatus[st] || 0}">0</div><div class="lbl">${esc(st)}</div></div>`).join('')}
+    ${kanbanStatuses().filter(st => st !== 'Offer' && (STATUSES.includes(st) || s.byStatus[st])).map(st => `<div class="stat"><div class="num" data-n="${s.byStatus[st] || 0}">0</div><div class="lbl">${esc(st)}</div></div>`).join('')}
     ${allIndustries().filter(ind => s.byIndustry[ind]).map(ind => `<div class="stat"><div class="num" data-n="${s.byIndustry[ind]}">0</div><div class="lbl">${esc(ind)}</div></div>`).join('')}
   </div>
   <div class="data-grid">
+    ${statusOrderCardHTML()}
     <div class="card">
       <h3>${I.database}目录同步</h3>
       <div class="kv"><span class="k">状态</span><span class="v">${syncStatusText()}</span></div>
@@ -2024,6 +2197,7 @@ function viewData() {
   </div>`;
 }
 function render() {
+  closeDropdown(); // 重渲染会销毁触发器，先收起浮动下拉
   updateSyncIndicator();
   $$('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.module === ui.module));
   const c = $('#content');
@@ -2098,6 +2272,40 @@ function bindEvents() {
       mgHead.closest('.mail-group').classList.toggle('collapsed');
       return;
     }
+    /* 数据管理：状态顺序上移 / 下移 / 恢复默认 */
+    const soUp = e.target.closest('[data-so-up]');
+    if (soUp) { moveStatusOrder(parseInt(soUp.dataset.soUp, 10), -1); return; }
+    const soDown = e.target.closest('[data-so-down]');
+    if (soDown) { moveStatusOrder(parseInt(soDown.dataset.soDown, 10), 1); return; }
+    if (e.target.closest('[data-so-reset]')) { resetStatusOrder(); return; }
+    /* 追踪列表：行业 / 状态 / 排序自定义下拉 */
+    const ddBtn = e.target.closest('.dd-trigger');
+    if (ddBtn) {
+      const key = ddBtn.dataset.dd;
+      if (key === 'industryFilter') {
+        openDropdown(ddBtn,
+          [{ value:'', label:'全部行业' }, ...allIndustries().map(v => ({ value:v, label:v }))],
+          ui.industryFilter, v => { ui.industryFilter = v; render(); });
+      } else if (key === 'statusFilter') {
+        openDropdown(ddBtn,
+          [{ value:'', label:'全部状态' }, ...kanbanStatuses().map(s => ({ value:s, label:s, color:tagColor(STATUS_COLOR, s) }))],
+          ui.statusFilter, v => { ui.statusFilter = v; render(); });
+      } else if (key === 'sortMode') {
+        openDropdown(ddBtn, SORT_MODES.map(m => ({ value:m.value, label:m.label })),
+          ui.sortMode, v => setSortMode(v));
+      }
+      return;
+    }
+    /* 追踪列表：行内状态胶囊下拉 */
+    const statBtn = e.target.closest('button.status-select');
+    if (statBtn) {
+      const sid = statBtn.dataset.id;
+      const en = state.entries.find(x => x.id === sid);
+      openDropdown(statBtn,
+        kanbanStatuses().map(s => ({ value:s, label:s, color:tagColor(STATUS_COLOR, s) })),
+        en ? en.status : '', v => changeStatus(sid, v));
+      return;
+    }
     const btn = e.target.closest('[data-action]');
     if (!btn) return;
     const act = btn.dataset.action, id = btn.dataset.id;
@@ -2107,6 +2315,8 @@ function bindEvents() {
       const en = state.entries.find(x => x.id === id);
       if (en && window.confirm(`确定删除「${en.company} · ${en.position}」这条投递记录？`)) {
         state.entries = state.entries.filter(x => x.id !== id);
+        ui.pinned = ui.pinned.filter(x => x !== id); // 清理置顶记忆
+        syncStoredOrder(); persistUi();
         saveAll(); render(); toast('已删除');
       }
     }
@@ -2159,11 +2369,7 @@ function bindEvents() {
     }
   });
   content.addEventListener('change', e => {
-    if (e.target.id === 'industryFilter') { ui.industryFilter = e.target.value; render(); }
-    else if (e.target.id === 'statusFilter') { ui.statusFilter = e.target.value; render(); }
-    else if (e.target.id === 'mailSortMode') setMailSortMode(e.target.value);
-    else if (e.target.id === 'sortMode') setSortMode(e.target.value);
-    else if (e.target.matches('select.status-select')) changeStatus(e.target.dataset.id, e.target.value);
+    if (e.target.id === 'mailSortMode') setMailSortMode(e.target.value);
     else if (e.target.id === 'importFile') { importCSV(e.target.files[0]); e.target.value = ''; }
   });
   /* 看板拖拽：卡片跨列变更状态 + 列头拖拽调整列顺序 */
@@ -2246,43 +2452,61 @@ function bindEvents() {
     const tr = e.target.closest && e.target.closest('tr[data-id]');
     if (!tr || !tr.draggable) return;
     dragRowId = tr.dataset.id;
+    dragRowPinned = ui.pinned.includes(dragRowId);
     e.dataTransfer.setData('text/plain', 'row:' + dragRowId);
     e.dataTransfer.effectAllowed = 'move';
     requestAnimationFrame(() => tr.classList.add('dragging'));
-    /* 自动排序下首次拖动：切换为手动顺序，并把当前显示顺序固化为数据顺序（不重渲染，避免打断拖拽） */
-    if (ui.sortMode === 'auto') {
+    /* 非置顶行在自动/状态排序下首次拖动：切换为手动顺序，并固化当前非置顶显示顺序（不重渲染，避免打断拖拽）；
+       置顶行拖拽只调整置顶区内部顺序，不改变其余行的排序方式 */
+    if (!dragRowPinned && ui.sortMode !== 'manual') {
+      const restIds = filteredEntries().filter(x => !ui.pinned.includes(x.id)).map(x => x.id);
       ui.sortMode = 'manual';
-      applyListOrder(filteredEntries().map(x => x.id));
+      applyListOrder(restIds);
       persistUi();
     }
   });
   content.addEventListener('dragover', e => {
     if (!dragRowId) return;
     const tr = e.target.closest && e.target.closest('tbody tr[data-id]');
+    $$('#listTableWrap tbody tr').forEach(r => r.classList.remove('drop-before', 'drop-after'));
     if (!tr || tr.dataset.id === dragRowId) return;
+    /* 置顶区与非置顶区之间禁止跨区拖动 */
+    if (dragRowPinned !== ui.pinned.includes(tr.dataset.id)) { e.dataTransfer.dropEffect = 'none'; return; }
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
     const rect = tr.getBoundingClientRect();
     const before = e.clientY < rect.top + rect.height / 2;
-    $$('#listTableWrap tbody tr').forEach(r => r.classList.remove('drop-before', 'drop-after'));
     tr.classList.add(before ? 'drop-before' : 'drop-after');
   });
   content.addEventListener('drop', e => {
     if (!dragRowId) return;
     const tr = e.target.closest && e.target.closest('tbody tr[data-id]');
     if (!tr || tr.dataset.id === dragRowId) return;
+    if (dragRowPinned !== ui.pinned.includes(tr.dataset.id)) return; // 跨区放置忽略
     e.preventDefault();
     const rect = tr.getBoundingClientRect();
     const before = e.clientY < rect.top + rect.height / 2;
     const dragging = $(`#listTableWrap tbody tr[data-id="${CSS.escape(dragRowId)}"]`);
     if (dragging) tr.parentNode.insertBefore(dragging, before ? tr : tr.nextSibling);
-    const ids = [...$$('#listTableWrap tbody tr[data-id]')].map(r => r.dataset.id);
-    applyListOrder(ids);
-    persistUi(); saveAll(); render();
+    if (dragRowPinned) {
+      /* 置顶区内部重排：只更新 ui.pinned，不触碰数据行序与排序方式 */
+      const order = ui.pinned.filter(id => id !== dragRowId);
+      const to = order.indexOf(tr.dataset.id);
+      if (to >= 0) order.splice(before ? to : to + 1, 0, dragRowId);
+      ui.pinned = order;
+      persistUi(); render();
+    } else {
+      /* 非置顶区：仅按非置顶行的新次序更新数据槽位 */
+      const ids = [...$$('#listTableWrap tbody tr[data-id]')].map(r => r.dataset.id)
+        .filter(id => !ui.pinned.includes(id));
+      applyListOrder(ids);
+      persistUi(); saveAll(); render();
+    }
   });
   content.addEventListener('dragend', () => {
     $$('#listTableWrap tbody tr').forEach(r => { r.classList.remove('dragging', 'drop-before', 'drop-after'); r.draggable = false; });
     dragRowId = '';
+    dragRowPinned = false;
   });
   /* 邮箱公司组：拖拽手柄调整公司组顺序（自动排序下首次拖动自动切换为手动顺序） */
   content.addEventListener('mousedown', e => {
@@ -2422,6 +2646,7 @@ async function init() {
   $('#logoBox').innerHTML = I.logoMark;
   applySidebar();
   bindEvents();
+  bindDropdownGlobal();
   render();
   await initSync();
   await loadCompanies();
