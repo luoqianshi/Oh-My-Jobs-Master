@@ -1,10 +1,15 @@
 {
-  "updatedAt": "2026-10-01 12:14",
+  "updatedAt": "2026-10-15 00:11",
   "rules": [
     {
       "type": "address",
       "value": "alert@amail.aminer.cn",
       "createdAt": "2026-10-01 12:14"
+    },
+    {
+      "type": "address",
+      "value": "hwx@xmu.edu.cn",
+      "createdAt": "2026-10-15 00:11"
     }
   ]
 }
