@@ -1,5 +1,5 @@
 {
-  "lastFetchedAt": "2026-10-09T22:00:40",
+  "lastFetchedAt": "2026-10-12T17:38:29",
   "emails": [
     {
       "id": "em_1789915802622_803a",
@@ -239,6 +239,30 @@
       "snippet": "<!DOCTYPE html><html lang=\"zh-CN\" dir=\"ltr\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><me",
       "processed": true,
       "matchedEntryId": "jm_1789542934527_6444",
+      "matchedAction": "更新进度"
+    },
+    {
+      "id": "em_1791651539393_607b",
+      "messageId": "<794386531.19891674.1791608747873@careertalk-message-task-5dcfbdb77b-bz2pf>",
+      "from": "campus@mailf.wisdomore.com",
+      "fromName": "智联招聘",
+      "subject": "尊敬的骆同学【智联推荐】以橙意，共成就！平安科技2027届校园招聘火热进行中！",
+      "date": "2026-10-10T13:05:48+08:00",
+      "snippet": "<html> <head></head> <body> <p>以橙意，共成就！平安科技2027届校园招聘火热进行中！</p> <p>以AI为翼，赴橙长之约</p> <p><br /></p> <p>“技术专家/管理岗”双通道晋升</p> <p>技术大咖带教，成长全程守护</p> <p>大数据/开发运维/产品项目等多方向岗位</p> <p>更有NOVA超新星人才计划等你来加入</p> <p><br /></p> <p>登场，即是你的AI主场！</p> <p>欢迎投递：https://campus.pingan.com/tech</p> <div style=\"text-align:center\"",
+      "processed": true,
+      "matchedEntryId": null,
+      "matchedAction": "ignored"
+    },
+    {
+      "id": "em_1791797909627_d949",
+      "messageId": "<908095712.8117949.1791788436364@dggphicpra06937>",
+      "from": "italentmailsys@huawei.com",
+      "fromName": "",
+      "subject": "【华为公司】诚邀您参加华为公司在线笔试，谢谢！",
+      "date": "2026-10-12T15:00:36+08:00",
+      "snippet": "<meta charset=\"utf-8\" /> <title>email</title> <table border=\"0\" align=\"center\" style=\"border: 1px solid #d9d9d9; width: 760px; font-family: Microsoft YaHei; line-height: 24px;\" class=\"ke-zeroborder\" > <tbody> <tr style=\"font-family: Microsoft YaHei\"> <td colspan=\"2\" style=\"padding: 28px; font-size: ",
+      "processed": true,
+      "matchedEntryId": "jm_1789484115847_1164",
       "matchedAction": "更新进度"
     }
   ]
