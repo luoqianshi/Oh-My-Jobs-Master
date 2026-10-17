@@ -153,7 +153,7 @@ tbody tr.pinned .drag-cell{box-shadow:inset 3px 0 0 var(--accent)}
 .dd-trigger>.dd-label{overflow:hidden;text-overflow:ellipsis}
 .dd-trigger>svg{width:14px;height:14px;color:var(--ink-3);flex-shrink:0;transition:transform .15s}
 .dd-trigger.open>svg{transform:rotate(180deg)}
-.dd-float{position:fixed;z-index:300;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:5px;min-width:150px;max-height:280px;overflow-y:auto;animation:ddIn .14s ease}
+.dd-float{position:fixed;z-index:300;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:5px;min-width:150px;max-height:280px;overflow-y:auto;overscroll-behavior:contain;animation:ddIn .14s ease}
 @keyframes ddIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 .dd-opt{display:flex;align-items:center;gap:8px;width:100%;padding:7px 30px 7px 10px;position:relative;border:none;background:none;border-radius:8px;font:inherit;font-size:13px;color:var(--ink);cursor:pointer;text-align:left;white-space:nowrap}
 .dd-opt:hover,.dd-opt.kb{background:var(--panel-2)}
@@ -1468,7 +1468,8 @@ function openDropdown(trigger, items, value, onSelect) {
   trigger.classList.add('open');
   dd.el = el; dd.trigger = trigger; dd.items = items.filter(it => !it.sep); dd.onSelect = onSelect;
   dd.index = dd.items.findIndex(it => it.value === value);
-  el.addEventListener('mousedown', ev => ev.preventDefault()); // 防止触发器失焦 / 外部点击判定提前关闭
+  // 仅阻止选项按钮的默认行为（避免拖选文字 / 触发器失焦）；面板空白处与滚动条的 mousedown 保留原生行为，保证滚动条可拖动
+  el.addEventListener('mousedown', ev => { if (ev.target.closest('.dd-opt')) ev.preventDefault(); });
   el.addEventListener('click', ev => {
     const b = ev.target.closest('.dd-opt');
     if (!b) return;
@@ -1510,8 +1511,12 @@ function bindDropdownGlobal() {
       if (pick) { const val = pick.dataset.val; closeDropdown(); dd.onSelect && dd.onSelect(val); }
     }
   }, true);
-  /* 表格内部滚动或窗口滚动 / 缩放时直接收起，避免浮层错位 */
-  window.addEventListener('scroll', closeDropdown, true);
+  /* 表格内部滚动或窗口滚动 / 缩放时直接收起，避免浮层错位；
+     但面板自身的滚动（滚轮 / 拖动滚动条）必须忽略，否则一滚就收起 */
+  window.addEventListener('scroll', e => {
+    if (dd.el && (e.target === dd.el || dd.el.contains(e.target))) return;
+    closeDropdown();
+  }, true);
   window.addEventListener('resize', closeDropdown);
 }
 

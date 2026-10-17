@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-15 00:11",
+  "updatedAt": "2026-10-15 17:13",
   "rules": [
     {
       "type": "address",
@@ -10,6 +10,26 @@
       "type": "address",
       "value": "hwx@xmu.edu.cn",
       "createdAt": "2026-10-15 00:11"
+    },
+    {
+      "type": "address",
+      "value": "notice-noreply@qoder.com",
+      "createdAt": "2026-10-15 17:13"
+    },
+    {
+      "type": "address",
+      "value": "noreply@shmail.ibeisen.com",
+      "createdAt": "2026-10-15 17:13"
+    },
+    {
+      "type": "address",
+      "value": "service@mail19.lietou-edm.com",
+      "createdAt": "2026-10-15 17:13"
+    },
+    {
+      "type": "address",
+      "value": "campus@mailf.wisdomore.com",
+      "createdAt": "2026-10-15 17:13"
     }
   ]
 }

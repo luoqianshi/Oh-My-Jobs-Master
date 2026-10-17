@@ -1,5 +1,5 @@
 {
-  "lastFetchedAt": "2026-10-12T17:38:29",
+  "lastFetchedAt": "2026-10-15T17:11:01",
   "emails": [
     {
       "id": "em_1789915802622_803a",
@@ -261,6 +261,42 @@
       "subject": "【华为公司】诚邀您参加华为公司在线笔试，谢谢！",
       "date": "2026-10-12T15:00:36+08:00",
       "snippet": "<meta charset=\"utf-8\" /> <title>email</title> <table border=\"0\" align=\"center\" style=\"border: 1px solid #d9d9d9; width: 760px; font-family: Microsoft YaHei; line-height: 24px;\" class=\"ke-zeroborder\" > <tbody> <tr style=\"font-family: Microsoft YaHei\"> <td colspan=\"2\" style=\"padding: 28px; font-size: ",
+      "processed": true,
+      "matchedEntryId": "jm_1789484115847_1164",
+      "matchedAction": "更新进度"
+    },
+    {
+      "id": "em_1792055461157_8a26",
+      "messageId": "<f8695ea2-66d5-4237-8b8d-9d9529cea033@qoder.com>",
+      "from": "notice-noreply@qoder.com",
+      "fromName": "Qoder",
+      "subject": "Performance model tier upgraded to Fast: same quality, 3s first response",
+      "date": "2026-10-14T07:27:22+08:00",
+      "snippet": "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color: rgb(255, 255, 255); text-wrap-mode: wrap;\"> <tbody> <tr> <td align=\"center\" valign=\"middle\"> <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color: rgb(255, 255, 255); border-radiu",
+      "processed": true,
+      "matchedEntryId": null,
+      "matchedAction": "ignored"
+    },
+    {
+      "id": "em_1792055461328_11ff",
+      "messageId": "1385998724379840519",
+      "from": "service@mail19.lietou-edm.com",
+      "fromName": "猎聘",
+      "subject": "西门子医疗2027校园招聘",
+      "date": "2026-10-14T15:00:10+08:00",
+      "snippet": "<table border=\"0\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"><tbody><tr><td style=\"background-color: #f8f8f8; padding: 20px 0 30px 0;\" align=\"center\"><table border=\"0\" width=\"700\" cellspacing=\"0\" cellpadding=\"0\"><tbody><tr><td style=\"border-bottom: 1px #e5e5e5 solid; padding-bottom: 15px; color: #",
+      "processed": true,
+      "matchedEntryId": null,
+      "matchedAction": "ignored"
+    },
+    {
+      "id": "em_1792055461426_18ea",
+      "messageId": "<701035025.1686861.1792029060212@mail-65bd97d47-pvdrv>",
+      "from": "italentmailsys@huawei.com",
+      "fromName": "",
+      "subject": "【华为公司】诚邀您参加华为公司在线测评，谢谢！",
+      "date": "2026-10-15T09:51:00+08:00",
+      "snippet": "<p>亲爱的<span style=\"color: rgb(24, 144, 255);\">骆锟宏</span>，</p><p>&nbsp;&nbsp;&nbsp;您好！欢迎参加华为公司招聘，现邀请您进行在线测评，请您于<span style=\"color: rgb(24, 144, 255);\">2026-10-18 00:00:00</span><span style=\"color: rgb(51, 51, 51);\"> 之前</span>完成综合测评。</p><p>&nbsp;&nbsp;&nbsp;测评网址：<span style=\"color: rgb(24, 144, 255);\"",
       "processed": true,
       "matchedEntryId": "jm_1789484115847_1164",
       "matchedAction": "更新进度"
